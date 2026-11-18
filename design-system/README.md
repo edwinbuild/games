@@ -112,9 +112,9 @@ Everything around play is shared; inside its `Stage` each game may have its own 
 Multiplayer games use the same shell plus shared multiplayer parts, so players learn rooms and turns once.
 
 - First come **same-phone** games (two thumbs on one screen, or pass and play), which need no backend. Each player's half of the screen is a `Stage` filled with that player's colour, rotated to face them.
-- **Player colours** are a fixed set of four, told apart by lightness and by a shape marker (circle, square, triangle, diamond), never by hue alone.
+- **Player colours** are a fixed set of eight seats, each a colour plus a shape marker (circle, square, triangle, diamond, star, hexagon, plus, pentagon), so players are never told apart by hue alone.
 - Online rooms use `RoomCode` (code plus invite link), `Lobby` (players, ready, host first), and `ScoreStrip` during play; the result ticket offers Rematch in the same room.
-- Same-phone games use `SplitStage`; each player is a `PlayerChip` identity (P1 Coral circle, P2 Aqua square, P3 Lime triangle, P4 Orchid diamond).
+- Same-phone games use `SplitStage`; each player is a `PlayerChip` identity (P1 Coral circle, P2 Aqua square, P3 Lime triangle, P4 Orchid diamond; online rooms of up to eight add Sky star, Sand hexagon, Peach plus and Periwinkle pentagon).
 - The result ticket of a multiplayer game names the winner and the score line (for example "Blue wins 3–2"); its share text never needs the other player's name.
 
 ## Challenges
