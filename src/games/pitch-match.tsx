@@ -3,7 +3,7 @@ import { getGame } from './registry'
 import { dailyRandom, puzzleLabel } from '../shell/daily'
 import { feel, tone } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
-import { getStats, loadToday, recordDaily, recordPlay, saveToday } from '../shell/stats'
+import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { AttemptTiles, Button, Stage, type Attempt } from '../ui'
 
 const game = getGame('pitch-match')
@@ -94,65 +94,56 @@ function Round({ target, label, tiles, onLock }: { target: number; label: string
   )
 }
 
-function Practice({ onBack }: { onBack: () => void }) {
-  const [target, setTarget] = useState(() => toHz(150 + Math.random() * 700))
-  const [result, setResult] = useState<number | null>(null)
-  const best = getStats('pitch-match-practice').best
+type Today = { done: number[][]; current: number[] }
 
-  if (result === null) {
-    return <Round key={target} target={target} label="Practice: random tone" onLock={(c) => {
-      setResult(c)
-      recordPlay('pitch-match-practice', accuracy(c), undefined, `${accuracy(c)}%`)
-    }} />
-  }
-  return (
-    <Stage>
-      <div className="stack">
-        <p className="result" style={{ margin: 0 }}>{describe(result)}</p>
-        <p className="small muted" style={{ margin: 0 }}>{accuracy(result)}% accurate{best != null ? ` · best practice ${best}%` : ''}</p>
-        <div className="row">
-          <Button color={game.color} onClick={() => { setResult(null); setTarget(toHz(150 + Math.random() * 700)) }}>Next tone</Button>
-          <Button variant="secondary" onClick={onBack}>Back to today</Button>
-        </div>
-      </div>
-    </Stage>
-  )
+function loadTodayState(): Today {
+  const v = loadToday<Today | number[] | null>(game.slug, null)
+  if (!v) return { done: [], current: [] }
+  if (Array.isArray(v)) return v.length >= ROUNDS ? { done: [v], current: [] } : { done: [], current: v } // older format
+  return v
 }
 
+const score = (r: number[]) => Math.round(r.reduce((s, x) => s + accuracy(x), 0) / r.length)
+
 export default function PitchMatch() {
+  // Unlimited tries at today's three tones; the best try counts and is what gets shared.
   const targets = targetsFor()
-  const [results, setResults] = useState<number[]>(() => loadToday(game.slug, [] as number[]))
-  const [practice, setPractice] = useState(false)
-  const round = results.length
-  const done = round >= ROUNDS
-  const avg = results.length ? Math.round(results.reduce((a, b) => a + accuracy(b), 0) / results.length) : 0
+  const [state, setState] = useState<Today>(loadTodayState)
+  const [playing, setPlaying] = useState(state.done.length === 0 || state.current.length > 0)
+  const { done, current } = state
+  const round = current.length
   const stats = getStats(game.slug)
 
-  if (practice) return <Practice onBack={() => setPractice(false)} />
-
   function lock(c: number) {
-    const next = [...results, c]
-    setResults(next)
+    const cur = [...current, c]
+    const next: Today = cur.length >= ROUNDS ? { done: [...done, cur], current: [] } : { done, current: cur }
+    setState(next)
     saveToday(game.slug, next)
-    if (next.length >= ROUNDS) {
-      const a = Math.round(next.reduce((s, x) => s + accuracy(x), 0) / next.length)
-      recordDaily(game.slug, a, new Date(), `${a}%`)
+    if (cur.length >= ROUNDS) {
+      const best = Math.max(...next.done.map(score))
+      recordDaily(game.slug, best, new Date(), `${best}%`)
+      setPlaying(false)
     }
   }
 
+  const results = playing ? current : done[done.length - 1]
+  const bestTry = done.length ? done.reduce((a, b) => (score(b) > score(a) ? b : a)) : []
+  const best = done.length ? score(bestTry) : 0
+  const tries = `${done.length} ${done.length === 1 ? 'try' : 'tries'}`
+
   return (
     <>
-      {!done && (
+      {playing && (
         <Round
-          key={round}
+          key={`${done.length}-${round}`}
           target={targets[round]}
-          label={`Tone ${round + 1} of ${ROUNDS}`}
-          tiles={Array.from({ length: ROUNDS }, (_, i) => (i < results.length ? grade(results[i]) : 'empty'))}
+          label={`Tone ${round + 1} of ${ROUNDS}${done.length ? ` · try ${done.length + 1}` : ''}`}
+          tiles={Array.from({ length: ROUNDS }, (_, i) => (i < current.length ? grade(current[i]) : 'empty'))}
           onLock={lock}
         />
       )}
 
-      {results.length > 0 && (
+      {results && results.length > 0 && (
         <ul className="small muted" style={{ listStyle: 'none', padding: 0, margin: 'var(--space-3) 0 0', display: 'grid', gap: 'var(--space-1)', textAlign: 'center' }}>
           {results.map((c, i) => (
             <li key={i}>Tone {i + 1}: {describe(c)}</li>
@@ -160,14 +151,15 @@ export default function PitchMatch() {
         </ul>
       )}
 
-      {done && (
+      {!playing && done.length > 0 && (
         <ResultCard
           game={game}
-          headline={`${avg}% accurate`}
-          detail={stats.streak > 1 ? `${stats.streak} day streak` : undefined}
-          shareText={`🎵 Pitch Match ${puzzleLabel()}\n${results.map(square).join('')} ${avg}% accurate`}
-          finishData={{ accuracy: avg }}
-          extra={<Button variant="ghost" onClick={() => setPractice(true)}>Practice with random tones</Button>}
+          headline={`${best}% accurate`}
+          detail={<>Your best of {tries} today{done.length > 1 ? ` · last try ${score(done[done.length - 1])}%` : ''}{stats.streak > 1 ? ` · ${stats.streak} day streak` : ''}</>}
+          shareText={`🎵 Pitch Match ${puzzleLabel()}\n${bestTry.map(square).join('')} ${best}% accurate\nBest of ${tries}`}
+          finishData={{ accuracy: best, tries: done.length }}
+          onReplay={() => setPlaying(true)}
+          replayLabel="Try again"
         />
       )}
     </>

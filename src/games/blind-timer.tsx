@@ -3,11 +3,10 @@ import { getGame } from './registry'
 import { dailyRandom, puzzleLabel } from '../shell/daily'
 import { ResultCard } from '../shell/ResultCard'
 import { feel } from '../shell/feel'
-import { getStats, loadToday, recordDaily, recordPlay, saveToday } from '../shell/stats'
+import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { AttemptTiles, Button, Score, Stage, type Attempt } from '../ui'
 
 const game = getGame('blind-timer')
-const ATTEMPTS = 3
 const VISIBLE_MS = 1000
 
 export function targetFor(d = new Date()): number {
@@ -15,12 +14,10 @@ export function targetFor(d = new Date()): number {
   return Math.round((5 + r() * 7) * 100) / 100 // 5.00–12.00 s
 }
 
-const randomTarget = () => Math.round((5 + Math.random() * 7) * 100) / 100
 const fmt = (s: number) => s.toFixed(2)
 const grade = (off: number): Attempt => (Math.abs(off) < 0.1 ? 'hit' : Math.abs(off) < 0.5 ? 'near' : 'miss')
 const square = (off: number) => ({ hit: '🟩', near: '🟨', miss: '🟥', empty: '⬜' })[grade(off)]
 const bestOf = (offs: number[]) => offs.reduce((a, b) => (Math.abs(b) < Math.abs(a) ? b : a))
-const tiles = (offs: number[]): Attempt[] => Array.from({ length: ATTEMPTS }, (_, i) => (i < offs.length ? grade(offs[i]) : 'empty'))
 
 function offText(off: number) {
   if (Math.abs(off) < 0.005) return 'Perfect! 0.00s'
@@ -28,86 +25,59 @@ function offText(off: number) {
 }
 
 export default function BlindTimer() {
-  const [mode, setMode] = useState<'daily' | 'practice'>('daily')
-  const [dailyOffs, setDailyOffs] = useState<number[]>(() => loadToday(game.slug, [] as number[]))
-  const [practiceTarget, setPracticeTarget] = useState(randomTarget)
-  const [practiceOff, setPracticeOff] = useState<number | null>(null)
+  // Unlimited tries on today's target; the closest one counts and is what gets shared.
+  const [offs, setOffs] = useState<number[]>(() => loadToday(game.slug, [] as number[]))
+  const [playing, setPlaying] = useState(offs.length === 0)
+  const target = targetFor()
 
-  const target = mode === 'daily' ? targetFor() : practiceTarget
-  const dailyDone = dailyOffs.length >= ATTEMPTS || dailyOffs.some((o) => Math.abs(o) < 0.005)
-
-  function onDailyStop(elapsed: number) {
+  function onStop(elapsed: number) {
     const off = Math.round((elapsed - target) * 100) / 100
-    const next = [...dailyOffs, off]
-    setDailyOffs(next)
+    const next = [...offs, off]
+    setOffs(next)
     saveToday(game.slug, next)
-    if (next.length >= ATTEMPTS || Math.abs(off) < 0.005) {
-      const best = Math.abs(bestOf(next))
-      recordDaily(game.slug, best, new Date(), `${fmt(best)}s`)
-    }
-  }
-
-  function onPracticeStop(elapsed: number) {
-    const off = Math.round((elapsed - target) * 100) / 100
-    setPracticeOff(off)
-    recordPlay('blind-timer-practice', Math.abs(off), (a, b) => a < b, `${fmt(Math.abs(off))}s`)
-  }
-
-  if (mode === 'practice') {
-    const best = getStats('blind-timer-practice').best
-    return (
-      <div className="stack">
-        <Timer key={practiceTarget} target={target} onStop={onPracticeStop} />
-        {practiceOff !== null && (
-          <Stage>
-            <div className="stack">
-              <p className="result">{offText(practiceOff)}</p>
-              {best != null && <p className="small muted">Best practice: off by {fmt(best)}s</p>}
-              <div className="row">
-                <Button color={game.color} onClick={() => { setPracticeOff(null); setPracticeTarget(randomTarget()) }}>New target</Button>
-                <Button variant="secondary" onClick={() => setMode('daily')}>Back to daily</Button>
-              </div>
-            </div>
-          </Stage>
-        )}
-      </div>
-    )
+    const best = Math.abs(bestOf(next))
+    recordDaily(game.slug, best, new Date(), `${fmt(best)}s`)
+    setTimeout(() => setPlaying(false), 600)
   }
 
   const stats = getStats(game.slug)
-  if (dailyDone) {
-    const best = bestOf(dailyOffs)
+  const recent = offs.slice(-10)
+  const tries = `${offs.length} ${offs.length === 1 ? 'try' : 'tries'}`
+
+  if (playing || offs.length === 0) {
     return (
-      <>
-        <Stage>
-          <div className="stack" style={{ justifyItems: 'center' }}>
-            <Score label="Today's target" value={`${fmt(target)}s`} size="md" />
-            <AttemptTiles attempts={tiles(dailyOffs)} />
-          </div>
-        </Stage>
-        <ResultCard
-          game={game}
-          headline={offText(best)}
-          detail={<>Target {fmt(target)}s{stats.streak > 0 && <> · {stats.streak} day streak</>}</>}
-          shareText={`⏱️ Blind Timer ${puzzleLabel()}\nTarget ${fmt(target)}s\n${dailyOffs.map(square).join('')} ${offText(best)}`}
-          finishData={{ off: Math.abs(best) }}
-          extra={<Button variant="ghost" onClick={() => setMode('practice')}>Practice with random targets</Button>}
-        />
-      </>
+      <div className="stack">
+        <div className="between">
+          <span className="small muted">{offs.length ? `Try ${offs.length + 1} · best so far ${fmt(Math.abs(bestOf(offs)))}s off` : 'First try'}</span>
+          {offs.length > 0 && <AttemptTiles attempts={recent.slice(-5).map(grade)} />}
+        </div>
+        <Timer key={offs.length} target={target} onStop={onStop} />
+        {offs.length > 0 && <p className="small muted center">Last try: {offText(offs[offs.length - 1])}</p>}
+      </div>
     )
   }
 
+  const best = bestOf(offs)
+  const last = offs[offs.length - 1]
   return (
-    <div className="stack">
-      <div className="between">
-        <span className="small muted">Attempt {dailyOffs.length + 1} of {ATTEMPTS}</span>
-        <AttemptTiles attempts={tiles(dailyOffs)} />
-      </div>
-      <Timer key={dailyOffs.length} target={target} onStop={onDailyStop} />
-      {dailyOffs.length > 0 && (
-        <p className="small muted center">Last try: {offText(dailyOffs[dailyOffs.length - 1])}</p>
-      )}
-    </div>
+    <>
+      <Stage>
+        <div className="stack" style={{ justifyItems: 'center' }}>
+          <Score label="Today's target" value={`${fmt(target)}s`} size="md" />
+          <p className="body-strong" style={{ margin: 0 }}>Last try: {offText(last)}</p>
+          <AttemptTiles attempts={recent.slice(-5).map(grade)} />
+        </div>
+      </Stage>
+      <ResultCard
+        game={game}
+        headline={offText(best)}
+        detail={<>Your best of {tries} today{stats.streak > 1 && <> · {stats.streak} day streak</>}</>}
+        shareText={`⏱️ Blind Timer ${puzzleLabel()}\nTarget ${fmt(target)}s\n${recent.map(square).join('')}\n${offText(best)}, best of ${tries}`}
+        finishData={{ off: Math.abs(best), tries: offs.length }}
+        onReplay={() => setPlaying(true)}
+        replayLabel="Try again"
+      />
+    </>
   )
 }
 

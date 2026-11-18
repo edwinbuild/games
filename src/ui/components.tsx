@@ -2,15 +2,18 @@ import { useEffect, useState, type AnchorHTMLAttributes, type ButtonHTMLAttribut
 
 const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(' ')
 /** A colour for a component: a token name ("tangerine") or any CSS colour. */
+/** Fills with a game colour; text on it switches to `on-fill`. Without a colour, components use `primary`. */
 const fill = (color?: string): CSSProperties | undefined =>
-  color ? ({ ['--qg-fill' as string]: /^[a-z-]+$/.test(color) ? `var(--${color})` : color } as CSSProperties) : undefined
+  color
+    ? ({ ['--qg-fill' as string]: /^[a-z-]+$/.test(color) ? `var(--${color})` : color, ['--qg-on' as string]: 'var(--on-fill)' } as CSSProperties)
+    : undefined
 
 /* ---------- Button ---------- */
 export type ButtonProps = {
   variant?: 'primary' | 'secondary' | 'ghost' | 'whatsapp' | 'x'
   size?: 'md' | 'lg'
   block?: boolean
-  /** Fill colour for a primary key: a colour token name such as "mint". Defaults to `ticket`. */
+  /** Fill colour for a primary key: a colour token name such as "mint". Defaults to `primary` (black in light, white in dark). */
   color?: string
   /** Renders a link instead of a button. */
   href?: string
@@ -36,8 +39,8 @@ export function Button({ variant = 'primary', size = 'md', block, color, href, c
 }
 
 /* ---------- Pill ---------- */
-export type PillProps = { tone?: 'ticket' | 'neutral'; color?: string; children: ReactNode }
-export function Pill({ tone = 'ticket', color, children }: PillProps) {
+export type PillProps = { tone?: 'primary' | 'neutral'; color?: string; children: ReactNode }
+export function Pill({ tone = 'primary', color, children }: PillProps) {
   return (
     <span className={cx('qg-pill', tone === 'neutral' && 'qg-pill--neutral')} style={fill(color)}>
       {children}
@@ -52,10 +55,10 @@ export function BrandMark({ size = 26 }: { size?: number }) {
     <svg className="qg-brand-mark" width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
       <path
         d="M4 7h24a2 2 0 0 1 2 2v4a3 3 0 0 0 0 6v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a3 3 0 0 0 0-6V9a2 2 0 0 1 2-2z"
-        fill="var(--ticket)" stroke="var(--edge)" strokeWidth="2" strokeLinejoin="round"
+        fill="var(--primary)" stroke="var(--edge)" strokeWidth="2" strokeLinejoin="round"
       />
       <path d="M11 9.5v13" stroke="var(--edge)" strokeWidth="2" strokeDasharray="2 2.5" />
-      <path d="M17 12.5h7M17 16h5M17 19.5h7" stroke="var(--on-fill)" strokeWidth="2" strokeLinecap="round" />
+      <path d="M17 12.5h7M17 16h5M17 19.5h7" stroke="var(--on-primary)" strokeWidth="2" strokeLinecap="round" />
     </svg>
   )
 }

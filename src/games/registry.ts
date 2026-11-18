@@ -26,7 +26,7 @@ export const GAMES: GameMeta[] = [
     tagline: 'Stop a hidden clock on the target time. A new target every day.',
     howTo: [
       'Each day has one target time, the same for everyone, such as 7.30 seconds. Press Start, count in your head, and press Stop when you think the time is up. The clock hides after the first second.',
-      'You get three tries a day and the closest one counts. Practice mode, with a new target each try, is open any time.',
+      'Try as many times as you like. Your closest try is your result for the day, and the share says how many tries it took.',
     ],
     daily: true,
     color: 'tangerine',
@@ -78,11 +78,11 @@ export const GAMES: GameMeta[] = [
     slug: 'pitch-match',
     title: 'Pitch Match',
     emoji: '🎵',
-    instructions: 'Listen to the tone, then slide yours until they match. Three tones a day.',
+    instructions: 'Listen to the tone, then slide yours until they match. Three tones, as many tries as you like.',
     tagline: 'Hear a tone, then match it by ear. Three new tones every day.',
     howTo: [
       'Press Listen to hear the target tone. Move the slider, play your tone, and press Lock in when they sound the same. You need your phone\'s sound on.',
-      'There are three tones a day, the same for everyone. Being one semitone off (one piano key) scores 50%; matching exactly scores 100%. Practice with random tones any time after today\'s three.',
+      'There are three tones a day, the same for everyone. Being one semitone off (one piano key) scores 50%; matching exactly scores 100%. Try as many times as you like; your best try counts and the share says how many it took.',
     ],
     daily: true,
     color: 'bubblegum',
@@ -96,7 +96,7 @@ export const GAMES: GameMeta[] = [
     tagline: 'Five face-down cards, one pick a day. Everyone gets the same five.',
     howTo: [
       'Every day there are five face-down cards, each with a number from 1 to 100. Everyone gets the same five cards in the same places, so you and your friends are choosing from the same row.',
-      'You get one pick a day. Then all five turn over and you see whether you took the best one. Share your card and compare with friends.',
+      'You get one pick a day. Then all five turn over and you see whether you took the best one. Share your card and compare with friends. After your pick you can practise with random decks; they don\'t count.',
     ],
     daily: true,
     color: 'lagoon',

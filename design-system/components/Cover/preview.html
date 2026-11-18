@@ -6,11 +6,11 @@
   html, body { margin: 0; height: 100%; background: var(--canvas); }
   .cover { position: relative; width: 960px; height: 320px; overflow: hidden; background: var(--canvas); }
   svg { position: absolute; inset: 0; }
-  .ticket { fill: var(--ticket); } .tangerine { fill: var(--tangerine); } .mint { fill: var(--mint); } .sky { fill: var(--sky); }
+  .ticket { fill: var(--primary); } .tangerine { fill: var(--tangerine); } .mint { fill: var(--mint); } .sky { fill: var(--sky); }
   .grape { fill: var(--grape); }
   .shadow { fill: var(--drop); } .ground { fill: var(--canvas); }
   .edge { stroke: var(--edge); stroke-width: var(--border-edge); }
-  .perf { stroke: var(--on-fill); stroke-width: var(--border-edge); stroke-dasharray: 6 8; fill: none; }
+  .perf { stroke: var(--on-primary); stroke-width: var(--border-edge); stroke-dasharray: 6 8; fill: none; }
   .r-lg { rx: var(--radius-lg); } .r-md { rx: var(--radius-md); } .pill { rx: 24px; }
   .text { position: absolute; left: 48px; bottom: 40px; width: 420px; }
   .name { margin: 0; font: 800 112px/0.92 var(--font-display); letter-spacing: -0.04em; color: var(--ink); }
@@ -19,7 +19,7 @@
 <body>
 <div class="cover">
   <svg width="960" height="320" viewBox="0 0 960 320" aria-hidden="true">
-    <!-- blocks: ticket 300x176 (radius-lg) as the slab; tangerine 120x136 and mint 120x112 bleeding off the right edge; sky pill 208x48; one grape 48x48 (radius-md)
+    <!-- blocks: primary (black in light, white in dark) 300x176 (radius-lg) as the slab; tangerine 120x136 and mint 120x112 bleeding off the right edge; sky pill 208x48; one grape 48x48 (radius-md)
          arrangement: one tall slab with satellites, every block sitting on its hard ink offset (shadow-card, 6px) like the site's cards
          pattern: the literal ticket motif, because the README calls the look an arcade ticket counter: half-circle notches cut from the slab in the ground colour and a dashed perforation (border-edge, dash 6/8)
          steps and radii: gaps space-5 (20) and space-6 (32), radius-lg 20, radius-md 12, pill = half of 48 -->
@@ -45,8 +45,8 @@
     <rect class="grape edge r-md" x="786" y="256" width="48" height="48" />
   </svg>
   <div class="text">
-    <p class="name">Quick<br>Games</p>
-    <p class="tag">Tiny original games. Under 2 minutes. No sign-up.</p>
+    <p class="name">Pocket<br>Fair</p>
+    <p class="tag">Quick games that take a minute or two. Play alone or with friends.</p>
   </div>
 </div>
 </body>

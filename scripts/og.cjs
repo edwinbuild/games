@@ -33,7 +33,7 @@ const card = (title, tag, fill, sample, badge) => `<html><head>${fonts}</head><b
     await p.setContent(card(g.title, g.tagline, color(g.color), g.sample, g.daily ? 'Daily' : site.name), { waitUntil: 'networkidle' })
     await p.screenshot({ path: out(g.slug) })
   }
-  await p.setContent(card(site.name, site.tagline, color('ticket'), `${games.length} games`, 'Free'), { waitUntil: 'networkidle' })
+  await p.setContent(card(site.name, site.tagline, color('mint'), `${games.length} games`, 'Free'), { waitUntil: 'networkidle' })
   await p.screenshot({ path: out('home') })
   await b.close()
   console.log(`Wrote ${games.length + 1} images to public/og/`)

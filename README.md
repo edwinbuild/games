@@ -1,4 +1,4 @@
-# Quick Games
+# Pocket Fair
 
 Small, original browser games: under 2 minutes, phone first, no sign-up, each ending on a shareable result card.
 

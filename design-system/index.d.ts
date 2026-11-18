@@ -16,7 +16,7 @@ export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
 export declare function Button(props: ButtonProps): JSX.Element
 
 /** Small uppercase label: Daily, New. */
-export interface PillProps { tone?: 'ticket' | 'neutral'; color?: string; children: ReactNode }
+export interface PillProps { tone?: 'primary' | 'neutral'; color?: string; children: ReactNode }
 export declare function Pill(props: PillProps): JSX.Element
 
 /** The placeholder admit-one ticket mark. */

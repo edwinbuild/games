@@ -1,6 +1,6 @@
-Quick Games is a site of small original browser games that finish in under two minutes, play on any phone with no sign-up, and end on a result worth posting. The look is an **arcade ticket counter**: every result prints as a perforated ticket, every button is a chunky key that drops when pressed, and every game owns one bright colour. Scores are set in a scoreboard monospace.
+Pocket Fair is a site of small original browser games that finish in under two minutes, play on any phone with no sign-up, and end on a result worth posting. The look is an **arcade ticket counter**: every result prints as a perforated ticket, every button is a chunky key that drops when pressed, and every game owns one bright colour. Around the games the site is black and white: near-white in light mode, near-black in dark, with black or white `primary` keys. Scores are set in a scoreboard monospace.
 
-The site name is a placeholder until a real name is picked. The mark (an admit-one ticket) and the name in the top bar change together.
+Pocket Fair is the working name: a fairground of small stalls you can play alone or with friends. The mark (an admit-one ticket) and the name in the top bar change together if the name changes.
 
 ## Voice and copy
 
@@ -18,7 +18,7 @@ The site name is a placeholder until a real name is picked. The mark (an admit-o
 
 - The page sits on `canvas`. Objects people look at or touch (the stage, tickets, cards, keys) sit on `surface` with a `border-edge` outline in `edge`.
 - Body text is `ink`; instructions, labels and taglines are `ink-muted`. Both pass 5:1 on every surface in both themes.
-- `ticket` (warm yellow) is the brand colour: primary keys, the Daily pill, the stub of a ticket when the game has no colour of its own.
+- `primary` is the brand colour: black in light mode, white in dark (`ink`). It fills primary keys, the Daily pill, a switched-on chip, the brand mark, and the ticket stub when a game has no colour of its own; text on it is `on-primary`. Colour on the site comes only from the games.
 - Each game owns one game colour and uses it for its card band, its ticket stub and its stage fills:
 
   | Game | Colour token |
@@ -34,7 +34,7 @@ The site name is a placeholder until a real name is picked. The mark (an admit-o
 - Text on any game colour or on `ticket` is always `on-fill`, which stays dark in both themes. Never put white text on a game colour.
 - Game colours are fills, never text colours: on `surface` they fall below 3:1. Always outline a fill with `edge`.
 - `success` and `danger` mark outcomes in text (a perfect stop, a wrong tap). They differ by hue only, so always pair them with a word or a glyph (✓, ✕, "Too early!").
-- Keyboard focus is a 3px solid `focus` ring with a 2px offset on every interactive element.
+- Keyboard focus is a 3px solid `focus` ring (`ink`) with a 2px offset on every interactive element.
 - Light is the default theme; dark follows the phone's setting. Both are designed: game colours and `on-fill` are identical in both, the neutrals flip.
 
 ## Type
@@ -98,5 +98,5 @@ Multiplayer games use the same shell plus shared multiplayer parts, so players l
 ## Iconography
 
 - There is no icon set. Controls are labelled with words; the only glyphs are ✓ ✕ ~ in attempt tiles and → on Play next.
-- The brand mark is the `BrandMark` ticket, drawn in `ticket` with an `edge` outline. It is a placeholder that will be redrawn with the real name.
+- The brand mark is the `BrandMark` ticket, drawn in `primary` with an `edge` outline. It is a placeholder that will be redrawn with the real name.
 - Game cards show a **score** in the game's units on their colour band (0.04s, 243ms, Lv 12) instead of a picture or emoji: the player's own result once they have one, otherwise an example clearly labelled "Example".
