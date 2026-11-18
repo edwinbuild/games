@@ -163,7 +163,7 @@ const TILE_GLYPH: Record<Attempt, string> = { hit: '✓', near: '~', miss: '✕'
 const TILE_WORD: Record<Attempt, string> = { hit: 'close', near: 'near', miss: 'far off', empty: 'not played' }
 export function AttemptTiles({ attempts }: { attempts: Attempt[] }) {
   return (
-    <span className="qg-tiles" role="img" aria-label={attempts.map((a) => TILE_WORD[a]).join(', ')}>
+    <span className={cx('qg-tiles', attempts.length > 6 && 'qg-tiles--compact')} role="img" aria-label={attempts.map((a) => TILE_WORD[a]).join(', ')}>
       {attempts.map((a, i) => (
         <span key={i} className={`qg-tile qg-tile--${a}`}>{TILE_GLYPH[a]}</span>
       ))}

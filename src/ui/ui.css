@@ -55,7 +55,9 @@
 .qg-score--accent .qg-score-value { color: var(--qg-accent, var(--ink)); -webkit-text-stroke: 0; }
 .qg-score--hidden .qg-score-value { color: var(--ink-muted); opacity: 0.5; }
 
-.qg-tiles { display: inline-flex; gap: var(--space-1); }
+.qg-tiles { display: inline-flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-1); max-width: 100%; }
+/* More than six attempts: smaller tiles so a row of ten fits a phone. */
+.qg-tiles--compact .qg-tile { width: 20px; height: 20px; font-size: 11px; border-radius: 4px; }
 .qg-tile {
   width: 28px; height: 28px; border-radius: var(--radius-sm); display: grid; place-items: center;
   font: 800 14px/1 var(--font-body); border: var(--border-edge) solid var(--edge);

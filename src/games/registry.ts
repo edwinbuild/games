@@ -187,6 +187,20 @@ export const GAMES: GameMeta[] = [
     sample: '9.4 s',
     players: 'same-phone-2',
   },
+  {
+    slug: 'angle-eye',
+    title: 'Angle Eye',
+    emoji: '📐',
+    instructions: 'Ten quick rounds: set angles, find middles and centres, double lines. By eye only.',
+    tagline: 'How good is your eye? Judge angles, middles and centres in ten quick rounds.',
+    howTo: [
+      'Each round asks for one thing by eye: make an angle of a given size, mark the exact middle of a line, extend a line to twice its length, or mark the centre of a circle. Drag the handle (or use the arrow keys) and lock in.',
+      'After each round the true answer appears in green with how far off you were. Each round scores up to 10, for a total out of 100. Send the link to a friend and they get the exact same ten rounds.',
+    ],
+    daily: false,
+    color: 'periwinkle',
+    sample: '82/100',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

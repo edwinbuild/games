@@ -40,7 +40,7 @@ async function waitForServer() {
         await page.goto(B + p)
         await page.waitForSelector('.qg-topbar', { timeout: 10000 }).catch(() => errors.push('no top bar'))
         await page.waitForTimeout(150)
-        const over = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
+        const over = await page.evaluate((w) => document.documentElement.scrollWidth - w, width)
         if (over > 1) errors.push(`horizontal overflow ${over}px`)
         if (errors.length) failures.push(`${p} @${width}: ${errors.join('; ')}`)
       }
