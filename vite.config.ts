@@ -1,7 +1,7 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { readdirSync, statSync } from 'node:fs'
+import { existsSync, readdirSync, statSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 // HTML pages are generated into site/ by scripts/pages.ts:
@@ -9,7 +9,8 @@ import { resolve } from 'node:path'
 const here = import.meta.dirname
 const siteDir = resolve(here, 'site')
 const input: Record<string, string> = {}
-for (const entry of readdirSync(siteDir)) {
+// site/ only exists after `npm run pages`; vitest loads this config without it.
+for (const entry of existsSync(siteDir) ? readdirSync(siteDir) : []) {
   const full = resolve(siteDir, entry)
   if (entry === 'index.html') input.home = full
   else if (statSync(full).isDirectory()) input[entry] = resolve(full, 'index.html')

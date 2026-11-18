@@ -8,6 +8,11 @@ import { GAMES, type GameMeta } from '../src/games/registry.ts'
 import { SITE } from '../src/site.ts'
 
 const root = resolve(import.meta.dirname, '..')
+// The site's public address: SITE_URL if set, else Vercel's production domain (set during
+// Vercel builds), else the placeholder in src/site.ts.
+const BASE_URL =
+  process.env.SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : SITE.url)
 const site = resolve(root, 'site')
 
 const esc = (s: string) =>
@@ -22,8 +27,8 @@ function page(opts: {
   bodyAttrs?: string
   body: string
 }) {
-  const url = SITE.url + opts.path
-  const image = SITE.url + opts.image
+  const url = BASE_URL + opts.path
+  const image = BASE_URL + opts.image
   return `<!doctype html>
 <html lang="en">
   <head>
@@ -105,7 +110,7 @@ for (const g of GAMES) {
 const urls = ['/', ...GAMES.map((g) => `/${g.slug}/`)]
 writeFileSync(
   resolve(root, 'public/sitemap.xml'),
-  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${SITE.url}${u}</loc></url>`).join('\n')}\n</urlset>\n`,
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${BASE_URL}${u}</loc></url>`).join('\n')}\n</urlset>\n`,
 )
-writeFileSync(resolve(root, 'public/robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${SITE.url}/sitemap.xml\n`)
+writeFileSync(resolve(root, 'public/robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${BASE_URL}/sitemap.xml\n`)
 console.log(`Generated ${GAMES.length + 1} pages in site/`)
