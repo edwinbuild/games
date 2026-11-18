@@ -40,9 +40,9 @@ Every colour, font, size, radius and shadow is set in `design-system/tokens.json
 | Game | Type |
 |---|---|
 | Blind Timer | Daily: 3 tries at one target time a day, plus practice |
-| Pitch Match | Daily: 3 tones a day |
-| Luckiest Person | Daily: one roll a day |
-| Reaction Chain | Score: average reaction over 5 rounds |
+| Pitch Match | Daily: 3 tones a day, plus practice |
+| Luckiest Person | Daily: pick one of five face-down cards, the same five for everyone |
+| Reaction Chain | Score: average reaction over 5 rounds (taps under 100 ms count as guesses) |
 | Odd One Out | Score: levels cleared in 60 s |
 | Memory Path | Score: longest path repeated |
 
