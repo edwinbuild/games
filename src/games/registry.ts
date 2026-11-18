@@ -130,6 +130,20 @@ export const GAMES: GameMeta[] = [
     sample: '3–1',
     players: 'same-phone-2',
   },
+  {
+    slug: 'this-or-that',
+    title: 'This or That',
+    emoji: '🔀',
+    instructions: 'Pick your answer, then guess how today’s players split.',
+    tagline: 'One question a day. Pick a side, then guess how everyone else picked.',
+    howTo: [
+      'Every day there is one two-way question, the same for everyone, like “Window seat or aisle seat?”. Pick your answer, then guess what share of today’s players picked the first option.',
+      'Lock in to see the real split so far. Your score is how close your guess was: within 3% is a great read of the crowd. One vote a day; the split keeps moving as more people play.',
+    ],
+    daily: true,
+    color: 'aqua',
+    sample: '4% off',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {
