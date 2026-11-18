@@ -15,6 +15,19 @@ export type GameMeta = {
   color: string
   /** A typical score in the game's own units, shown on its card. */
   sample: string
+  /** Who plays: one person, several on one phone, or several online. Defaults to 1. */
+  players?: 1 | 'same-phone-2' | 'same-phone-3' | 'online-2' | 'online-2-8'
+}
+
+/** Short label for multiplayer games ("2 players", "Online · 2"), or null for solo games. */
+export function playersLabel(g: GameMeta): string | null {
+  switch (g.players) {
+    case 'same-phone-2': return '2 players'
+    case 'same-phone-3': return '3 players'
+    case 'online-2': return 'Online · 2'
+    case 'online-2-8': return 'Online · 2–8'
+    default: return null
+  }
 }
 
 export const GAMES: GameMeta[] = [

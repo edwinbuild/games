@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { GAMES, type GameMeta } from '../games/registry'
+import { GAMES, playersLabel, type GameMeta } from '../games/registry'
 import { SITE } from '../site'
 import { formatCount, SHOW_FROM, useRecentPlays } from '../shell/live'
 import { SiteFooter } from '../shell/SiteFooter'
@@ -43,13 +43,16 @@ function Card({ g }: { g: GameMeta }) {
         status={st.text}
         done={st.done}
         transitionName={g.slug}
+        tag={playersLabel(g) ?? undefined}
       />
     </li>
   )
 }
 
 function Home() {
-  const daily = GAMES.filter((g) => g.daily)
+  const solo = (g: GameMeta) => !g.players || g.players === 1
+  const daily = GAMES.filter((g) => g.daily && solo(g))
+  const friends = GAMES.filter((g) => !solo(g))
   const played = daily.filter((g) => todaysDaily(g.slug) !== undefined)
   // Unplayed daily games first, in their usual order; played ones after.
   const ordered = [...daily.filter((g) => !played.includes(g)), ...played]
@@ -84,8 +87,15 @@ function Home() {
 
       <section aria-labelledby="any-title">
         <h2 id="any-title" className="section-title card-title">Play any time</h2>
-        <ul className="cards">{GAMES.filter((g) => !g.daily).map((g) => <Card key={g.slug} g={g} />)}</ul>
+        <ul className="cards">{GAMES.filter((g) => !g.daily && solo(g)).map((g) => <Card key={g.slug} g={g} />)}</ul>
       </section>
+
+      {friends.length > 0 && (
+        <section aria-labelledby="friends-title">
+          <h2 id="friends-title" className="section-title card-title">Play with friends</h2>
+          <ul className="cards">{friends.map((g) => <Card key={g.slug} g={g} />)}</ul>
+        </section>
+      )}
       <SiteFooter />
     </div>
   )

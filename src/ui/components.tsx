@@ -360,8 +360,10 @@ export type GameCardProps = {
   done?: boolean
   /** Names the band and title for a page transition into the game (matching names on the game page). */
   transitionName?: string
+  /** A tag for multiplayer games, shown on the band: "2 players", "Online · 2–8". */
+  tag?: string
 }
-export function GameCard({ title, tagline, href, color, sample, sampleLabel, daily, status, done, transitionName }: GameCardProps) {
+export function GameCard({ title, tagline, href, color, sample, sampleLabel, daily, status, done, transitionName, tag }: GameCardProps) {
   return (
     <a className="qg-card" href={href} style={fill(color)}>
       <span className="qg-card-band" style={transitionName ? { viewTransitionName: `band-${transitionName}` } : undefined}>
@@ -369,7 +371,7 @@ export function GameCard({ title, tagline, href, color, sample, sampleLabel, dai
           {sampleLabel && <span className="qg-card-sample-label">{sampleLabel}</span>}
           <span className="qg-card-sample">{sample}</span>
         </span>
-        {daily && <Pill tone="neutral">Daily</Pill>}
+        {(daily || tag) && <Pill tone="neutral">{tag ?? 'Daily'}</Pill>}
       </span>
       <span className="qg-card-body">
         <span className="qg-card-title" style={transitionName ? { viewTransitionName: `title-${transitionName}` } : undefined}>{title}</span>
