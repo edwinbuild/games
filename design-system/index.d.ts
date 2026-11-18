@@ -1,0 +1,93 @@
+import type { ReactNode, CSSProperties, ButtonHTMLAttributes, HTMLAttributes } from 'react'
+
+/** A chunky key. Primary keys fill with `ticket` or a game colour; text is always `on-fill`. */
+export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color'> {
+  variant?: 'primary' | 'secondary' | 'ghost' | 'whatsapp' | 'x'
+  size?: 'md' | 'lg'
+  block?: boolean
+  /** Primary fill: a colour token name such as "mint". Default `ticket`. */
+  color?: string
+  /** Renders an <a> instead of a <button>. */
+  href?: string
+  target?: string
+  rel?: string
+  children: ReactNode
+}
+export declare function Button(props: ButtonProps): JSX.Element
+
+/** Small uppercase label: Daily, New. */
+export interface PillProps { tone?: 'ticket' | 'neutral'; color?: string; children: ReactNode }
+export declare function Pill(props: PillProps): JSX.Element
+
+/** The placeholder admit-one ticket mark. */
+export interface BrandMarkProps { size?: number }
+export declare function BrandMark(props: BrandMarkProps): JSX.Element
+
+/** Sticky header: brand mark and site name on the left, Daily pill or custom content on the right. */
+export interface TopBarProps { siteName: string; href?: string; daily?: boolean; right?: ReactNode }
+export declare function TopBar(props: TopBarProps): JSX.Element
+
+/** The outlined surface a game is played on. `color` fills it with a game colour. */
+export interface StageProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
+  children: ReactNode
+  color?: string
+  flush?: boolean
+  className?: string
+  style?: CSSProperties
+}
+export declare function Stage(props: StageProps): JSX.Element
+
+/** A scoreboard number with an optional eyebrow label. */
+export interface ScoreProps {
+  value: ReactNode
+  label?: ReactNode
+  size?: 'xl' | 'md'
+  tone?: 'default' | 'accent' | 'hidden'
+  accentColor?: string
+}
+export declare function Score(props: ScoreProps): JSX.Element
+
+/** A row of attempt results: hit (✓), near (~), miss (✕) or empty. */
+export type Attempt = 'hit' | 'near' | 'miss' | 'empty'
+export interface AttemptTilesProps { attempts: Attempt[] }
+export declare function AttemptTiles(props: AttemptTilesProps): JSX.Element
+
+/** Ticking countdown to local midnight, for daily games. */
+export interface CountdownProps { label?: string; onMidnight?: () => void }
+export declare function Countdown(props: CountdownProps): JSX.Element
+
+/** Share, WhatsApp, X and Copy keys for a result. */
+export type ShareVia = 'native' | 'whatsapp' | 'x' | 'copy'
+export interface ShareButtonsProps { text: string; url: string; onShare?: (via: ShareVia) => void }
+export declare function ShareButtons(props: ShareButtonsProps): JSX.Element
+
+/** The perforated result ticket every game ends on. */
+export interface ResultTicketProps {
+  game: string
+  stamp?: string
+  color?: string
+  headline: ReactNode
+  detail?: ReactNode
+  shareText: string
+  url: string
+  onShare?: (via: ShareVia) => void
+  children?: ReactNode
+}
+export declare function ResultTicket(props: ResultTicketProps): JSX.Element
+
+/** Link to one other game, shown at the bottom of a ticket. */
+export interface PlayNextProps { title: string; href: string; color: string; sample: string; onClick?: () => void }
+export declare function PlayNext(props: PlayNextProps): JSX.Element
+
+/** A game on the home page: colour band with a sample score, name, tagline and status. */
+export interface GameCardProps {
+  title: string
+  tagline: string
+  href: string
+  color: string
+  sample: string
+  daily?: boolean
+  status?: string
+  done?: boolean
+}
+export declare function GameCard(props: GameCardProps): JSX.Element

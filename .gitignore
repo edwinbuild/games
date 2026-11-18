@@ -3,3 +3,4 @@ dist
 /site
 *.tsbuildinfo
 test-results
+design-system/out

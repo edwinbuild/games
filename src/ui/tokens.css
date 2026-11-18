@@ -1,0 +1,158 @@
+/* Quick Games: generated from design-system/tokens.json by design-system/build.ts. Do not edit. */
+:root {
+  --canvas: #eceef5;
+  --surface: #ffffff;
+  --surface-sunken: #e1e4ef;
+  --ink: #171a35;
+  --ink-muted: #555b7d;
+  --line: #c9cde0;
+  --drop: #171a35;
+  --edge: var(--ink);
+  --on-fill: #171a35;
+  --ticket: #ffc83d;
+  --tangerine: #ff8a3d;
+  --mint: #3ed598;
+  --grape: #b893ff;
+  --sky: #5bbcff;
+  --bubblegum: #ff86c0;
+  --lagoon: #2fcfc0;
+  --chili: #ff6a5c;
+  --success: #0b7a55;
+  --danger: #c42d22;
+  --focus: #2f5bea;
+  --whatsapp: #25d366;
+  --shadow-key: 0 4px 0 0 #171a35;
+  --shadow-key-pressed: 0 0 0 0 #171a35;
+  --shadow-card: 0 6px 0 0 #171a35;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --canvas: #121428;
+    --surface: #1c1f3b;
+    --surface-sunken: #262a4c;
+    --ink: #f1f2fa;
+    --ink-muted: #a6abcf;
+    --line: #3a3f68;
+    --drop: #7d82ab;
+    --edge: var(--ink);
+    --success: #4fe0a5;
+    --danger: #ff8a80;
+    --focus: #8fb0ff;
+    --shadow-key: 0 4px 0 0 #7d82ab;
+    --shadow-card: 0 6px 0 0 #7d82ab;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --canvas: #121428;
+  --surface: #1c1f3b;
+  --surface-sunken: #262a4c;
+  --ink: #f1f2fa;
+  --ink-muted: #a6abcf;
+  --line: #3a3f68;
+  --drop: #7d82ab;
+  --edge: var(--ink);
+  --success: #4fe0a5;
+  --danger: #ff8a80;
+  --focus: #8fb0ff;
+  --shadow-key: 0 4px 0 0 #7d82ab;
+  --shadow-card: 0 6px 0 0 #7d82ab;
+  color-scheme: dark;
+}
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+  --duration-press: 60ms;
+  --duration-reveal: 240ms;
+  --border-edge: 2px;
+  --font-display: "Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
+  --font-body: Figtree, "Noto Sans Malayalam", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+.site-title {
+  font-family: var(--font-display);
+  font-size: 44px;
+  line-height: 44px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.game-title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  line-height: 36px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.result {
+  font-family: var(--font-display);
+  font-size: 30px;
+  line-height: 34px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.card-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 700;
+}
+.score-xl {
+  font-family: var(--font-mono);
+  font-size: 64px;
+  line-height: 68px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+.score {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 700;
+}
+.share {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+.body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+}
+.body-strong {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 700;
+}
+.small {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+.key {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 800;
+}
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}

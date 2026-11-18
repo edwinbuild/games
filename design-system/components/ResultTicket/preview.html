@@ -1,0 +1,15 @@
+<!-- @dsCard group="Results" height=620 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>preview</title><style>body{margin:0;padding:16px;background:var(--canvas);color:var(--ink);font-family:var(--font-body)}.col{max-width:560px;display:grid;gap:12px}.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}</style></head>
+<body>
+<div id="root" class="col"></div>
+<script>
+  var Q = window.QuickGames, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(Q.ResultTicket, {game:'Blind Timer', stamp:'#12', color:'tangerine', headline:'Late by 0.04s', detail:'Target 7.30s · 3 tries · 5 day streak', shareText:'⏱️ Blind Timer #12\nTarget 7.30s\n🟥🟨🟩 Late by 0.04s', url:'https://example.com/blind-timer/'},
+    h(Q.Countdown, null),
+    h(Q.Button, {variant:'ghost'}, 'Practice with random targets'),
+    h(Q.PlayNext, {title:'Odd One Out', href:'#', color:'grape', sample:'Lv 12'})));
+</script>
+</body>
+</html>
