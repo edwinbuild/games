@@ -115,6 +115,21 @@ export const GAMES: GameMeta[] = [
     color: 'lagoon',
     sample: '87',
   },
+  {
+    slug: 'tap-duel',
+    title: 'Tap Duel',
+    emoji: '🤝',
+    instructions: 'Two players, one phone. Tap your side the moment it turns green. First to three.',
+    tagline: 'Two players, one phone: first to tap after the signal wins the round.',
+    howTo: [
+      'Put the phone flat between you; each player gets one half of the screen. Both halves say Wait, then turn green at the same moment. The first player to tap their own half wins the round.',
+      'Tapping before it turns green loses the round. If you both tap within 10 milliseconds it is a tie and the round is replayed. First to three rounds wins. On a computer, use the A and L keys.',
+    ],
+    daily: false,
+    color: 'coral',
+    sample: '3–1',
+    players: 'same-phone-2',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

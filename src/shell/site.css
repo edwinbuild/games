@@ -120,6 +120,9 @@ button { font: inherit; }
 @media (orientation: landscape) and (max-height: 520px) and (min-width: 640px) {
   .page--game { max-width: none; }
   .game-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-5); align-items: start; }
+  /* Until a result exists the side column is empty there, so the game takes the full width. */
+  .game-layout:not(:has(.qg-ticket)) { grid-template-columns: minmax(0, 1fr); }
+  .qg-split { min-height: 72dvh; }
   .game-head { margin-bottom: var(--space-3); }
   .game-head p { display: none; }
 }
