@@ -1,0 +1,55 @@
+# Quick Games
+
+Small, original browser games: under 2 minutes, phone first, no sign-up, each ending on a shareable result card.
+
+## Run it
+
+```bash
+npm install
+npm run dev        # http://localhost:5173
+npm test           # unit tests (daily seed, streaks, storage)
+npm run build      # static site in dist/
+npm run og         # regenerate link-preview images in public/og/ (needs Playwright)
+```
+
+Needs Node 22.18+ (scripts are TypeScript run directly by Node).
+
+## Deploy (Cloudflare Pages)
+
+Connect the GitHub repo in Cloudflare Pages with:
+
+- Build command: `npm run build`
+- Output directory: `dist`
+- Environment variable: `NODE_VERSION=22`
+
+Turn on Cloudflare Web Analytics for the site in the dashboard (no code needed).
+
+Before launch, edit `src/site.ts`: the site name (a placeholder for now), the real domain in `url`, and the optional `supportUrl` (Buy me a coffee). Then run `npm run og` again.
+
+## How it's built
+
+- `src/games/registry.ts`: the list of games (title, instructions, how-to-play text, colour, daily or not).
+- `scripts/pages.ts` generates one static HTML page per game into `site/` (its own title, description, link preview and a "How to play" section for Google). Vite builds those pages; each game's code loads only on its own page.
+- `src/shell/`: the shared game shell every game uses:
+  - `GameShell`: header, title and the one line of instructions
+  - `ResultCard`: result, spoiler-free share text, Share / WhatsApp / X / Copy buttons, replay, countdown to the next daily puzzle, "Play next", supporter link
+  - `daily.ts`: same puzzle for everyone on the same date (seeded random)
+  - `stats.ts`: plays, best scores and daily streaks in browser storage (no accounts)
+  - `track.ts`: `start` / `finish` / `share` / `play_next` events. They are sent to `VITE_EVENTS_ENDPOINT` when set (e.g. a small Worker + D1 later) and are otherwise only logged in dev.
+
+## Games
+
+| Game | Type |
+|---|---|
+| Blind Timer | Daily: 3 tries at one target time a day, plus practice |
+| Pitch Match | Daily: 3 tones a day |
+| Luckiest Person | Daily: one roll a day |
+| Reaction Chain | Score: average reaction over 5 rounds |
+| Odd One Out | Score: levels cleared in 60 s |
+| Memory Path | Score: longest path repeated |
+
+## Adding a game
+
+1. Add an entry to `GAMES` in `src/games/registry.ts`.
+2. Create `src/games/<slug>.tsx` with a default-exported component. Use `ResultCard` at the end, `dailyRandom` for daily puzzles, and `recordPlay` / `recordDaily` for stats.
+3. Run `npm run og`, then `npm run dev`.

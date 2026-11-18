@@ -1,0 +1,61 @@
+// Per-game stats kept in the browser: plays, best score, daily streaks.
+import { dateKey, previousDateKey } from './daily'
+import { load, save } from './storage'
+
+export type Stats = {
+  plays: number
+  best: number | null
+  /** For daily games: the last date a daily result was recorded. */
+  lastDaily: string | null
+  streak: number
+  maxStreak: number
+  /** Daily results by date, e.g. { "2027-01-04": 0.04 }. */
+  daily: Record<string, number>
+}
+
+const empty = (): Stats => ({ plays: 0, best: null, lastDaily: null, streak: 0, maxStreak: 0, daily: {} })
+
+export function getStats(game: string): Stats {
+  return { ...empty(), ...load<Partial<Stats>>(`stats:${game}`, {}) }
+}
+
+/** Record a finished play. `better` decides whether a score beats the best. */
+export function recordPlay(
+  game: string,
+  score: number,
+  better: (a: number, b: number) => boolean = (a, b) => a > b,
+): Stats {
+  const s = getStats(game)
+  s.plays += 1
+  if (s.best == null || better(score, s.best)) s.best = score
+  save(`stats:${game}`, s)
+  return s
+}
+
+/** Record today's daily result and advance the streak (once per day). */
+export function recordDaily(game: string, score: number, now = new Date()): Stats {
+  const s = getStats(game)
+  const today = dateKey(now)
+  if (s.lastDaily !== today) {
+    s.streak = s.lastDaily === previousDateKey(now) ? s.streak + 1 : 1
+    s.maxStreak = Math.max(s.maxStreak, s.streak)
+    s.lastDaily = today
+  }
+  s.daily[today] = score
+  save(`stats:${game}`, s)
+  return s
+}
+
+export function todaysDaily(game: string, now = new Date()): number | undefined {
+  return getStats(game).daily[dateKey(now)]
+}
+
+/** Free-form per-game state for today (e.g. attempts used). Resets each day. */
+export function loadToday<T>(game: string, fallback: T, now = new Date()): T {
+  const v = load<{ date: string; value: T } | null>(`today:${game}`, null)
+  return v && v.date === dateKey(now) ? v.value : fallback
+}
+
+export function saveToday(game: string, value: unknown, now = new Date()): void {
+  save(`today:${game}`, { date: dateKey(now), value })
+}
