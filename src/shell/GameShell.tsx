@@ -5,6 +5,7 @@ import { ChallengeBanner, TopBar } from '../ui'
 import { displayName, myId, readChallenge } from './challenge'
 import { dateKey, parseDateKey } from './daily'
 import { GameInfo } from './GameInfo'
+import { formatCount, SHOW_FROM, useRecentPlays } from './live'
 import { AsideContext } from './layout'
 import { SiteFooter } from './SiteFooter'
 import { SoundToggle } from './SoundToggle'
@@ -36,6 +37,8 @@ export function GameShell({ game, children }: { game: GameMeta; children: ReactN
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
+  const recent = useRecentPlays()
+  const playsHere = recent?.[game.slug] ?? 0
   const challenge = readChallenge(game.slug)
   const me = myId()
   const others = challenge ? challenge.r.filter((r) => r.i !== me) : []
@@ -62,6 +65,7 @@ export function GameShell({ game, children }: { game: GameMeta; children: ReactN
             <header className="game-head">
               <h1 className="game-title" style={{ viewTransitionName: `title-${game.slug}` }}>{game.title}</h1>
               <p className="body">{game.instructions}</p>
+              {playsHere >= SHOW_FROM && <p className="small muted live-count">{formatCount(playsHere)} games finished in the last 24 hours</p>}
             </header>
             {banner && <ChallengeBanner text={banner} color={game.color} />}
             {children}

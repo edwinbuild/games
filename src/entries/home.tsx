@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { GAMES, type GameMeta } from '../games/registry'
 import { SITE } from '../site'
+import { formatCount, SHOW_FROM, useRecentPlays } from '../shell/live'
 import { SiteFooter } from '../shell/SiteFooter'
 import { getStats, todaysDaily, todaysDailyText } from '../shell/stats'
 import { Countdown, GameCard, TopBar } from '../ui'
@@ -53,6 +54,8 @@ function Home() {
   // Unplayed daily games first, in their usual order; played ones after.
   const ordered = [...daily.filter((g) => !played.includes(g)), ...played]
   const left = daily.length - played.length
+  const recent = useRecentPlays()
+  const total = recent ? Object.values(recent).reduce((a, b) => a + b, 0) : 0
   const today = new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })
 
   return (
@@ -70,6 +73,7 @@ function Home() {
                 : `${left} of ${daily.length} daily games left today.`}
           </p>
           <Countdown label="New daily games in" />
+          {total >= SHOW_FROM && <p className="small muted live-count">{formatCount(total)} games finished here in the last 24 hours</p>}
         </div>
       </header>
 

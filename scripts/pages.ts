@@ -134,6 +134,16 @@ const aboutPage = () =>
       <p>Sound is off until you turn it on with the switch at the top of each game, and the setting is remembered. Pitch Match always plays its tones, because listening is the game.</p>`,
   })
 
+const statsPage = () =>
+  page({
+    title: `Stats | ${SITE.name}`,
+    description: 'Private stats.',
+    path: '/stats/',
+    image: '/og/home.png',
+    entry: '../../src/entries/stats.tsx',
+    body: `    <div id="root"></div>`,
+  }).replace('<meta name="description"', '<meta name="robots" content="noindex, nofollow" />\n    <meta name="description"')
+
 const notFoundPage = () =>
   staticPage({
     title: 'Page not found',
@@ -150,6 +160,8 @@ writeFileSync(resolve(site, 'index.html'), homePage())
 writeFileSync(resolve(site, '404.html'), notFoundPage())
 mkdirSync(resolve(site, 'about'), { recursive: true })
 writeFileSync(resolve(site, 'about', 'index.html'), aboutPage())
+mkdirSync(resolve(site, 'stats'), { recursive: true })
+writeFileSync(resolve(site, 'stats', 'index.html'), statsPage())
 for (const g of GAMES) {
   mkdirSync(resolve(site, g.slug), { recursive: true })
   writeFileSync(resolve(site, g.slug, 'index.html'), gamePage(g))
@@ -160,5 +172,5 @@ writeFileSync(
   resolve(root, 'public/sitemap.xml'),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${BASE_URL}${u}</loc></url>`).join('\n')}\n</urlset>\n`,
 )
-writeFileSync(resolve(root, 'public/robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${BASE_URL}/sitemap.xml\n`)
+writeFileSync(resolve(root, 'public/robots.txt'), `User-agent: *\nAllow: /\nDisallow: /stats/\nSitemap: ${BASE_URL}/sitemap.xml\n`)
 console.log(`Generated ${GAMES.length + 3} pages in site/`)
