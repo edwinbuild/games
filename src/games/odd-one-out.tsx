@@ -6,31 +6,12 @@ import { seededRandom } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { getStats, recordPlay } from '../shell/stats'
 import { Score, Stage } from '../ui'
+import { levelSetup } from './shared/odd-grid'
+import { OddGrid } from './shared/OddGrid'
 
 const game = getGame('odd-one-out')
 const TIME = 60
 const WRONG_PENALTY = 3
-
-// Pairs ordered from easy to hard to tell apart. Each level draws from a window that
-// slides down the list, so the grid grows and the difference gets subtler together.
-const PAIRS: [string, string][] = [
-  // different shape and colour
-  ['🍎', '🍌'], ['🐶', '🐱'], ['⚽', '🏀'], ['☀️', '🌧️'], ['🚗', '🚲'], ['🌲', '🌵'], ['🍕', '🍔'], ['🐟', '🐦'],
-  // same family, different colour or shape
-  ['🍎', '🍅'], ['🍊', '🍑'], ['🐶', '🐕'], ['🐱', '🐈'], ['🌕', '🌝'], ['🐢', '🦎'], ['🍋', '🍌'], ['🚗', '🚕'], ['🌻', '🌼'], ['❤️', '🧡'],
-  // faces and small marks
-  ['😀', '😃'], ['🙂', '🙃'], ['😐', '😑'], ['😄', '😆'], ['😺', '😸'], ['🌑', '🌚'], ['⭐', '🌟'], ['🕐', '🕑'], ['🔴', '🟠'], ['💙', '💜'], ['😮', '😯'], ['🌘', '🌒'],
-  // nearly the same
-  ['😊', '☺️'], ['😗', '😙'], ['🕒', '🕓'], ['😁', '😀'], ['😚', '😙'], ['🙁', '☹️'], ['😶', '😐'], ['🕐', '🕜'], ['🟢', '🟩'], ['😌', '😊'],
-]
-
-function levelSetup(level: number, rng: () => number) {
-  const size = Math.min(3 + Math.floor((level - 1) / 2), 8) // 3×3 → 8×8
-  const start = Math.min(Math.floor((level - 1) * 2.2), PAIRS.length - 5)
-  const [a, b] = PAIRS[start + Math.floor(rng() * 5)]
-  const flip = rng() < 0.5
-  return { size, common: flip ? a : b, odd: flip ? b : a, oddIndex: Math.floor(rng() * size * size) }
-}
 
 export default function OddOneOut() {
   // A challenge replays the same grids; otherwise every game gets a new seed.
@@ -91,21 +72,7 @@ export default function OddOneOut() {
 
       {!done && (
         <Stage flush>
-          <div key={level} className="grid grid-in" style={{ gridTemplateColumns: `repeat(${setup.size}, 1fr)`, gap: setup.size > 5 ? 4 : 'var(--space-2)' }}>
-            {Array.from({ length: setup.size * setup.size }, (_, i) => (
-              <button
-                key={`${level}-${i}`}
-                className="qg-cell"
-                data-state={shake === i ? 'wrong' : undefined}
-                onPointerDown={() => pick(i)}
-                onClick={(e) => e.detail === 0 && pick(i)}
-                aria-label={`Square ${i + 1}`}
-                style={{ fontSize: `min(${Math.floor((40 / setup.size) * 1.6)}vw, ${Math.floor(220 / setup.size)}px)`, borderRadius: setup.size > 5 ? 'var(--radius-sm)' : undefined }}
-              >
-                {i === setup.oddIndex ? setup.odd : setup.common}
-              </button>
-            ))}
-          </div>
+          <OddGrid setup={setup} level={level} shake={shake} onPick={pick} />
         </Stage>
       )}
       {shake !== null && <p className="small center" style={{ color: 'var(--danger)', margin: 'var(--space-2) 0 0' }}>✕ Wrong one, −{WRONG_PENALTY}s</p>}

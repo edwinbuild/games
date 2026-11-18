@@ -230,6 +230,21 @@ export const GAMES: GameMeta[] = [
     color: 'pistachio',
     sample: '7 moves',
   },
+  {
+    slug: 'spot-race',
+    title: 'Spot Race Online',
+    emoji: '👀',
+    instructions: 'Race up to seven friends, each on your own phone, through the same odd-one-out grids. 60 seconds.',
+    tagline: 'Up to eight friends, one minute, the same grids. Who spots the odd one out fastest?',
+    howTo: [
+      'Create a room and send the link (or the five-letter code). Two to eight players can join. When everyone is ready, the host starts the race and every phone gets the same sequence of grids.',
+      'Tap the one emoji that is different to go to the next level; a wrong tap costs 3 seconds. Everyone sees each other’s level live. After 60 seconds the most levels wins; on a tie, whoever got there first. A player who leaves keeps their last level.',
+    ],
+    daily: false,
+    color: 'grape',
+    sample: '2nd of 5',
+    players: 'online-2-8',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

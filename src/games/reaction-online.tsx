@@ -4,41 +4,17 @@ import { makeDelays, roundWinner, TARGET, type Result } from './reaction-online/
 import { myName, setMyName } from '../shell/challenge'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
-import { cleanCode, isRoomCode, newRoomCode, useRoom, type Member } from '../shell/room'
+import { goToRoom, roomFromUrl, RoomLanding, RoomNotice } from '../shell/online'
+import { useRoom, type Member } from '../shell/room'
 import { Button, Lobby, PLAYERS, RoomCode, ScoreStrip, Stage, TextField } from '../ui'
 
 const game = getGame('reaction-online')
 const MAX = 2
 
-function roomFromUrl(): string | null {
-  const c = cleanCode(new URLSearchParams(location.search).get('room') ?? '')
-  return isRoomCode(c) ? c : null
-}
-function goToRoom(code: string) {
-  history.replaceState(null, '', `${location.pathname}?room=${code}`)
-}
-
 export default function ReactionOnline() {
   const [code, setCode] = useState<string | null>(roomFromUrl)
-  if (!code) return <Landing onRoom={(c) => { goToRoom(c); setCode(c) }} />
-  return <Room code={code} onLeave={() => { history.replaceState(null, '', location.pathname); setCode(null) }} />
-}
-
-function Landing({ onRoom }: { onRoom: (code: string) => void }) {
-  const [typed, setTyped] = useState('')
-  const valid = isRoomCode(cleanCode(typed))
-  return (
-    <Stage>
-      <div className="stack">
-        <p className="body" style={{ margin: 0 }}>Play a friend on their own phone. One of you makes a room and sends the link; the other joins.</p>
-        <Button size="lg" block color={game.color} onClick={() => onRoom(newRoomCode())} data-primary="click" hint="Space">Create a room</Button>
-        <form className="stack" onSubmit={(e) => { e.preventDefault(); if (valid) onRoom(cleanCode(typed)) }}>
-          <TextField id="room-code" label="Or join with a code" value={typed} onChange={(v) => setTyped(cleanCode(v))} placeholder="5 letters, e.g. K7MQ2" maxLength={5} />
-          <Button type="submit" variant="secondary" disabled={!valid}>Join room</Button>
-        </form>
-      </div>
-    </Stage>
-  )
+  if (!code) return <RoomLanding game={game} intro="Play a friend on their own phone. One of you makes a room and sends the link; the other joins." onRoom={(c) => { goToRoom(c); setCode(c) }} />
+  return <Room code={code} onLeave={() => { goToRoom(null); setCode(null) }} />
 }
 
 type Phase = 'lobby' | 'wait' | 'go' | 'sent' | 'done'
@@ -128,9 +104,9 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
     beginMatch(d)
   }
 
-  if (room.status === 'full') return <Notice text="That room already has two players. Ask your friend for a new link, or create your own room." onLeave={onLeave} />
-  if (room.status === 'started') return <Notice text="That match has already started. Wait for it to finish and ask for a new link, or create your own room." onLeave={onLeave} />
-  if (room.status === 'error') return <Notice text="Couldn’t connect to the room. Check your connection and try again." onLeave={onLeave} />
+  if (room.status === 'full') return <RoomNotice game={game} text="That room already has two players. Ask your friend for a new link, or create your own room." onLeave={onLeave} />
+  if (room.status === 'started') return <RoomNotice game={game} text="That match has already started. Wait for it to finish and ask for a new link, or create your own room." onLeave={onLeave} />
+  if (room.status === 'error') return <RoomNotice game={game} text="Couldn’t connect to the room. Check your connection and try again." onLeave={onLeave} />
 
   const both = room.members.length === MAX
   const allReady = both && room.members.every((m) => m.ready)
@@ -202,16 +178,5 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
         {!last && <kbd className="qg-kbd" aria-hidden="true">Space</kbd>}
       </Stage>
     </>
-  )
-}
-
-function Notice({ text, onLeave }: { text: string; onLeave: () => void }) {
-  return (
-    <Stage>
-      <div className="stack">
-        <p className="body-strong" style={{ margin: 0 }}>{text}</p>
-        <Button size="lg" block color={game.color} onClick={onLeave}>Create or join another room</Button>
-      </div>
-    </Stage>
   )
 }

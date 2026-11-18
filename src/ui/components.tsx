@@ -351,6 +351,10 @@ export const PLAYERS = [
   { color: 'aqua', name: 'Aqua', shape: 'square' },
   { color: 'lime', name: 'Lime', shape: 'triangle' },
   { color: 'orchid', name: 'Orchid', shape: 'diamond' },
+  { color: 'sky', name: 'Sky', shape: 'star' },
+  { color: 'sand', name: 'Sand', shape: 'hexagon' },
+  { color: 'peach', name: 'Peach', shape: 'plus' },
+  { color: 'periwinkle', name: 'Periwinkle', shape: 'pentagon' },
 ] as const
 
 function Shape({ shape }: { shape: (typeof PLAYERS)[number]['shape'] }) {
@@ -359,6 +363,10 @@ function Shape({ shape }: { shape: (typeof PLAYERS)[number]['shape'] }) {
     square: <rect x="2.5" y="2.5" width="11" height="11" rx="1.5" />,
     triangle: <path d="M8 2l6.5 11.5h-13z" />,
     diamond: <path d="M8 1.5l6.5 6.5-6.5 6.5-6.5-6.5z" />,
+    star: <path d="M8 1.2l2 4.3 4.7.5-3.5 3.2 1 4.6L8 11.4l-4.2 2.4 1-4.6-3.5-3.2 4.7-.5z" />,
+    hexagon: <path d="M8 1.5l5.6 3.25v6.5L8 14.5l-5.6-3.25v-6.5z" />,
+    plus: <path d="M6 2h4v4h4v4h-4v4H6v-4H2V6h4z" />,
+    pentagon: <path d="M8 1.5l6.5 4.7-2.5 7.8H4l-2.5-7.8z" />,
   }[shape]
   return (
     <svg className="qg-shape" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="var(--on-fill)">
@@ -455,13 +463,15 @@ export function Lobby({ players, max }: { players: LobbyPlayer[]; max: number })
     <ul className="qg-lobby" aria-label="Players in the room">
       {players.map((p, i) => (
         <li key={i} data-me={p.me || undefined}>
-          <PlayerChip player={i} name={p.me ? `${p.name || PLAYERS[i % 4].name} (you)` : p.name} />
+          <PlayerChip player={i} name={p.me ? `${p.name || PLAYERS[i % PLAYERS.length].name} (you)` : p.name} />
           <span className="qg-lobby-state">{p.host ? 'Host · ' : ''}{p.ready ? 'Ready ✓' : 'Not ready'}</span>
         </li>
       ))}
-      {Array.from({ length: Math.max(0, Math.min(max, 4) - players.length) }, (_, i) => (
-        <li key={`empty-${i}`} className="qg-lobby-empty">Waiting for a player…</li>
-      ))}
+      {max <= 4
+        ? Array.from({ length: Math.max(0, max - players.length) }, (_, i) => (
+            <li key={`empty-${i}`} className="qg-lobby-empty">Waiting for a player…</li>
+          ))
+        : players.length < max && <li className="qg-lobby-empty">Room for {max - players.length} more</li>}
     </ul>
   )
 }

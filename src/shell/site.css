@@ -240,3 +240,16 @@ button { font: inherit; }
 @keyframes fg-flip-b { 0% { transform: rotateX(0) } 50% { transform: rotateX(90deg) scale(0.92) } 100% { transform: rotateX(0) } }
 @keyframes fg-wave { 0% { background: var(--game); transform: scale(0.85) } 60% { transform: scale(1.06) } 100% { background: var(--surface); transform: none } }
 @media (prefers-reduced-motion: reduce) { .fg-tile, .fg-grid--done .fg-tile { animation: none !important; transition: none; } }
+
+/* Spot Race Online */
+.sr-count { animation: sr-pop 900ms var(--ease-out, ease-out) both; }
+@keyframes sr-pop { 0% { transform: scale(1.6); opacity: 0 } 30% { transform: scale(1); opacity: 1 } 100% { transform: scale(0.9); opacity: 0.6 } }
+.sr-ranking { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.sr-ranking li { display: grid; grid-template-columns: 3.2em 1fr auto; align-items: center; gap: var(--space-2); padding: var(--space-2); border-radius: var(--radius-md); animation: sr-row 360ms var(--ease-out, ease-out) both; }
+.sr-ranking li:nth-child(2) { animation-delay: 60ms } .sr-ranking li:nth-child(3) { animation-delay: 120ms } .sr-ranking li:nth-child(n+4) { animation-delay: 180ms }
+.sr-ranking li[data-me] { background: var(--surface-sunken); }
+.sr-ranking li > .qg-player { justify-self: start; min-width: 0; max-width: 100%; }
+.sr-place { font: 800 20px/1 var(--font-display); }
+.sr-level { font: 600 14px/1 var(--font-mono); white-space: nowrap; }
+@keyframes sr-row { from { transform: translateY(8px); opacity: 0 } to { transform: none; opacity: 1 } }
+@media (prefers-reduced-motion: reduce) { .sr-count, .sr-ranking li { animation: none; } }
