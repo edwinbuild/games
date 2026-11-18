@@ -245,6 +245,20 @@ export const GAMES: GameMeta[] = [
     sample: '2nd of 5',
     players: 'online-2-8',
   },
+  {
+    slug: 'stack-tower',
+    title: 'Stack Tower',
+    emoji: '🧱',
+    instructions: 'Tap to drop each sliding block onto the tower. Anything that overhangs is cut off.',
+    tagline: 'Drop sliding blocks into a tower. Overhangs get cut, perfect drops don’t. One tower a day.',
+    howTo: [
+      'A block slides back and forth above the tower. Tap (or press Space) to drop it. Whatever hangs over the block below is cut off, so the next block is narrower. Drop it almost exactly on top and it keeps its full width.',
+      'Every five blocks the slide gets faster. Miss the tower completely and the try is over. Everyone gets the same tower each day, with the same starting width and speeds. Try as many times as you like; your tallest tower counts.',
+    ],
+    daily: true,
+    color: 'chili',
+    sample: '23 blocks',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

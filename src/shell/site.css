@@ -253,3 +253,8 @@ button { font: inherit; }
 .sr-level { font: 600 14px/1 var(--font-mono); white-space: nowrap; }
 @keyframes sr-row { from { transform: translateY(8px); opacity: 0 } to { transform: none; opacity: 1 } }
 @media (prefers-reduced-motion: reduce) { .sr-count, .sr-ranking li { animation: none; } }
+
+/* Stack Tower */
+.st-stage { position: relative; width: 100%; max-width: 480px; margin-inline: auto; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; overflow: hidden; }
+.st-canvas { display: block; width: 100%; height: min(64dvh, 540px); }
+.st-kbd { position: absolute; left: 50%; top: 96px; transform: translateX(-50%); }
