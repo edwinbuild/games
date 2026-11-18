@@ -224,3 +224,19 @@ button { font: inherit; }
 .ae-handle { fill: var(--game); stroke: var(--ink); stroke-width: 0.6; }
 .ae-answer { fill: var(--success); }
 .ae-answer-line { stroke: var(--success); stroke-width: 0.8; stroke-dasharray: 1.5 1.5; }
+
+/* Flip Grid */
+.fg-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: clamp(6px, 1.6vw, 10px); width: min(100%, 400px); margin-inline: auto; perspective: 600px; }
+.fg-tile { aspect-ratio: 1; border-radius: var(--radius-md); border: var(--border-edge) solid var(--edge); background: var(--surface); padding: 0; cursor: pointer; transition: background-color 160ms var(--ease-out, ease-out), transform 120ms; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.fg-tile.is-dark { background: var(--game); box-shadow: inset 0 -5px 0 rgb(0 0 0 / 0.12); }
+.fg-tile:active { transform: scale(0.94); }
+.fg-tile.is-pop { animation-duration: 260ms; animation-timing-function: var(--ease-out, ease-out); }
+.fg-tile:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) { .fg-tile[data-cursor] { outline: 2px dashed var(--edge); outline-offset: 2px; } .fg-tile[data-cursor]:focus-visible { outline: 3px solid var(--focus); } }
+.fg-grid--done { width: min(100%, 220px); }
+.fg-grid--done .fg-tile { cursor: default; animation: fg-wave 700ms var(--ease-out, ease-out) both; }
+.fg-grid--done .fg-tile:nth-child(5n+2) { animation-delay: 40ms } .fg-grid--done .fg-tile:nth-child(5n+3) { animation-delay: 80ms } .fg-grid--done .fg-tile:nth-child(5n+4) { animation-delay: 120ms } .fg-grid--done .fg-tile:nth-child(5n) { animation-delay: 160ms }
+@keyframes fg-flip-a { 0% { transform: rotateY(0) } 50% { transform: rotateY(90deg) scale(0.92) } 100% { transform: rotateY(0) } }
+@keyframes fg-flip-b { 0% { transform: rotateX(0) } 50% { transform: rotateX(90deg) scale(0.92) } 100% { transform: rotateX(0) } }
+@keyframes fg-wave { 0% { background: var(--game); transform: scale(0.85) } 60% { transform: scale(1.06) } 100% { background: var(--surface); transform: none } }
+@media (prefers-reduced-motion: reduce) { .fg-tile, .fg-grid--done .fg-tile { animation: none !important; transition: none; } }

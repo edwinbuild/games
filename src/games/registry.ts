@@ -216,6 +216,20 @@ export const GAMES: GameMeta[] = [
     sample: '3–2',
     players: 'online-2',
   },
+  {
+    slug: 'flip-grid',
+    title: 'Flip Grid',
+    emoji: '🔲',
+    instructions: 'Tap a tile to flip it and its neighbours. Clear every lit tile in as few moves as you can.',
+    tagline: 'Flip tiles and their neighbours until the grid is clear. One puzzle a day, with a par to beat.',
+    howTo: [
+      'Each day has one 5×5 puzzle, the same for everyone. Tapping a tile flips it and the tiles directly above, below and beside it, from lit to off or back. Turn every tile off to solve it.',
+      'Par is the fewest moves that can solve the day\'s grid. Undo as often as you like; only a solved grid counts. Try as many times as you like; your fewest moves is your result. On a computer, use the arrow keys and Space, and Z to undo.',
+    ],
+    daily: true,
+    color: 'pistachio',
+    sample: '7 moves',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {
