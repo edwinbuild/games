@@ -36,7 +36,7 @@
   display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
   padding-block: var(--space-3); background: var(--canvas);
 }
-.qg-brand { display: inline-flex; align-items: center; gap: var(--space-2); font: 800 18px/24px var(--font-display); letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
+.qg-brand { white-space: nowrap; display: inline-flex; align-items: center; gap: var(--space-2); font: 800 18px/24px var(--font-display); letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
 .qg-brand-mark { flex: none; }
 
 .qg-stage {
@@ -71,9 +71,13 @@
   position: relative; display: grid; background: var(--surface); color: var(--ink);
   border: var(--border-edge) solid var(--edge); border-radius: var(--radius-lg); box-shadow: var(--shadow-card);
   margin-bottom: 6px; text-align: center;
-  animation: qg-print var(--duration-reveal) ease-out;
+  animation: qg-print 460ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-@keyframes qg-print { from { transform: translateY(-8px); opacity: 0; } to { transform: none; opacity: 1; } }
+/* The ticket prints: it is revealed from the top down, as if fed out of a slot. */
+@keyframes qg-print {
+  from { clip-path: inset(0 0 100% 0); transform: translateY(-6px); }
+  to { clip-path: inset(0 0 -12px 0); transform: none; }
+}
 @media (prefers-reduced-motion: reduce) { .qg-ticket { animation: none; } .qg-key { transition: none; } }
 .qg-ticket-stub {
   display: flex; justify-content: space-between; align-items: center; gap: var(--space-2);
@@ -121,7 +125,7 @@
   display: grid; grid-template-rows: auto 1fr; height: 100%; text-decoration: none; color: var(--ink);
   background: var(--surface); border: var(--border-edge) solid var(--edge); border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card); overflow: hidden; margin-bottom: 6px;
-  transition: transform var(--duration-press) ease-out, box-shadow var(--duration-press) ease-out;
+  transition: transform 140ms ease-out, box-shadow 140ms ease-out;
 }
 .qg-card:active { transform: translateY(6px); box-shadow: var(--shadow-key-pressed); }
 .qg-card-band {
@@ -192,3 +196,34 @@
   font: 500 16px/20px var(--font-body);
 }
 .qg-field input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* Keyboard hint: only on devices with a mouse; touch screens never see it. */
+.qg-kbd {
+  display: none; align-items: center; min-height: 20px; padding: 0 6px; border-radius: var(--radius-sm);
+  border: 1.5px solid currentColor; font: 700 11px/16px var(--font-mono); letter-spacing: 0; opacity: 0.7;
+}
+@media (hover: hover) and (pointer: fine) { .qg-kbd { display: inline-flex; } }
+
+/* Segmented control: a small set of mutually exclusive choices (the theme). */
+.qg-segmented { display: inline-flex; padding: 2px; gap: 2px; border-radius: var(--radius-pill); border: var(--border-edge) solid var(--edge); }
+.qg-segmented button {
+  min-height: 32px; padding: 0 var(--space-3); border: 0; border-radius: var(--radius-pill); background: transparent;
+  color: var(--ink-muted); font: 700 13px/16px var(--font-body); cursor: pointer;
+}
+.qg-segmented button[aria-pressed="true"] { background: var(--primary); color: var(--on-primary); }
+.qg-segmented button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* Pointer devices: cards and keys lift a little toward the cursor, then drop when pressed. */
+@media (hover: hover) and (pointer: fine) {
+  .qg-card:hover { transform: translateY(-3px); box-shadow: 0 9px 0 0 var(--drop); }
+  .qg-key:not(:disabled):not(.qg-key--ghost):hover { transform: translateY(-1px); box-shadow: 0 5px 0 0 var(--drop); }
+  .qg-next { transition: background 140ms ease-out; }
+  .qg-next:hover { background: var(--line); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .qg-card, .qg-key { transition: none; }
+  .qg-card:hover, .qg-key:hover { transform: none; }
+}
+
+/* Narrow phones: the chip keeps its word and its dot; on/off is read from the dot (and aria-pressed). */
+@media (max-width: 400px) { .qg-chip-state { display: none; } }

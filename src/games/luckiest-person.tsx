@@ -47,6 +47,7 @@ function CardRow({ cards, pick, reveal, onPick }: { cards: number[]; pick: numbe
             aria-label={open ? `Card ${i + 1}: ${v}` : `Card ${i + 1}, face down`}
           >
             <span className="lucky-card-face">{open ? v : '?'}</span>
+            {!open && <kbd className="qg-kbd lucky-card-key" aria-hidden="true">{i + 1}</kbd>}
           </button>
         )
       })}
@@ -115,6 +116,16 @@ export default function LuckiestPerson() {
   }
 
   const [practice, setPractice] = useState(false)
+  // Number keys 1–5 pick a card on a keyboard.
+  useEffect(() => {
+    if (practice) return
+    function onKey(e: KeyboardEvent) {
+      const n = Number(e.key)
+      if (n >= 1 && n <= CARDS && !(e.target as HTMLElement)?.closest('input, textarea')) choose(n - 1)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
   const stats = getStats(game.slug)
   if (practice) return <Practice onBack={() => setPractice(false)} />
   const verdict =

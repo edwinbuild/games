@@ -17,11 +17,13 @@ export type ButtonProps = {
   color?: string
   /** Renders a link instead of a button. */
   href?: string
+  /** Keyboard shortcut shown beside the label on devices with a mouse, e.g. "Space". */
+  hint?: string
   children: ReactNode
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color'> &
   Pick<AnchorHTMLAttributes<HTMLAnchorElement>, 'target' | 'rel'>
 
-export function Button({ variant = 'primary', size = 'md', block, color, href, className, style, children, target, rel, ...rest }: ButtonProps) {
+export function Button({ variant = 'primary', size = 'md', block, color, href, hint, className, style, children, target, rel, ...rest }: ButtonProps) {
   const cls = cx('qg-key', variant !== 'primary' && `qg-key--${variant}`, size === 'lg' && 'qg-key--lg', block && 'qg-key--block', className)
   const st = { ...fill(variant === 'primary' ? color : undefined), ...style }
   if (href) {
@@ -34,6 +36,7 @@ export function Button({ variant = 'primary', size = 'md', block, color, href, c
   return (
     <button type="button" className={cls} style={st} {...rest}>
       {children}
+      {hint && <kbd className="qg-kbd" aria-hidden="true">{hint}</kbd>}
     </button>
   )
 }
@@ -73,8 +76,29 @@ export type ToggleChipProps = {
 export function ToggleChip({ label, on, onChange }: ToggleChipProps) {
   return (
     <button type="button" className="qg-chip" aria-pressed={on} onClick={() => onChange(!on)}>
-      {label} {on ? 'on' : 'off'}
+      {label}
+      <span className="qg-chip-state"> {on ? 'on' : 'off'}</span>
     </button>
+  )
+}
+
+/* ---------- Segmented ---------- */
+export type SegmentedProps<T extends string> = {
+  /** What the choice is about, for screen readers ("Theme"). */
+  label: string
+  options: { value: T; label: string }[]
+  value: T
+  onChange: (v: T) => void
+}
+export function Segmented<T extends string>({ label, options, value, onChange }: SegmentedProps<T>) {
+  return (
+    <span className="qg-segmented" role="group" aria-label={label}>
+      {options.map((o) => (
+        <button key={o.value} type="button" aria-pressed={value === o.value} onClick={() => onChange(o.value)}>
+          {o.label}
+        </button>
+      ))}
+    </span>
   )
 }
 
@@ -334,11 +358,13 @@ export type GameCardProps = {
   /** Status line: "Played today · 3-day streak", "New today", "Played 4 times". */
   status?: string
   done?: boolean
+  /** Names the band and title for a page transition into the game (matching names on the game page). */
+  transitionName?: string
 }
-export function GameCard({ title, tagline, href, color, sample, sampleLabel, daily, status, done }: GameCardProps) {
+export function GameCard({ title, tagline, href, color, sample, sampleLabel, daily, status, done, transitionName }: GameCardProps) {
   return (
     <a className="qg-card" href={href} style={fill(color)}>
-      <span className="qg-card-band">
+      <span className="qg-card-band" style={transitionName ? { viewTransitionName: `band-${transitionName}` } : undefined}>
         <span className="qg-card-score">
           {sampleLabel && <span className="qg-card-sample-label">{sampleLabel}</span>}
           <span className="qg-card-sample">{sample}</span>
@@ -346,7 +372,7 @@ export function GameCard({ title, tagline, href, color, sample, sampleLabel, dai
         {daily && <Pill tone="neutral">Daily</Pill>}
       </span>
       <span className="qg-card-body">
-        <span className="qg-card-title">{title}</span>
+        <span className="qg-card-title" style={transitionName ? { viewTransitionName: `title-${transitionName}` } : undefined}>{title}</span>
         <span className="qg-card-tag">{tagline}</span>
         {status && <span className={cx('qg-card-status', done && 'qg-card-status--done')}>{done ? '✓ ' : ''}{status}</span>}
       </span>

@@ -4,3 +4,5 @@ A game on the home page, like a cartridge: a band in the game colour showing a s
 
 - Don't put an emoji or picture on the band; the sample score is the picture.
 - Lay cards out in a grid with `space-3` gaps; they keep equal heights.
+
+**Page transition.** Pass the game's slug as `transitionName`; the band and title morph into the game page's colour band and title in browsers that support cross-document view transitions.

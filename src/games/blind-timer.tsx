@@ -134,6 +134,8 @@ function Timer({ target, onStop }: { target: number; onStop: (elapsed: number) =
           disabled={stopped != null}
           onPointerDown={press}
           onClick={(e) => e.detail === 0 && press() /* keyboard */}
+          data-primary="pointer"
+          hint="Space"
         >
           {start == null ? 'Start' : stopped == null ? 'Stop' : 'Stopped'}
         </Button>

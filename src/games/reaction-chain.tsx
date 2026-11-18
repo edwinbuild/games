@@ -98,6 +98,7 @@ export default function ReactionChain() {
         color={l.color}
         role="button"
         tabIndex={0}
+        data-primary={phase === 'done' ? undefined : 'pointer'}
         aria-label={l.text}
         onPointerDown={phase === 'done' ? undefined : tap}
         onKeyDown={(e) => (e.key === ' ' || e.key === 'Enter') && phase !== 'done' && (e.preventDefault(), tap())}
@@ -105,6 +106,7 @@ export default function ReactionChain() {
       >
         <Score value={l.text} />
         {l.sub && <p className="small" style={{ margin: 0 }}>{l.sub}</p>}
+        {phase !== 'done' && <p className="small" style={{ margin: 0 }}><kbd className="qg-kbd" aria-hidden="true">Space</kbd></p>}
         <div className="row">
           <AttemptTiles attempts={Array.from({ length: ROUNDS }, (_, i) => (i < times.length ? grade(times[i]) : 'empty'))} />
         </div>

@@ -10,3 +10,5 @@ A chunky key that drops 4px onto its shadow when pressed; the only kind of butto
 - Don't put two primary keys side by side; make the second `secondary`.
 - Don't use a key for navigation inside a paragraph; use a link.
 - Game controls that need exact timing (Stop, a reaction tap) should listen to `onPointerDown`, not `onClick`, and keep `onClick` for the keyboard.
+
+**Keyboard.** Pass `hint="Space"` on a game's main action; the hint shows only on devices with a mouse, never on touch screens. The site maps Space and Enter to the element marked `data-primary` (`"pointer"` for timing actions, `"click"` otherwise).

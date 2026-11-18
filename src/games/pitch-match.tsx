@@ -58,7 +58,7 @@ function Round({ target, label, tiles, onLock }: { target: number; label: string
           <span className="small muted">{label}</span>
           {tiles && <AttemptTiles attempts={tiles} />}
         </div>
-        <Button size="lg" block color={game.color} onClick={() => { play(target); setHeard(true) }}>
+        <Button size="lg" block color={game.color} onClick={() => { play(target); setHeard(true) }} data-primary={heard ? undefined : 'click'} hint={heard ? undefined : 'Space'}>
           {heard ? 'Hear it again' : 'Listen to the target'}
         </Button>
         <label className="eyebrow muted" htmlFor="pitch">Your tone: lower ← → higher</label>
@@ -79,6 +79,8 @@ function Round({ target, label, tiles, onLock }: { target: number; label: string
           <Button
             color={game.color}
             disabled={!heard}
+            data-primary={heard ? 'click' : undefined}
+            hint={heard ? 'Space' : undefined}
             onClick={() => {
               const c = cents(toHz(slider), target)
               if (grade(c) === 'miss') feel.bad()

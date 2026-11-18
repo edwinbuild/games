@@ -121,7 +121,7 @@ export default function MemoryPath() {
       </Stage>
       {phase === 'ready' && (
         <div style={{ marginTop: 'var(--space-4)' }}>
-          <Button size="lg" block color={game.color} onClick={() => play(path)}>Start</Button>
+          <Button size="lg" block color={game.color} onClick={() => play(path)} data-primary="click" hint="Space">Start</Button>
         </div>
       )}
       {phase === 'done' && (

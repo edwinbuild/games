@@ -44,9 +44,16 @@ Pocket Fair is the working name: a fairground of small stalls you can play alone
 - `body` (Figtree) is everything else: `body` for instructions and how-to-play text, `small` for labels and countdowns, `key` for button text, `eyebrow` for uppercase labels.
 - One `game-title` per page. Keep running text under 65 characters a line.
 
+## Layout by device
+
+- **Phones (under 1000px wide):** one column, at most 560px, side gutter at least `space-4`. The game first, then its ticket below; the ticket scrolls itself into view when it prints. Everything must work one-handed at 360px.
+- **Wide screens (1000px and up):** the page widens to 1120px. The game takes the left column; the right column shows how to play and the player's record, and the ticket replaces them when it prints, so no scrolling is needed. The home page shows three cards per row.
+- **Landscape phones:** the same two columns as wide screens, with the instruction line hidden to save height.
+- **Mouse and keyboard:** Space or Enter triggers the game's main action, number keys pick cards; key hints (`Button` `hint`) appear only on devices with a mouse. Touch devices get no hints and full-size targets.
+- **Theme:** Auto follows the device; the footer's `Segmented` switch can fix Light or Dark, applied before the page draws.
+
 ## Shape, space and depth
 
-- One column, at most 560px wide, with a side gutter of at least `space-4`. Phone first: everything must work one-handed at 360px.
 - Tap targets are at least 48px tall (`Button` md); the main action in a game is a `size="lg"` key (64px) spanning the column.
 - Radii: `radius-lg` for the stage, tickets and cards; `radius-md` for keys and grid cells; `radius-sm` for attempt tiles; `radius-pill` for pills.
 - Depth is a **hard offset shadow, never a blur**. Keys sit on `shadow-key` and drop 4px onto `shadow-key-pressed` when pressed; tickets and cards sit on `shadow-card`. This is the one bold move in the system: don't add gradients, glows or blurred shadows anywhere.
@@ -60,7 +67,12 @@ Pocket Fair is the working name: a fairground of small stalls you can play alone
 
 ## Motion
 
-- Keys press down in `duration-press` (60ms). A result ticket prints in once, dropping 8px over `duration-reveal` (240ms).
+Every animation answers something the player did; nothing moves just to decorate.
+
+- Keys press down in `duration-press` (60ms). On devices with a mouse, cards lift 3px and keys 1px toward the pointer.
+- Opening a game from its card: the card's colour band grows into the game page's band and the title moves into place (cross-document view transition, about 340ms). Browsers without it load the page normally.
+- A result ticket prints: revealed from the top down in about 460ms, and the number in its headline counts up to the result.
+- A new Odd One Out level settles in (180ms) so progress is visible.
 - Game feedback (a cell flashing, the panel turning green) is instant: never ease a state that the player is reacting to.
 - With reduced motion, the ticket appears without moving; game timing is unchanged.
 

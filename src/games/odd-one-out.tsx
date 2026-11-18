@@ -91,7 +91,7 @@ export default function OddOneOut() {
 
       {!done && (
         <Stage flush>
-          <div className="grid" style={{ gridTemplateColumns: `repeat(${setup.size}, 1fr)`, gap: setup.size > 5 ? 4 : 'var(--space-2)' }}>
+          <div key={level} className="grid grid-in" style={{ gridTemplateColumns: `repeat(${setup.size}, 1fr)`, gap: setup.size > 5 ? 4 : 'var(--space-2)' }}>
             {Array.from({ length: setup.size * setup.size }, (_, i) => (
               <button
                 key={`${level}-${i}`}

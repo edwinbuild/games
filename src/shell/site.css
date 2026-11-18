@@ -39,12 +39,22 @@ button { font: inherit; }
 .howto h2 { color: var(--ink); font: 700 20px/24px var(--font-display); }
 #root:has(.home) ~ .howto { display: none; }
 
-/* Home */
-.hero { display: grid; gap: var(--space-2); padding: var(--space-6) 0 var(--space-2); }
-.hero h1 { margin: 0; }
-.hero p { margin: 0; color: var(--ink-muted); font-size: 18px; line-height: 26px; }
-.section-title { margin: var(--space-6) 0 var(--space-3); color: var(--ink-muted); }
-.cards { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: var(--space-3); }
+/* Home: today's line first, then the daily games (unplayed first), then the rest. */
+.today { display: grid; gap: var(--space-3); padding: var(--space-6) 0 var(--space-2); }
+.today h1 { margin: 0; }
+.today-line { display: grid; gap: var(--space-1); }
+.today-line p { margin: 0; }
+.section-title { margin: var(--space-6) 0 var(--space-3); }
+.cards { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: var(--space-4); }
+
+@media (min-width: 760px) {
+  .page--home { max-width: 1120px; }
+  .today { grid-template-columns: minmax(0, 1fr) auto; align-items: end; padding-top: var(--space-7); }
+  .today-line { text-align: right; justify-items: end; }
+  .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cards--daily .qg-card-band { min-height: 120px; }
+  .cards--daily .qg-card-sample { font-size: 44px; line-height: 46px; }
+}
 
 /* Grids of cells inside a stage (Odd One Out, Memory Path). */
 .grid { display: grid; gap: var(--space-2); }
@@ -81,3 +91,55 @@ button { font: inherit; }
 .prose { color: var(--ink); }
 .prose h1 { margin: var(--space-3) 0 var(--space-4); }
 .prose p { color: var(--ink-muted); max-width: 65ch; }
+
+/* ---------- Game page layout ----------
+   Phones: one column (game, then the result below it).
+   Wide screens and landscape phones: the game on the left, a side column on the right
+   holding how-to-play and the player's record, replaced by the result ticket when it prints. */
+.game-band { height: 6px; border-radius: var(--radius-pill); background: var(--game); margin-top: var(--space-1); }
+.game-layout { display: grid; gap: var(--space-5); }
+.game-main { min-width: 0; }
+.game-aside { min-width: 0; }
+.result-slot { scroll-margin-top: 72px; }
+.game-info { display: none; }
+.game-aside:has(.qg-ticket) .game-info { display: none !important; }
+.game-info { gap: var(--space-2); }
+.game-info h2, .game-info p { margin: 0; }
+.game-info p.eyebrow { margin-top: var(--space-3); }
+
+@media (min-width: 1000px) {
+  .page--game { max-width: 1120px; }
+  .game-layout { grid-template-columns: minmax(0, 1fr) minmax(340px, 400px); gap: var(--space-6); align-items: start; }
+  .game-info {
+    display: grid; padding: var(--space-5); border-radius: var(--radius-lg);
+    border: var(--border-edge) dashed var(--line);
+  }
+  #root:has(.game-layout) ~ .howto { display: none; }
+}
+
+@media (orientation: landscape) and (max-height: 520px) and (min-width: 640px) {
+  .page--game { max-width: none; }
+  .game-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-5); align-items: start; }
+  .game-head { margin-bottom: var(--space-3); }
+  .game-head p { display: none; }
+}
+.lucky-card { position: relative; }
+.lucky-card-key { position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); }
+
+/* ---------- Motion ----------
+   Page to page: the card's colour band grows into the game's band, the title moves into place.
+   Browsers without cross-document view transitions simply load the page. */
+@view-transition { navigation: auto; }
+::view-transition-group(*) { animation-duration: 340ms; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 180ms; }
+
+/* A new Odd One Out level settles in, so progress is visible. */
+.grid-in { animation: grid-in 180ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes grid-in { from { transform: scale(0.96); opacity: 0.35; } to { transform: none; opacity: 1; } }
+
+.count-up { font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+  .grid-in { animation: none; }
+}

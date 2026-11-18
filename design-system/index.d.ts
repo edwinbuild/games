@@ -9,6 +9,8 @@ export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
   color?: string
   /** Renders an <a> instead of a <button>. */
   href?: string
+  /** Keyboard shortcut shown beside the label only on devices with a mouse ("Space"). */
+  hint?: string
   target?: string
   rel?: string
   children: ReactNode
@@ -93,6 +95,8 @@ export interface GameCardProps {
   daily?: boolean
   status?: string
   done?: boolean
+  /** Names the band and title for the page transition into the game (the game page uses band-<name> and title-<name>). */
+  transitionName?: string
 }
 export declare function GameCard(props: GameCardProps): JSX.Element
 
@@ -115,3 +119,7 @@ export declare function ChallengeBoard(props: { rows: BoardRow[] }): JSX.Element
 /** A labelled single-line text field (the optional challenge nickname). */
 export interface TextFieldProps { id: string; label: string; value: string; onChange: (v: string) => void; placeholder?: string; maxLength?: number }
 export declare function TextField(props: TextFieldProps): JSX.Element
+
+/** A small set of mutually exclusive choices, such as the theme (Auto, Light, Dark). */
+export interface SegmentedProps<T extends string> { label: string; options: { value: T; label: string }[]; value: T; onChange: (v: T) => void }
+export declare function Segmented<T extends string>(props: SegmentedProps<T>): JSX.Element

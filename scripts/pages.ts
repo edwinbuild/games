@@ -38,6 +38,7 @@ function page(opts: {
     <meta name="description" content="${esc(opts.description)}" />
     <link rel="canonical" href="${url}" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script>try{var t=JSON.parse(localStorage.getItem('qg:theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
     <meta name="theme-color" content="#f4f4f2" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0b0b0b" media="(prefers-color-scheme: dark)" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -100,6 +101,7 @@ ${list}
 }
 
 const footer = `    <footer class="qg-footer"><a href="/">All games</a><a href="/about/">About</a></footer>`
+// (The interactive footer with the theme switch is rendered by React on game and home pages.)
 
 function staticPage(opts: { title: string; description: string; path: string; entry: string; body: string }) {
   return page({

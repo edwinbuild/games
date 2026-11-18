@@ -5,7 +5,9 @@ import { Button, ChallengeBoard, Countdown, PlayNext, ResultTicket, TextField } 
 import { challengeUrl, displayName, mergeRow, myId, myName, readChallenge, setMyName } from './challenge'
 import { puzzleLabel } from './daily'
 import { getStats, todaysDailyText } from './stats'
+import { CountUp } from './CountUp'
 import { feel } from './feel'
+import { ResultSlot } from './layout'
 import { track } from './track'
 
 type Props = {
@@ -59,12 +61,12 @@ export function ResultCard(p: Props) {
   const nextScore = (next.daily ? todaysDailyText(next.slug) : getStats(next.slug).bestText) ?? 'New'
 
   return (
-    <div style={{ marginTop: 'var(--space-5)' }}>
+    <ResultSlot scrollIntoView={p.trackFinish ?? true}>
       <ResultTicket
         game={p.game.title}
         stamp={p.game.daily ? puzzleLabel() : undefined}
         color={p.game.color}
-        headline={p.headline}
+        headline={<CountUp text={p.headline} animate={p.trackFinish ?? true} />}
         detail={p.detail}
         shareText={`${p.shareText}\n${hasOthers ? 'Same puzzle. Your turn:' : 'Same puzzle. Beat me:'}`}
         url={url}
@@ -75,12 +77,12 @@ export function ResultCard(p: Props) {
           id="nickname"
           label="Your name on challenges (optional)"
           value={name}
-          placeholder="Shown to friends instead of “A friend”"
+          placeholder="e.g. Sam (blank shows “A friend”)"
           maxLength={16}
           onChange={(v) => { setName(v); setMyName(v) }}
         />
         {p.onReplay && (
-          <Button size="lg" block color={p.game.color} onClick={p.onReplay}>
+          <Button size="lg" block color={p.game.color} onClick={p.onReplay} data-primary="click" hint="Space">
             {p.replayLabel ?? 'Play again'}
           </Button>
         )}
@@ -99,6 +101,6 @@ export function ResultCard(p: Props) {
           </p>
         )}
       </ResultTicket>
-    </div>
+    </ResultSlot>
   )
 }
