@@ -192,3 +192,15 @@ button { font: inherit; }
 .cr-slider input::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 30px; border-radius: 50%; background: var(--surface); border: 3px solid var(--edge); }
 .cr-slider input::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: var(--surface); border: 3px solid var(--edge); }
 .cr-slider input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* Count Flash */
+.cf-box { aspect-ratio: 1; width: 100%; max-width: 520px; margin: 0 auto; display: grid; place-items: center; border-radius: var(--radius-md); background: var(--surface-sunken); }
+.cf-field { width: 100%; height: 100%; }
+.cf-field circle { fill: var(--ink); }
+.cf-hint { margin: 0; padding: var(--space-4); text-align: center; }
+.cf-guess { display: grid; gap: var(--space-2); padding: 0 var(--space-2) var(--space-2); min-width: 0; }
+.cf-guess input {
+  width: 100%; min-width: 0; min-height: 64px; text-align: center; border-radius: var(--radius-md); border: var(--border-edge) solid var(--edge);
+  background: var(--surface); color: var(--ink); font: 700 36px/40px var(--font-mono); font-variant-numeric: tabular-nums;
+}
+.cf-guess input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }

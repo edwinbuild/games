@@ -158,6 +158,20 @@ export const GAMES: GameMeta[] = [
     color: 'orchid',
     sample: '86%',
   },
+  {
+    slug: 'count-flash',
+    title: 'Count Flash',
+    emoji: '🔢',
+    instructions: 'A field of dots flashes for under a second. Estimate how many there were.',
+    tagline: 'Dots flash for less than a second. How many were there? Five new fields every day.',
+    howTo: [
+      'Each field of dots shows for 0.8 seconds, which is too short to count. Type your estimate and lock it in; the field comes back with the real number.',
+      'There are five fields a day, from about a dozen dots to three hundred, the same for everyone. Each guess scores 100 minus your percentage error, and your result is the average. Try as many times as you like; your best try counts.',
+    ],
+    daily: true,
+    color: 'sand',
+    sample: '9% off',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

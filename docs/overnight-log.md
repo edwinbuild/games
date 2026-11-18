@@ -7,3 +7,5 @@ One line per game: date, game, commit, what was tested, what is left.
 - 2026-11-18 · 2 This or That · (this commit) · migration this_or_that_votes (votes table, vote and split functions, all ten new slugs registered for counting), tested as anon and rolled back; 139 questions, no repeat for 139 days (unit test); e2e with a stand-in vote endpoint so tests never add votes; phone and desktop screenshots checked.
 - 2026-11-18 · 2 This or That · 59eef70 · shipped (see above). Follow-up migration votes_anon_only removes signed-in access to vote and split.
 - 2026-11-18 · 3 Color Recall · (this commit) · CIEDE2000 checked against the published Sharma test data (7 pairs); e2e plays two tries of three colours and checks the target is hidden while matching; phone and desktop screenshots checked.
+- 2026-11-18 · 3 Color Recall · baa0af2 · shipped (see above).
+- 2026-11-18 · 4 Count Flash · (this commit) · dot placement unit-tested (exact count, inside the field, no overlaps at 12, 75 and 300 dots); e2e checks the dots hide after the flash and that nothing overflows while guessing. Fixed a phone overflow from the guess field's default width found in screenshots.
