@@ -82,7 +82,17 @@ export function ResultCard(p: Props) {
           onChange={(v) => { setName(v); setMyName(v) }}
         />
         {p.onReplay && (
-          <Button size="lg" block color={p.game.color} onClick={p.onReplay} data-primary="click" hint="Space">
+          <Button
+            size="lg"
+            block
+            color={p.game.color}
+            onClick={() => {
+              track('start', p.game.slug) // each replay is a new game, so finish rate stays honest
+              p.onReplay?.()
+            }}
+            data-primary="click"
+            hint="Space"
+          >
             {p.replayLabel ?? 'Play again'}
           </Button>
         )}
