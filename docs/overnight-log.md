@@ -9,3 +9,5 @@ One line per game: date, game, commit, what was tested, what is left.
 - 2026-11-18 · 3 Color Recall · (this commit) · CIEDE2000 checked against the published Sharma test data (7 pairs); e2e plays two tries of three colours and checks the target is hidden while matching; phone and desktop screenshots checked.
 - 2026-11-18 · 3 Color Recall · baa0af2 · shipped (see above).
 - 2026-11-18 · 4 Count Flash · (this commit) · dot placement unit-tested (exact count, inside the field, no overlaps at 12, 75 and 300 dots); e2e checks the dots hide after the flash and that nothing overflows while guessing. Fixed a phone overflow from the guess field's default width found in screenshots.
+- 2026-11-18 · 4 Count Flash · d0eb9d9 · shipped (see above).
+- 2026-11-18 · 5 Tug of Taps · (this commit) · rope rules unit-tested; e2e taps both halves at once with different pointer ids (all counted) and checks a tap before Go is ignored; phone and desktop screenshots checked.

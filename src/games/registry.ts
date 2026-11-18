@@ -172,6 +172,21 @@ export const GAMES: GameMeta[] = [
     color: 'sand',
     sample: '9% off',
   },
+  {
+    slug: 'tug-of-taps',
+    title: 'Tug of Taps',
+    emoji: '🪢',
+    instructions: 'Two players, one phone. After Go, tap your side as fast as you can to pull the rope over.',
+    tagline: 'Two players, one phone, one rope. Tap faster to pull it to your side.',
+    howTo: [
+      'Put the phone between you; each player gets one half of the screen. After a 3-2-1 countdown, tap your own half as fast as you can. Every tap pulls the rope one step toward you.',
+      'The first player to pull the rope 20 steps to their side wins. Taps before Go don’t count, and both players can tap at the same time. On a computer, use the A and L keys.',
+    ],
+    daily: false,
+    color: 'lime',
+    sample: '9.4 s',
+    players: 'same-phone-2',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

@@ -204,3 +204,11 @@ button { font: inherit; }
   background: var(--surface); color: var(--ink); font: 700 36px/40px var(--font-mono); font-variant-numeric: tabular-nums;
 }
 .cf-guess input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* Tug of Taps: the rope from each player's own side (their side is at the bottom of their half). */
+.tug-rope { position: relative; width: min(100%, 320px); height: 24px; margin: var(--space-2) 0; }
+.tug-rope::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 4px; transform: translateY(-50%); background: var(--on-fill); opacity: 0.35; border-radius: 2px; }
+.tug-rope::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--on-fill); opacity: 0.5; }
+.tug-marker { position: absolute; top: 50%; width: 22px; height: 22px; border-radius: 50%; background: var(--on-fill); transform: translate(-50%, -50%); transition: left 60ms linear; }
+.tug-line--me { position: absolute; right: 0; top: -4px; bottom: -4px; width: 4px; background: var(--on-fill); border-radius: 2px; }
+@media (prefers-reduced-motion: reduce) { .tug-marker { transition: none; } }
