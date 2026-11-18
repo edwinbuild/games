@@ -16,7 +16,7 @@ Needs Node 22.18+ (scripts are TypeScript run directly by Node).
 
 ## Deploy
 
-The site is deployed on Vercel from this repository: every push to `main` goes to production, every other branch gets a preview URL. Settings live in `vercel.json` (build `npm run build`, output `dist`, Node 22).
+The site is live at https://games-sigma-gold.vercel.app (Vercel project `edwinlegends-projects/games`), deployed from this repository: every push to `main` goes to production, every other branch gets a preview URL. Settings live in `vercel.json` (build `npm run build`, output `dist`, Node 22).
 
 Before the public launch, edit `src/site.ts`: the site name (a placeholder for now), the real domain in `url`, and the optional `supportUrl` (Buy me a coffee). Then run `npm run og` again.
 

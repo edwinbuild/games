@@ -3,6 +3,6 @@
 export const SITE = {
   name: 'Quick Games',
   tagline: 'Tiny original games. Under 2 minutes. No sign\u2011up.',
-  url: 'https://example.com', // set to the real domain before launch
+  url: 'https://games-sigma-gold.vercel.app', // Vercel production URL; change when the real domain is bought
   supportUrl: '', // "Buy me a coffee" link; hidden while empty
 }
