@@ -58,3 +58,26 @@ button { font: inherit; }
 .qg-cell[data-state="answer"] { border-color: var(--success); border-width: 3px; }
 .eyebrow { text-transform: uppercase; }
 .hero p, .game-head p { text-wrap: pretty; }
+
+/* Luckiest Person: five cards, face down in the game colour. */
+.lucky-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-2); }
+.lucky-card {
+  aspect-ratio: 2 / 3; padding: 0; border-radius: var(--radius-md); cursor: pointer;
+  border: var(--border-edge) solid var(--edge); background: var(--game); color: var(--on-fill);
+  box-shadow: var(--shadow-key); margin-bottom: 4px; touch-action: manipulation;
+  transition: transform 160ms ease-out, box-shadow var(--duration-press);
+}
+.lucky-card:not(:disabled):active { transform: translateY(4px); box-shadow: var(--shadow-key-pressed); }
+.lucky-card:disabled { cursor: default; }
+.lucky-card[data-open] { background: var(--surface-sunken); color: var(--ink-muted); box-shadow: none; transform: translateY(4px); }
+.lucky-card[data-picked] { background: var(--surface); color: var(--ink); outline: 3px solid var(--game); outline-offset: 2px; }
+.lucky-card-face { font: 700 clamp(20px, 7vw, 30px)/1 var(--font-mono); font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: no-preference) {
+  .lucky-card[data-open] .lucky-card-face { animation: lucky-flip 240ms ease-out; }
+}
+@keyframes lucky-flip { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* Static text pages (About, 404). */
+.prose { color: var(--ink); }
+.prose h1 { margin: var(--space-3) 0 var(--space-4); }
+.prose p { color: var(--ink-muted); max-width: 65ch; }

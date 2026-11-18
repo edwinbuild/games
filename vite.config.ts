@@ -13,6 +13,7 @@ const input: Record<string, string> = {}
 for (const entry of existsSync(siteDir) ? readdirSync(siteDir) : []) {
   const full = resolve(siteDir, entry)
   if (entry === 'index.html') input.home = full
+  else if (entry.endsWith('.html')) input[entry.replace(/\.html$/, '')] = full
   else if (statSync(full).isDirectory()) input[entry] = resolve(full, 'index.html')
 }
 

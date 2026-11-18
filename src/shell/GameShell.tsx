@@ -2,6 +2,8 @@ import { useEffect, type ReactNode } from 'react'
 import type { GameMeta } from '../games/registry'
 import { SITE } from '../site'
 import { TopBar } from '../ui'
+import { SiteFooter } from './SiteFooter'
+import { SoundToggle } from './SoundToggle'
 import { track } from './track'
 
 /** Page frame shared by every game: top bar, title, one line of instructions. */
@@ -12,7 +14,7 @@ export function GameShell({ game, children }: { game: GameMeta; children: ReactN
 
   return (
     <div className="page">
-      <TopBar siteName={SITE.name} daily={game.daily} />
+      <TopBar siteName={SITE.name} daily={game.daily} right={<SoundToggle />} />
       <main>
         <header className="game-head">
           <h1 className="game-title">{game.title}</h1>
@@ -20,6 +22,7 @@ export function GameShell({ game, children }: { game: GameMeta; children: ReactN
         </header>
         {children}
       </main>
+      <SiteFooter />
     </div>
   )
 }

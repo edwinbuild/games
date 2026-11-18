@@ -3,6 +3,8 @@ import { GAMES, type GameMeta } from '../games/registry'
 import { SITE } from '../site'
 import { Button, Countdown, PlayNext, ResultTicket } from '../ui'
 import { puzzleLabel } from './daily'
+import { getStats, todaysDailyText } from './stats'
+import { feel } from './feel'
 import { track } from './track'
 
 type Props = {
@@ -37,11 +39,14 @@ export function ResultCard(p: Props) {
     if ((p.trackFinish ?? true) && !tracked.current) {
       tracked.current = true
       track('finish', p.game.slug, p.finishData)
+      feel.done()
     }
   }, [p.trackFinish, p.game.slug, p.finishData])
 
   const url = `${typeof location !== 'undefined' ? location.origin : SITE.url}/${p.game.slug}/`
   const next = nextGame(p.game.slug)
+  // The chip shows the player's own result for that game, or "New" if they haven't played it.
+  const nextScore = (next.daily ? todaysDailyText(next.slug) : getStats(next.slug).bestText) ?? 'New'
 
   return (
     <div style={{ marginTop: 'var(--space-5)' }}>
@@ -66,7 +71,7 @@ export function ResultCard(p: Props) {
           title={next.title}
           href={`/${next.slug}/`}
           color={next.color}
-          sample={next.sample}
+          sample={nextScore}
           onClick={() => track('play_next', p.game.slug, { to: next.slug })}
         />
         {SITE.supportUrl && (

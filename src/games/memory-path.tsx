@@ -1,12 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
 import { getGame } from './registry'
 import { ResultCard } from '../shell/ResultCard'
+import { feel, tone } from '../shell/feel'
 import { getStats, recordPlay } from '../shell/stats'
 import { Button, Score, Stage } from '../ui'
 
 const game = getGame('memory-path')
 const N = 4
-const ON_MS = 480
+// A note per square (pentatonic, so any path sounds fine), heard only with sound on.
+const NOTES = [262, 294, 330, 392, 440, 523, 587, 659, 784, 880, 1047, 1175, 1319, 1568, 1760, 2093]
+const note = (cell: number) => tone(NOTES.at(cell) ?? 440, 220, { type: 'triangle', volume: 0.08 })
+
+/** How long each square stays lit: 480 ms, getting quicker after 8 steps. */
+const onMs = (len: number) => Math.max(260, 480 - Math.max(0, len - 8) * 25)
 const GAP_MS = 140
 
 function extend(path: number[]): number[] {
@@ -32,21 +38,24 @@ export default function MemoryPath() {
   function play(p: number[]) {
     setPhase('showing')
     setPos(0)
+    const on = onMs(p.length)
     p.forEach((cell, i) => {
-      timers.current.push(setTimeout(() => setLit(cell), 400 + i * (ON_MS + GAP_MS)))
-      timers.current.push(setTimeout(() => setLit(null), 400 + i * (ON_MS + GAP_MS) + ON_MS))
+      timers.current.push(setTimeout(() => { setLit(cell); note(cell) }, 400 + i * (on + GAP_MS)))
+      timers.current.push(setTimeout(() => setLit(null), 400 + i * (on + GAP_MS) + on))
     })
-    timers.current.push(setTimeout(() => setPhase('input'), 400 + p.length * (ON_MS + GAP_MS)))
+    timers.current.push(setTimeout(() => setPhase('input'), 400 + p.length * (on + GAP_MS)))
   }
 
   function tap(cell: number) {
     if (phase !== 'input') return
     if (cell !== path[pos]) {
+      feel.bad()
       setWrong(cell)
       setPhase('done')
-      recordPlay(game.slug, score)
+      recordPlay(game.slug, score, undefined, score > 0 ? String(score) : undefined)
       return
     }
+    note(cell)
     setLit(cell)
     timers.current.push(setTimeout(() => setLit((l) => (l === cell ? null : l)), 180))
     if (pos + 1 === path.length) {
@@ -72,10 +81,10 @@ export default function MemoryPath() {
 
   const best = getStats(game.slug).best
   const status =
-    phase === 'ready' ? 'Press Start and watch closely'
-    : phase === 'showing' ? `Watch… (${path.length} steps)`
-    : phase === 'input' ? `Your turn: ${pos} / ${path.length}`
-    : `✕ The path was ${path.length} steps`
+    phase === 'ready' ? 'Press Start, then watch the squares'
+    : phase === 'showing' ? `Watch: ${path.length} steps`
+    : phase === 'input' ? `Your turn: ${pos} of ${path.length}`
+    : `✕ Wrong square. The green outline was next.`
 
   return (
     <>
@@ -110,8 +119,8 @@ export default function MemoryPath() {
         <ResultCard
           game={game}
           headline={score ? `${score}-step path` : 'No path this time'}
-          detail={best != null ? `Your best: ${best} step${best === 1 ? '' : 's'}` : undefined}
-          shareText={`🧠 Memory Path\nRepeated a ${score}-step path\n${'🟦'.repeat(Math.min(score, 20))}`}
+          detail={best != null && best > score ? `Your best: ${best} steps` : best === score && score > 0 && getStats(game.slug).plays > 1 ? 'A new best' : undefined}
+          shareText={score > 0 ? `🧠 Memory Path\nRepeated a ${score}-step path\n${'🟦'.repeat(Math.min(score, 20))}` : '🧠 Memory Path\nMissed the very first path'}
           finishData={{ steps: score }}
           onReplay={reset}
         />

@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { getGame } from './registry'
 import { ResultCard } from '../shell/ResultCard'
+import { feel } from '../shell/feel'
 import { getStats, recordPlay } from '../shell/stats'
 import { AttemptTiles, Score, Stage, type Attempt } from '../ui'
 
 const game = getGame('reaction-chain')
 const ROUNDS = 5
 const PENALTY = 500
+/** Faster than this is a guess, not a reaction. */
+const GUESS_MS = 100
 
 type Phase = 'idle' | 'waiting' | 'go' | 'between' | 'done'
 
@@ -16,7 +19,7 @@ const square = (ms: number) => ({ hit: '🟩', near: '🟨', miss: '🟥', empty
 export default function ReactionChain() {
   const [phase, setPhase] = useState<Phase>('idle')
   const [times, setTimes] = useState<number[]>([])
-  const [last, setLast] = useState<{ ms: number; early: boolean } | null>(null)
+  const [last, setLast] = useState<{ ms: number; early: boolean; guess?: boolean } | null>(null)
   const goAt = useRef(0)
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
@@ -30,13 +33,15 @@ export default function ReactionChain() {
     }, 1200 + Math.random() * 2300)
   }
 
-  function finishRound(ms: number, early: boolean) {
+  function finishRound(ms: number, early: boolean, guess = false) {
     const next = [...times, ms]
     setTimes(next)
-    setLast({ ms, early })
+    setLast({ ms, early, guess })
+    if (early) feel.bad()
+    else feel.good()
     if (next.length >= ROUNDS) {
       const avg = Math.round(next.reduce((a, b) => a + b, 0) / next.length)
-      recordPlay(game.slug, avg, (a, b) => a < b)
+      recordPlay(game.slug, avg, (a, b) => a < b, `${avg}ms`)
       setPhase('done')
     } else {
       setPhase('between')
@@ -48,7 +53,11 @@ export default function ReactionChain() {
     else if (phase === 'waiting') {
       clearTimeout(timer.current)
       finishRound(PENALTY, true)
-    } else if (phase === 'go') finishRound(Math.round(performance.now() - goAt.current), false)
+    } else if (phase === 'go') {
+      const ms = Math.round(performance.now() - goAt.current)
+      if (ms < GUESS_MS) finishRound(PENALTY, true, true)
+      else finishRound(ms, false)
+    }
   }
 
   function reset() {
@@ -61,12 +70,14 @@ export default function ReactionChain() {
   const best = getStats(game.slug).best
 
   const look: Record<Phase, { color?: string; text: string; sub: string }> = {
-    idle: { text: 'Tap to start', sub: `${ROUNDS} rounds` },
+    idle: { text: 'Tap to start', sub: `Round 1 of ${ROUNDS}` },
     waiting: { color: 'chili', text: 'Wait…', sub: 'Tap when it turns green' },
     go: { color: 'mint', text: 'TAP!', sub: '' },
     between: {
-      text: last?.early ? 'Too early!' : `${last?.ms} ms`,
-      sub: last?.early ? `+${PENALTY} ms penalty · tap for the next round` : 'Tap for the next round',
+      text: last?.guess ? 'Guessed' : last?.early ? 'Too early' : `${last?.ms} ms`,
+      sub: last?.early
+        ? `${last.guess ? `Under ${GUESS_MS} ms is a guess.` : 'It was still red.'} Counts as ${PENALTY} ms. Tap for the next round.`
+        : 'Tap for the next round',
     },
     done: { text: `${avg} ms`, sub: 'average' },
   }
@@ -94,7 +105,7 @@ export default function ReactionChain() {
         <ResultCard
           game={game}
           headline={`${avg} ms average`}
-          detail={best != null ? `Your best average: ${best} ms · fastest round ${Math.min(...times)} ms` : undefined}
+          detail={`Fastest round ${Math.min(...times)} ms${best != null && best < avg ? ` · your best average ${best} ms` : best === avg && getStats(game.slug).plays > 1 ? ' · a new best' : ''}`}
           shareText={`⚡ Reaction Chain\n${times.map(square).join('')} ${avg} ms average`}
           finishData={{ avg }}
           onReplay={reset}

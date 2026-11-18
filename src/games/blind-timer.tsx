@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { getGame } from './registry'
 import { dailyRandom, puzzleLabel } from '../shell/daily'
 import { ResultCard } from '../shell/ResultCard'
+import { feel } from '../shell/feel'
 import { getStats, loadToday, recordDaily, recordPlay, saveToday } from '../shell/stats'
 import { AttemptTiles, Button, Score, Stage, type Attempt } from '../ui'
 
@@ -40,13 +41,16 @@ export default function BlindTimer() {
     const next = [...dailyOffs, off]
     setDailyOffs(next)
     saveToday(game.slug, next)
-    if (next.length >= ATTEMPTS || Math.abs(off) < 0.005) recordDaily(game.slug, Math.abs(bestOf(next)))
+    if (next.length >= ATTEMPTS || Math.abs(off) < 0.005) {
+      const best = Math.abs(bestOf(next))
+      recordDaily(game.slug, best, new Date(), `${fmt(best)}s`)
+    }
   }
 
   function onPracticeStop(elapsed: number) {
     const off = Math.round((elapsed - target) * 100) / 100
     setPracticeOff(off)
-    recordPlay('blind-timer-practice', Math.abs(off), (a, b) => a < b)
+    recordPlay('blind-timer-practice', Math.abs(off), (a, b) => a < b, `${fmt(Math.abs(off))}s`)
   }
 
   if (mode === 'practice') {
@@ -132,9 +136,12 @@ function Timer({ target, onStop }: { target: number; onStop: (elapsed: number) =
     if (start == null) {
       setStart(t)
       setNow(t)
+      feel.tap()
     } else if (stopped == null) {
       const e = (t - start) / 1000
       setStopped(e)
+      if (Math.abs(e - target) < 0.1) feel.good()
+      else feel.tap()
       onStop(e)
     }
   }

@@ -52,6 +52,12 @@ The site name is a placeholder until a real name is picked. The mark (an admit-o
 - Depth is a **hard offset shadow, never a blur**. Keys sit on `shadow-key` and drop 4px onto `shadow-key-pressed` when pressed; tickets and cards sit on `shadow-card`. This is the one bold move in the system: don't add gradients, glows or blurred shadows anywhere.
 - Spacing steps: `space-2` between keys, `space-3` between cards and inside ticket sections, `space-5` inside the stage and ticket, `space-6` between page sections.
 
+## Sound and vibration
+
+- Sound is off until the player turns it on with the `ToggleChip` in the top bar; the setting is shared by every game. Pitch Match is the one exception, because listening is the game.
+- Every game uses the same four feedback sounds: tap, good move, mistake, and the result printing. Never play a sound that gives a timing advantage (Reaction Chain makes no sound when the panel turns green).
+- Vibration is a short tick on the same moments where the phone supports it, and is skipped with reduced motion.
+
 ## Motion
 
 - Keys press down in `duration-press` (60ms). A result ticket prints in once, dropping 8px over `duration-reveal` (240ms).
@@ -93,4 +99,4 @@ Multiplayer games use the same shell plus shared multiplayer parts, so players l
 
 - There is no icon set. Controls are labelled with words; the only glyphs are ✓ ✕ ~ in attempt tiles and → on Play next.
 - The brand mark is the `BrandMark` ticket, drawn in `ticket` with an `edge` outline. It is a placeholder that will be redrawn with the real name.
-- Game cards show a **sample score** in the game's units on their colour band (07.30, 243ms, Lv 12) instead of a picture or emoji.
+- Game cards show a **score** in the game's units on their colour band (0.04s, 243ms, Lv 12) instead of a picture or emoji: the player's own result once they have one, otherwise an example clearly labelled "Example".

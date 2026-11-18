@@ -86,8 +86,18 @@ export interface GameCardProps {
   href: string
   color: string
   sample: string
+  /** Whose score the band shows: "Your best", "Today", or "Example" before the player has played. */
+  sampleLabel?: string
   daily?: boolean
   status?: string
   done?: boolean
 }
 export declare function GameCard(props: GameCardProps): JSX.Element
+
+/** A small on/off switch for a site-wide setting, shown in the top bar. Reads "Sound on" / "Sound off". */
+export interface ToggleChipProps { label: string; on: boolean; onChange: (on: boolean) => void }
+export declare function ToggleChip(props: ToggleChipProps): JSX.Element
+
+/** The quiet row of links under every page. */
+export interface FooterProps { links: { label: string; href: string }[]; note?: ReactNode }
+export declare function Footer(props: FooterProps): JSX.Element

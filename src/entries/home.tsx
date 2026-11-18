@@ -2,9 +2,19 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { GAMES } from '../games/registry'
 import { SITE } from '../site'
-import { getStats, todaysDaily } from '../shell/stats'
+import { SiteFooter } from '../shell/SiteFooter'
+import { getStats, todaysDaily, todaysDailyText } from '../shell/stats'
 import { GameCard, TopBar } from '../ui'
 import '../shell/styles'
+
+/** What the card's colour band shows: the player's own result if they have one, else an example. */
+function score(g: (typeof GAMES)[number]): { sample: string; label: string } {
+  const today = g.daily ? todaysDailyText(g.slug) : undefined
+  if (today) return { sample: today, label: 'Today' }
+  const best = getStats(g.slug).bestText
+  if (!g.daily && best) return { sample: best, label: 'Your best' }
+  return { sample: g.sample, label: 'Example' }
+}
 
 function status(slug: string, daily: boolean): { text?: string; done?: boolean } {
   const s = getStats(slug)
@@ -21,6 +31,7 @@ function Grid({ games }: { games: typeof GAMES }) {
     <ul className="cards">
       {games.map((g) => {
         const st = status(g.slug, g.daily)
+        const sc = score(g)
         return (
           <li key={g.slug}>
             <GameCard
@@ -28,7 +39,8 @@ function Grid({ games }: { games: typeof GAMES }) {
               tagline={g.tagline}
               href={`/${g.slug}/`}
               color={g.color}
-              sample={g.sample}
+              sample={sc.sample}
+              sampleLabel={sc.label}
               daily={g.daily}
               status={st.text}
               done={st.done}
@@ -52,6 +64,7 @@ function Home() {
       <Grid games={GAMES.filter((g) => g.daily)} />
       <h2 className="section-title eyebrow">Quick games</h2>
       <Grid games={GAMES.filter((g) => !g.daily)} />
+      <SiteFooter />
     </div>
   )
 }

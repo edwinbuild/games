@@ -60,6 +60,21 @@ export function BrandMark({ size = 26 }: { size?: number }) {
   )
 }
 
+/* ---------- ToggleChip ---------- */
+export type ToggleChipProps = {
+  /** What the switch controls, e.g. "Sound". The chip reads "Sound on" / "Sound off". */
+  label: string
+  on: boolean
+  onChange: (on: boolean) => void
+}
+export function ToggleChip({ label, on, onChange }: ToggleChipProps) {
+  return (
+    <button type="button" className="qg-chip" aria-pressed={on} onClick={() => onChange(!on)}>
+      {label} {on ? 'on' : 'off'}
+    </button>
+  )
+}
+
 /* ---------- TopBar ---------- */
 export type TopBarProps = { siteName: string; href?: string; daily?: boolean; right?: ReactNode }
 export function TopBar({ siteName, href = '/', daily, right }: TopBarProps) {
@@ -69,7 +84,10 @@ export function TopBar({ siteName, href = '/', daily, right }: TopBarProps) {
         <BrandMark />
         {siteName}
       </a>
-      {right ?? (daily && <Pill>Daily</Pill>)}
+      <span className="qg-topbar-right">
+        {daily && <Pill>Daily</Pill>}
+        {right}
+      </span>
     </header>
   )
 }
@@ -233,24 +251,42 @@ export function PlayNext({ title, href, color, sample, onClick }: PlayNextProps)
   )
 }
 
+/* ---------- Footer ---------- */
+export type FooterProps = { links: { label: string; href: string }[]; note?: ReactNode }
+export function Footer({ links, note }: FooterProps) {
+  return (
+    <footer className="qg-footer">
+      {links.map((l) => (
+        <a key={l.href} href={l.href}>{l.label}</a>
+      ))}
+      {note && <span>{note}</span>}
+    </footer>
+  )
+}
+
 /* ---------- GameCard ---------- */
 export type GameCardProps = {
   title: string
   tagline: string
   href: string
   color: string
-  /** A typical score in the game's own units, shown on the colour band ("07.30", "243ms"). */
+  /** A score in the game's own units, shown on the colour band ("07.30", "243ms"). */
   sample: string
+  /** Says whose score it is: "Your best", "Today", or "Example" for a player who hasn't played. */
+  sampleLabel?: string
   daily?: boolean
   /** Status line: "Played today · 3-day streak", "New today", "Played 4 times". */
   status?: string
   done?: boolean
 }
-export function GameCard({ title, tagline, href, color, sample, daily, status, done }: GameCardProps) {
+export function GameCard({ title, tagline, href, color, sample, sampleLabel, daily, status, done }: GameCardProps) {
   return (
     <a className="qg-card" href={href} style={fill(color)}>
       <span className="qg-card-band">
-        <span className="qg-card-sample">{sample}</span>
+        <span className="qg-card-score">
+          {sampleLabel && <span className="qg-card-sample-label">{sampleLabel}</span>}
+          <span className="qg-card-sample">{sample}</span>
+        </span>
         {daily && <Pill tone="neutral">Daily</Pill>}
       </span>
       <span className="qg-card-body">

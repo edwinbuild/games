@@ -11,6 +11,10 @@ export type Stats = {
   maxStreak: number
   /** Daily results by date, e.g. { "2027-01-04": 0.04 }. */
   daily: Record<string, number>
+  /** Short display text of the best score ("243ms", "Lv 7"), shown on the home card. */
+  bestText?: string
+  /** Short display text of each daily result, by date. */
+  dailyText?: Record<string, string>
 }
 
 const empty = (): Stats => ({ plays: 0, best: null, lastDaily: null, streak: 0, maxStreak: 0, daily: {} })
@@ -24,16 +28,20 @@ export function recordPlay(
   game: string,
   score: number,
   better: (a: number, b: number) => boolean = (a, b) => a > b,
+  text?: string,
 ): Stats {
   const s = getStats(game)
   s.plays += 1
-  if (s.best == null || better(score, s.best)) s.best = score
+  if (s.best == null || better(score, s.best)) {
+    s.best = score
+    if (text) s.bestText = text
+  }
   save(`stats:${game}`, s)
   return s
 }
 
 /** Record today's daily result and advance the streak (once per day). */
-export function recordDaily(game: string, score: number, now = new Date()): Stats {
+export function recordDaily(game: string, score: number, now = new Date(), text?: string): Stats {
   const s = getStats(game)
   const today = dateKey(now)
   if (s.lastDaily !== today) {
@@ -42,8 +50,14 @@ export function recordDaily(game: string, score: number, now = new Date()): Stat
     s.lastDaily = today
   }
   s.daily[today] = score
+  if (text) s.dailyText = { ...s.dailyText, [today]: text }
   save(`stats:${game}`, s)
   return s
+}
+
+/** Today's daily result as display text, if played. */
+export function todaysDailyText(game: string, now = new Date()): string | undefined {
+  return getStats(game).dailyText?.[dateKey(now)]
 }
 
 export function todaysDaily(game: string, now = new Date()): number | undefined {

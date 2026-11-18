@@ -1,73 +1,98 @@
 import { useEffect, useRef, useState } from 'react'
 import { getGame } from './registry'
-import { dateKey } from '../shell/daily'
+import { dailyRandom, puzzleLabel } from '../shell/daily'
+import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
-import { Button, Score, Stage } from '../ui'
+import { Stage } from '../ui'
 
 const game = getGame('luckiest-person')
+const CARDS = 5
 
-function verdict(r: number) {
-  if (r === 100) return 'The luckiest roll there is. Buy a lottery ticket.'
-  if (r >= 90) return 'Ridiculously lucky today.'
-  if (r >= 70) return 'Luck is on your side.'
-  if (r >= 40) return 'A perfectly ordinary day.'
-  if (r >= 15) return 'Maybe stay in bed.'
-  return 'Ouch. Tomorrow can only be better.'
+/** Today's five cards, the same for everyone: five different numbers from 1 to 100. */
+export function cardsFor(d = new Date()): number[] {
+  const r = dailyRandom(game.slug, d)
+  const out: number[] = []
+  while (out.length < CARDS) {
+    const n = 1 + Math.floor(r() * 100)
+    if (!out.includes(n)) out.push(n)
+  }
+  return out
 }
 
-const bar = (r: number) => '🟩'.repeat(Math.round(r / 10)) + '⬜'.repeat(10 - Math.round(r / 10))
+const ordinal = (n: number) => ['best', '2nd best', 'middle', '2nd worst', 'worst'].at(n - 1) ?? ''
 
 export default function LuckiestPerson() {
-  const [roll, setRoll] = useState<number | null>(() => loadToday<number | null>(game.slug, null))
-  const [rolling, setRolling] = useState(false)
-  const [shown, setShown] = useState(roll ?? 0)
-  const alreadyRolled = useRef(roll != null)
-  const timer = useRef<ReturnType<typeof setInterval>>(undefined)
+  const cards = cardsFor()
+  const [pick, setPick] = useState<number | null>(() => {
+    const saved = loadToday<number | null>(game.slug, null)
+    // Only a card position (0–4) counts; anything else is from the old version of the game.
+    return saved != null && Number.isInteger(saved) && saved >= 0 && saved < CARDS ? saved : null
+  })
+  const [revealAll, setRevealAll] = useState(pick != null)
+  const alreadyPicked = useRef(pick != null)
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  useEffect(() => () => clearTimeout(timer.current), [])
 
-  useEffect(() => () => clearInterval(timer.current), [])
+  const sorted = [...cards].sort((a, b) => b - a)
+  const value = pick != null ? cards[pick] : null
+  const rank = value != null ? sorted.indexOf(value) + 1 : null
 
-  function doRoll() {
-    if (roll != null || rolling) return
-    const result = 1 + Math.floor(Math.random() * 100)
-    saveToday(game.slug, result) // saved first so a reload can't re-roll
-    recordDaily(game.slug, result)
-    setRolling(true)
-    const started = performance.now()
-    timer.current = setInterval(() => {
-      if (performance.now() - started > 1400) {
-        clearInterval(timer.current)
-        setShown(result)
-        setRoll(result)
-        setRolling(false)
-      } else setShown(1 + Math.floor(Math.random() * 100))
-    }, 60)
+  function choose(i: number) {
+    if (pick != null) return
+    const v = cards[i]
+    const r = sorted.indexOf(v) + 1
+    saveToday(game.slug, i) // saved first so a reload can't pick again
+    recordDaily(game.slug, v, new Date(), String(v))
+    setPick(i)
+    if (r === 1) feel.good()
+    else if (r === CARDS) feel.bad()
+    else feel.tap()
+    timer.current = setTimeout(() => setRevealAll(true), 700)
   }
 
   const stats = getStats(game.slug)
+  const verdict =
+    rank === 1 ? 'You picked the best card.'
+    : rank === CARDS ? 'You picked the worst card.'
+    : `The best card was ${sorted[0]}.`
 
   return (
     <>
       <Stage>
-        <div className="stack" style={{ padding: 'var(--space-3) 0' }}>
-          <Score label={`Today's luck · ${dateKey()}`} value={roll == null && !rolling ? '?' : shown} />
-          {roll == null && (
-            <Button size="lg" block color={game.color} onClick={doRoll} disabled={rolling}>
-              {rolling ? 'Rolling…' : 'Roll my luck'}
-            </Button>
-          )}
-          {roll != null && <p className="body-strong" style={{ margin: 0 }}>{verdict(roll)}</p>}
+        <div className="stack">
+          <p className="small muted" style={{ margin: 0 }}>
+            {pick == null ? 'Five cards, numbered 1 to 100. Pick one.' : verdict}
+          </p>
+          <div className="lucky-cards" role="group" aria-label="Today's cards">
+            {cards.map((v, i) => {
+              const open = i === pick || (revealAll && pick != null)
+              return (
+                <button
+                  key={i}
+                  className="lucky-card"
+                  data-open={open || undefined}
+                  data-picked={i === pick || undefined}
+                  disabled={pick != null}
+                  onClick={() => choose(i)}
+                  aria-label={open ? `Card ${i + 1}: ${v}` : `Card ${i + 1}, face down`}
+                >
+                  <span className="lucky-card-face">{open ? v : '?'}</span>
+                </button>
+              )
+            })}
+          </div>
         </div>
       </Stage>
 
-      {roll != null && (
+      {value != null && rank != null && (
         <ResultCard
           game={game}
-          headline={`Luckier than ${roll - 1}% of rolls`}
-          detail={<>Your luck: {roll}/100{stats.streak > 1 && <> · {stats.streak} days in a row</>}</>}
-          shareText={`🍀 Luckiest Person ${dateKey()}\n${bar(roll)} ${roll}/100\nLuckier than ${roll - 1}% of rolls today`}
-          trackFinish={!alreadyRolled.current}
-          finishData={{ roll }}
+          headline={`You drew ${value}`}
+          detail={<>The {ordinal(rank)} of today's five{stats.streak > 1 && <> · {stats.streak} days in a row</>}</>}
+          shareText={`🍀 Luckiest Person ${puzzleLabel()}\nDrew ${value}, the ${ordinal(rank)} of 5`}
+          trackFinish={!alreadyPicked.current}
+          finishData={{ value, rank }}
         />
       )}
     </>

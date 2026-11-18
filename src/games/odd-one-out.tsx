@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getGame } from './registry'
 import { ResultCard } from '../shell/ResultCard'
+import { feel } from '../shell/feel'
 import { getStats, recordPlay } from '../shell/stats'
 import { Score, Stage } from '../ui'
 
@@ -8,19 +9,23 @@ const game = getGame('odd-one-out')
 const TIME = 60
 const WRONG_PENALTY = 3
 
-// Pairs that look alike, roughly ordered from easy to hard to tell apart.
+// Pairs ordered from easy to hard to tell apart. Each level draws from a window that
+// slides down the list, so the grid grows and the difference gets subtler together.
 const PAIRS: [string, string][] = [
-  ['🍎', '🍌'], ['🐶', '🐱'], ['⚽', '🏀'], ['🌞', '🌧️'],
-  ['🍎', '🍅'], ['🐶', '🐕'], ['😀', '😃'], ['🙂', '🙃'],
-  ['🌕', '🌝'], ['🐢', '🦎'], ['😐', '😑'], ['🕐', '🕑'],
-  ['😄', '😆'], ['🐱', '😺'], ['🌑', '🌚'], ['⭐', '🌟'],
-  ['😊', '☺️'], ['😗', '😙'], ['🕒', '🕓'], ['😁', '😀'],
+  // different shape and colour
+  ['🍎', '🍌'], ['🐶', '🐱'], ['⚽', '🏀'], ['☀️', '🌧️'], ['🚗', '🚲'], ['🌲', '🌵'], ['🍕', '🍔'], ['🐟', '🐦'],
+  // same family, different colour or shape
+  ['🍎', '🍅'], ['🍊', '🍑'], ['🐶', '🐕'], ['🐱', '🐈'], ['🌕', '🌝'], ['🐢', '🦎'], ['🍋', '🍌'], ['🚗', '🚕'], ['🌻', '🌼'], ['❤️', '🧡'],
+  // faces and small marks
+  ['😀', '😃'], ['🙂', '🙃'], ['😐', '😑'], ['😄', '😆'], ['😺', '😸'], ['🌑', '🌚'], ['⭐', '🌟'], ['🕐', '🕑'], ['🔴', '🟠'], ['💙', '💜'], ['😮', '😯'], ['🌘', '🌒'],
+  // nearly the same
+  ['😊', '☺️'], ['😗', '😙'], ['🕒', '🕓'], ['😁', '😀'], ['😚', '😙'], ['🙁', '☹️'], ['😶', '😐'], ['🕐', '🕜'], ['🟢', '🟩'], ['😌', '😊'],
 ]
 
 function levelSetup(level: number) {
   const size = Math.min(3 + Math.floor((level - 1) / 2), 8) // 3×3 → 8×8
-  const tier = Math.min(Math.floor((level - 1) / 2) * 2, PAIRS.length - 4)
-  const [a, b] = PAIRS[tier + Math.floor(Math.random() * 4)]
+  const start = Math.min(Math.floor((level - 1) * 2.2), PAIRS.length - 5)
+  const [a, b] = PAIRS[start + Math.floor(Math.random() * 5)]
   const flip = Math.random() < 0.5
   return { size, common: flip ? a : b, odd: flip ? b : a, oddIndex: Math.floor(Math.random() * size * size) }
 }
@@ -40,16 +45,18 @@ export default function OddOneOut() {
   }, [started, done])
 
   useEffect(() => {
-    if (done) recordPlay(game.slug, level - 1)
+    if (done) recordPlay(game.slug, level - 1, undefined, `Lv ${level - 1}`)
   }, [done, level])
 
   function pick(i: number) {
     if (done) return
     if (!started) setStarted(true)
     if (i === setup.oddIndex) {
+      feel.good()
       setLevel(level + 1)
       setSetup(levelSetup(level + 1))
     } else {
+      feel.bad()
       setLeft((t) => Math.max(0, t - WRONG_PENALTY))
       setShake(i)
       setTimeout(() => setShake(null), 300)
@@ -69,8 +76,8 @@ export default function OddOneOut() {
   return (
     <>
       <div className="between" style={{ marginBottom: 'var(--space-3)' }}>
-        <Score label="Level" value={level} size="md" />
-        <Score label={started ? 'Time' : 'Starts on first tap'} value={`${Math.ceil(left)}s`} size="md" />
+        <Score label={done ? 'Cleared' : 'Level'} value={done ? score : level} size="md" />
+        <Score label={done ? "Time's up" : started ? 'Time' : 'Starts on first tap'} value={`${Math.ceil(left)}s`} size="md" />
       </div>
 
       {!done && (
@@ -97,8 +104,8 @@ export default function OddOneOut() {
       {done && (
         <ResultCard
           game={game}
-          headline={`Level ${score}`}
-          detail={best != null ? `Your best: level ${best}` : undefined}
+          headline={`${score} level${score === 1 ? '' : 's'} cleared`}
+          detail={best != null && best > score ? `Your best: level ${best}` : best === score && getStats(game.slug).plays > 1 ? 'A new best' : undefined}
           shareText={`👀 Odd One Out\nCleared ${score} level${score === 1 ? '' : 's'} in 60s`}
           finishData={{ level: score }}
           onReplay={reset}

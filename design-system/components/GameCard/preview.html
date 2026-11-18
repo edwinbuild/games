@@ -7,8 +7,8 @@
 <script>
   var Q = window.QuickGames, h = React.createElement;
   ReactDOM.createRoot(document.getElementById('root')).render(h('div', {style:{display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(220px, 1fr))', gap:12}},
-    h(Q.GameCard, {title:'Blind Timer', tagline:'Stop a hidden clock at exactly the target time.', href:'#', color:'tangerine', sample:'07.30', daily:true, status:'Played today · 5 day streak', done:true}),
-    h(Q.GameCard, {title:'Reaction Chain', tagline:'Tap the instant the colour changes.', href:'#', color:'mint', sample:'243ms', status:'Played 4 times'})));
+    h(Q.GameCard, {title:'Blind Timer', tagline:'Stop a hidden clock at exactly the target time.', href:'#', color:'tangerine', sample:'0.04s', sampleLabel:'Today', daily:true, status:'Played today · 5 day streak', done:true}),
+    h(Q.GameCard, {title:'Reaction Chain', tagline:'Tap the instant the colour changes.', href:'#', color:'mint', sample:'243ms', sampleLabel:'Example', status:'Played 4 times'})));
 </script>
 </body>
 </html>

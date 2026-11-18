@@ -99,18 +99,64 @@ ${list}
   })
 }
 
+const footer = `    <footer class="qg-footer"><a href="/">All games</a><a href="/about/">About</a></footer>`
+
+function staticPage(opts: { title: string; description: string; path: string; entry: string; body: string }) {
+  return page({
+    title: `${opts.title} | ${SITE.name}`,
+    description: opts.description,
+    path: opts.path,
+    image: '/og/home.png',
+    entry: opts.entry,
+    body: `    <div id="root"></div>
+    <main class="howto prose">
+${opts.body}
+    </main>
+${footer}`,
+  })
+}
+
+const aboutPage = () =>
+  staticPage({
+    title: 'About',
+    description: `What ${SITE.name} is and what it keeps about you.`,
+    path: '/about/',
+    entry: '../../src/entries/static.tsx',
+    body: `      <h1 class="game-title">About ${esc(SITE.name)}</h1>
+      <p>${esc(SITE.name)} is a small collection of original browser games. Each one takes a minute or two, works on a phone, and ends with a result you can share.</p>
+      <h2>Daily games</h2>
+      <p>Daily games give everyone the same puzzle on the same date. A new one starts at midnight in your own time zone.</p>
+      <h2>What we keep</h2>
+      <p>There are no accounts and no cookies. Your scores, best results and streaks are saved only in this browser on this device; clearing your browser data removes them. The site's host keeps standard server logs, as every website host does.</p>
+      <h2>Sound</h2>
+      <p>Sound is off until you turn it on with the switch at the top of each game, and the setting is remembered. Pitch Match always plays its tones, because listening is the game.</p>`,
+  })
+
+const notFoundPage = () =>
+  staticPage({
+    title: 'Page not found',
+    description: 'This page does not exist.',
+    path: '/404',
+    entry: '../src/entries/static.tsx',
+    body: `      <h1 class="game-title">That page doesn't exist</h1>
+      <p>The link may be old or mistyped. <a href="/">See all the games</a>.</p>`,
+  })
+
 rmSync(site, { recursive: true, force: true })
 mkdirSync(site, { recursive: true })
 writeFileSync(resolve(site, 'index.html'), homePage())
+writeFileSync(resolve(site, '404.html'), notFoundPage())
+mkdirSync(resolve(site, 'about'), { recursive: true })
+writeFileSync(resolve(site, 'about', 'index.html'), aboutPage())
 for (const g of GAMES) {
   mkdirSync(resolve(site, g.slug), { recursive: true })
   writeFileSync(resolve(site, g.slug, 'index.html'), gamePage(g))
 }
 // Sitemap and robots.txt for search engines.
-const urls = ['/', ...GAMES.map((g) => `/${g.slug}/`)]
+const urls = ['/', ...GAMES.map((g) => `/${g.slug}/`), '/about/']
 writeFileSync(
   resolve(root, 'public/sitemap.xml'),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${BASE_URL}${u}</loc></url>`).join('\n')}\n</urlset>\n`,
 )
 writeFileSync(resolve(root, 'public/robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${BASE_URL}/sitemap.xml\n`)
-console.log(`Generated ${GAMES.length + 1} pages in site/`)
+console.log(`Generated ${GAMES.length + 3} pages in site/`)
