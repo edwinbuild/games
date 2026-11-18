@@ -51,3 +51,7 @@ Every colour, font, size, radius and shadow is set in `design-system/tokens.json
 1. Add an entry to `GAMES` in `src/games/registry.ts`.
 2. Create `src/games/<slug>.tsx` with a default-exported component. Use `ResultCard` at the end, `dailyRandom` for daily puzzles, and `recordPlay` / `recordDaily` for stats.
 3. Run `npm run og`, then `npm run dev`.
+
+## Browser tests
+
+`npm run build && npm run e2e` serves the build and checks every page at 360, 412, 820 and 1440px (no errors, no sideways scroll), then plays each game to its ticket in light and dark using `tests/e2e/games/<slug>.cjs`. Playwright comes from the machine (`NODE_PATH=$(npm root -g)` if it isn't found). `npm run budget` checks each page's JavaScript.

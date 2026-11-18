@@ -12,7 +12,9 @@
     "typecheck": "tsc -b",
     "og": "node scripts/og.cjs",
     "tokens": "node --experimental-strip-types design-system/build.ts",
-    "ds": "node --experimental-strip-types design-system/build.ts --bundle"
+    "ds": "node --experimental-strip-types design-system/build.ts --bundle",
+    "e2e": "node tests/e2e/run.cjs",
+    "budget": "node scripts/budget.cjs"
   },
   "dependencies": {
     "react": "^19.3.1",

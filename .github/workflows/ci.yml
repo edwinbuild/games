@@ -20,8 +20,5 @@ jobs:
       - run: npx tsc -b
       - run: npm test
       - run: npm run build
-      - name: JavaScript budget (90 KB gzipped per page)
-        run: |
-          total=$(cat dist/assets/*.js | gzip -c | wc -c)
-          echo "All JavaScript, gzipped: $total bytes"
-          test "$total" -lt 92160
+      - name: JavaScript budget (per page)
+        run: npm run budget
