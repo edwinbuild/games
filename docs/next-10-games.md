@@ -2,6 +2,10 @@
 
 This file is the single source for an unattended run that builds ten games one by one, pushing each to `main` (which deploys to Vercel) before starting the next. Everything needed is here or in the repo; read `README.md`, `design-system/README.md` and `supabase/README.md` first.
 
+## Network
+
+The sandbox can reach the live site (`games-sigma-gold.vercel.app`) and Supabase (`*.supabase.co`). Local runs (`localhost`) never count plays, so tests don't touch the real stats.
+
 ## Ground rules (read before every game)
 
 - **Original games only.** Genres that do well on daily-game sites (estimation, crowd votes, colour, logic, quick duels) are fine. Never copy a specific existing game's rules, name, look or puzzles. If a design below turns out to match a well-known game closely, change the twist and note it in the log.
@@ -41,7 +45,7 @@ Each entry: what the player does, exact rules, scoring, what is shared, and done
 - **Content:** a list of at least 120 questions in `src/games/this-or-that/questions.ts`, all worldwide and harmless (food, habits, travel, everyday dilemmas; no politics, religion or brands), picked by date from a seeded shuffle so a question never repeats within 120 days.
 - **Backend (new migration):** table `app.votes (day date, question int, choice smallint check in (0,1), count int, primary key(day, question, choice))`; functions `vote(p_day date, p_question int, p_choice int)` (only today's or yesterday's UTC day; adds one) and `split(p_day date, p_question int)` returning both counts. One vote per browser per day is enforced client-side (stored in `today:this-or-that`); accept that this can be bypassed and never show it as exact science: label results "of today's players" with the count ("2,104 votes").
 - **Ticket:** "62% picked aisle. You guessed 55%." Share: `🔀 This or That #N\nI picked window\nGuessed the crowd within 7%`. No reveal of the split in the share text.
-- **Done when:** migration applied and saved under `supabase/migrations/`; advisors show no new errors; a test (SQL as `anon`, rolled back) votes and reads the split; e2e plays it against a mocked API when the network can't reach Supabase.
+- **Done when:** migration applied and saved under `supabase/migrations/`; advisors show no new errors; a test (SQL as `anon`, rolled back) votes and reads the split; e2e votes against the real Supabase from `localhost` and then removes its test votes with SQL.
 
 ### 3. Color Recall
 - **Slug** `color-recall` · **colour** `orchid` · **players** 1 · **daily** yes (unlimited tries, best counts) · **backend** none.
@@ -75,7 +79,7 @@ Each entry: what the player does, exact rules, scoring, what is shared, and done
 - **Play:** one player taps "Create a room", gets a `RoomCode` and a link; the friend opens the link (or types the code) and joins the `Lobby`. Both press Ready; the host starts. Five rounds: each round both phones show "Wait…", then turn green after a delay the host sent in advance.
 - **Fairness:** network latency must not decide the winner. Each phone measures its own reaction time locally (from the moment it turned green to the tap) and broadcasts it; the lower time wins the round. Early taps count as a lost round. Clock differences don't matter because each time is measured on its own phone.
 - **Ticket:** both players' times per round, the winner, the average. Share: `⚡ Reaction Duel\nSam beat me 3–2\nMy average 241 ms`. "Rematch" keeps the room.
-- **Done when:** two browser contexts in e2e can create, join and finish a match against the real Supabase Realtime (if the sandbox network blocks Supabase, test with a mocked channel and note that the live test must be done on the deployed site); leaving mid-match ends it cleanly for the other player; the room code join rejects a full or started room with a clear message.
+- **Done when:** two browser contexts in e2e can create, join and finish a match against the real Supabase Realtime (the sandbox can reach `*.supabase.co`); leaving mid-match ends it cleanly for the other player; the room code join rejects a full or started room with a clear message.
 
 ### 8. Flip Grid
 - **Slug** `flip-grid` · **colour** `pistachio` · **players** 1 · **daily** yes (unlimited tries, fewest moves counts) · **backend** none.
@@ -88,7 +92,7 @@ Each entry: what the player does, exact rules, scoring, what is shared, and done
 - **Slug** `spot-race` · **colour** `grape` · **players** `online-2-8` · **daily** no · **backend** Supabase Realtime.
 - **Play:** up to eight players join a room. The host starts; everyone gets the same seeded sequence of Odd One Out grids (reuse the Odd One Out engine and emoji pairs from `src/games/odd-one-out.tsx`, moving shared parts into `src/games/shared/`). 60 seconds; a wrong tap costs 3 seconds. A `ScoreStrip` shows everyone's current level live.
 - **Ticket:** final ranking with `PlayerChip`s. Share: `👀 Spot Race\n2nd of 5 · reached level 9`.
-- **Done when:** two and three browser contexts can race in e2e (or mocked channel as above); late joiners are refused after start; a player who disconnects is shown as "left" and kept in the final ranking at their last level.
+- **Done when:** two and three browser contexts can race in e2e against the real Supabase Realtime; late joiners are refused after start; a player who disconnects is shown as "left" and kept in the final ranking at their last level.
 
 ### 10. Stack Tower
 - **Slug** `stack-tower` · **colour** `chili` · **players** 1 · **daily** yes (unlimited tries, best counts) · **backend** none.
@@ -107,8 +111,9 @@ Each entry: what the player does, exact rules, scoring, what is shared, and done
 6. Commit with a clear message, merge into `main` with `--ff-only`, push.
 7. Wait for both checks on the pushed commit: the Vercel status ("Deployment has completed") and the GitHub Actions `check` job. Use `gh api repos/edwinbuild/games/commits/<sha>/statuses` and `/check-runs`.
 8. If either fails: read the logs (`gh run view --log-failed`), fix, and push again. After two failed fixes, revert that game's merge on `main`, push, record why in `docs/overnight-log.md`, and move to the next game.
-9. Append a line to `docs/overnight-log.md`: game, commit, what was tested, anything left undone. Update the master plan doc's tracker if the docs connector is available.
-10. Move to the next game. Never start a game while `main` is red.
+9. Check the live site in a real browser (the sandbox can reach `games-sigma-gold.vercel.app`): the new game page loads with status 200, no console errors, and its card is on the home page. Don't play it on the live site, because plays there count in the real stats; if a live play is unavoidable, remove it afterwards with SQL (subtract from `app.event_counts` for that game and hour).
+10. Append a line to `docs/overnight-log.md`: game, commit, what was tested, anything left undone. Update the master plan doc's tracker if the docs connector is available.
+11. Move to the next game. Never start a game while `main` is red.
 
 ## Stop conditions
 
