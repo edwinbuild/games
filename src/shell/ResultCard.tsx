@@ -28,6 +28,8 @@ type Props = {
   finishData?: Record<string, string | number>
   /** Makes the share link a challenge: the puzzle seed and this result. */
   challenge: { seed: string; score: number; text: string; lowerIsBetter: boolean }
+  /** Online games: share a plain link to the game instead of a challenge (no board, no name field). */
+  plainLink?: boolean
 }
 
 /** Pick one other game to suggest; rotates by day. */
@@ -54,8 +56,8 @@ export function ResultCard(p: Props) {
   const incoming = readChallenge(p.game.slug)
   const others = incoming && incoming.s === p.challenge.seed ? incoming.r : []
   const rows = mergeRow(others, { n: name, i: me, x: p.challenge.score, t: p.challenge.text }, p.challenge.lowerIsBetter)
-  const url = challengeUrl(origin, { g: p.game.slug, s: p.challenge.seed, r: rows })
-  const hasOthers = rows.some((r) => r.i !== me)
+  const url = p.plainLink ? `${origin}/${p.game.slug}/` : challengeUrl(origin, { g: p.game.slug, s: p.challenge.seed, r: rows })
+  const hasOthers = !p.plainLink && rows.some((r) => r.i !== me)
   const next = nextGame(p.game.slug)
   // The chip shows the player's own result for that game, or "New" if they haven't played it.
   const nextScore = (next.daily ? todaysDailyText(next.slug) : getStats(next.slug).bestText) ?? 'New'
@@ -68,19 +70,19 @@ export function ResultCard(p: Props) {
         color={p.game.color}
         headline={<CountUp text={p.headline} animate={p.trackFinish ?? true} />}
         detail={p.detail}
-        shareText={`${p.shareText}\n${hasOthers ? 'Same puzzle. Your turn:' : 'Same puzzle. Beat me:'}`}
+        shareText={p.plainLink ? p.shareText : `${p.shareText}\n${hasOthers ? 'Same puzzle. Your turn:' : 'Same puzzle. Beat me:'}`}
         url={url}
         board={hasOthers ? <ChallengeBoard rows={rows.map((r) => ({ name: displayName(r, me), score: r.t, me: r.i === me }))} /> : undefined}
         onShare={(via) => track('share', p.game.slug, { via })}
       >
-        <TextField
+        {!p.plainLink && <TextField
           id="nickname"
           label="Your name on challenges (optional)"
           value={name}
           placeholder="e.g. Sam (blank shows “A friend”)"
           maxLength={16}
           onChange={(v) => { setName(v); setMyName(v) }}
-        />
+        />}
         {p.onReplay && (
           <Button
             size="lg"

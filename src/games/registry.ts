@@ -201,6 +201,21 @@ export const GAMES: GameMeta[] = [
     color: 'periwinkle',
     sample: '82/100',
   },
+  {
+    slug: 'reaction-online',
+    title: 'Reaction Duel Online',
+    emoji: '⚡',
+    instructions: 'Duel a friend on their own phone: tap the moment it turns green. First to three.',
+    tagline: 'Duel a friend on another phone. The faster reaction wins each round, first to three.',
+    howTo: [
+      'Create a room and send the link (or the five-letter code) to a friend. When you are both in, press Ready; the host starts the duel. Each round both screens say Wait, then turn green; tap as fast as you can.',
+      'Each phone times its own reaction from the moment it turned green, so a slow connection never decides a round. Tapping before green loses the round. First to three rounds wins; Rematch keeps you in the same room.',
+    ],
+    daily: false,
+    color: 'peach',
+    sample: '3–2',
+    players: 'online-2',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

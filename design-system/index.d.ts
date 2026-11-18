@@ -146,4 +146,4 @@ export interface LobbyPlayer { name: string; ready: boolean; me?: boolean; host?
 export declare function Lobby(props: { players: LobbyPlayer[]; max: number }): JSX.Element
 
 /** Every player's score in a row during play. */
-export declare function ScoreStrip(props: { players: { name?: string; score: ReactNode; me?: boolean }[] }): JSX.Element
+export declare function ScoreStrip(props: { players: { name?: string; score: ReactNode; me?: boolean; player?: number }[] }): JSX.Element

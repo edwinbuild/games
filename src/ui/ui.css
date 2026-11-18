@@ -205,6 +205,7 @@
   border: 1.5px solid currentColor; font: 700 11px/16px var(--font-mono); letter-spacing: 0; opacity: 0.7;
 }
 @media (hover: hover) and (pointer: fine) { .qg-kbd { display: inline-flex; } }
+.qg-stage > .qg-kbd, .qg-split-half > .qg-kbd { justify-self: center; }
 
 /* Segmented control: a small set of mutually exclusive choices (the theme). */
 .qg-segmented { display: inline-flex; padding: 2px; gap: 2px; border-radius: var(--radius-pill); border: var(--border-edge) solid var(--edge); }

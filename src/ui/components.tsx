@@ -467,11 +467,11 @@ export function Lobby({ players, max }: { players: LobbyPlayer[]; max: number })
 }
 
 /* ---------- ScoreStrip ---------- */
-export function ScoreStrip({ players }: { players: { name?: string; score: ReactNode; me?: boolean }[] }) {
+export function ScoreStrip({ players }: { players: { name?: string; score: ReactNode; me?: boolean; player?: number }[] }) {
   return (
     <div className="qg-scorestrip" aria-live="polite">
       {players.map((p, i) => (
-        <PlayerChip key={i} player={i} name={p.me ? 'You' : p.name} detail={p.score} />
+        <PlayerChip key={i} player={p.player ?? i} name={p.me ? 'You' : p.name} detail={p.score} />
       ))}
     </div>
   )
