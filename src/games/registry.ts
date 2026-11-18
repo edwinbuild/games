@@ -144,6 +144,20 @@ export const GAMES: GameMeta[] = [
     color: 'aqua',
     sample: '4% off',
   },
+  {
+    slug: 'color-recall',
+    title: 'Color Recall',
+    emoji: '🎨',
+    instructions: 'Each colour shows for 2 seconds. Rebuild it from memory with three sliders.',
+    tagline: 'See a colour for two seconds, then rebuild it from memory. Three new colours every day.',
+    howTo: [
+      'A colour fills the screen for two seconds, then hides. Rebuild it with the hue, saturation and lightness sliders and press Lock in. After each colour you see yours next to the real one.',
+      'There are three colours a day, the same for everyone. Each match is scored by how different the two colours look to the human eye (the CIEDE2000 measure), and your day’s result is the average. Try as many times as you like; your best try counts.',
+    ],
+    daily: true,
+    color: 'orchid',
+    sample: '86%',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

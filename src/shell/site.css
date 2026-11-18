@@ -178,3 +178,17 @@ button { font: inherit; }
 @keyframes tot-fill { from { width: 0; } }
 .tot-guess { position: absolute; bottom: -12px; width: 0; height: 0; transform: translateX(-6px); border: 6px solid transparent; border-bottom-color: var(--ink); }
 @media (prefers-reduced-motion: reduce) { .tot-bar-a { animation: none; } .tot-option { transition: none; } }
+
+/* Color Recall */
+.cr-show { position: relative; min-height: min(56dvh, 420px); display: grid; place-items: end center; padding: var(--space-4); overflow: hidden; }
+.cr-timer { position: absolute; top: 0; left: 0; height: 6px; background: var(--ink); opacity: 0.6; }
+.cr-show-label { padding: 4px 12px; border-radius: var(--radius-pill); background: var(--surface); color: var(--ink); font: 700 14px/20px var(--font-body); }
+.cr-swatch { display: block; aspect-ratio: 1; width: 100%; border-radius: var(--radius-md); border: var(--border-edge) solid var(--edge); }
+.cr-swatch--big { aspect-ratio: auto; height: 140px; }
+.cr-compare { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); width: 100%; }
+.cr-compare > div { display: grid; gap: var(--space-1); justify-items: center; }
+.cr-slider { display: grid; gap: var(--space-1); text-align: left; }
+.cr-slider input { -webkit-appearance: none; appearance: none; width: 100%; height: 28px; border-radius: var(--radius-pill); border: var(--border-edge) solid var(--edge); }
+.cr-slider input::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 30px; border-radius: 50%; background: var(--surface); border: 3px solid var(--edge); }
+.cr-slider input::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: var(--surface); border: 3px solid var(--edge); }
+.cr-slider input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
