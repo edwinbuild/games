@@ -217,10 +217,12 @@ export type ResultTicketProps = {
   shareText: string
   url: string
   onShare?: (via: ShareVia) => void
+  /** A challenge leaderboard, shown between the result and the share text. */
+  board?: ReactNode
   /** Replay key, countdown, Play next, etc. */
   children?: ReactNode
 }
-export function ResultTicket({ game, stamp, color, headline, detail, shareText, url, onShare, children }: ResultTicketProps) {
+export function ResultTicket({ game, stamp, color, headline, detail, shareText, url, onShare, board, children }: ResultTicketProps) {
   return (
     <section className="qg-ticket" style={fill(color)} aria-live="polite">
       <div className="qg-ticket-stub">
@@ -231,6 +233,7 @@ export function ResultTicket({ game, stamp, color, headline, detail, shareText, 
       <div className="qg-ticket-body">
         <p className="qg-ticket-headline">{headline}</p>
         {detail && <p className="qg-ticket-detail">{detail}</p>}
+        {board}
         <pre className="qg-share-text">{shareText}</pre>
         <ShareButtons text={shareText} url={url} onShare={onShare} />
         {children}
@@ -264,6 +267,56 @@ export function Footer({ links, note }: FooterProps) {
       ))}
       {note && <span>{note}</span>}
     </footer>
+  )
+}
+
+/* ---------- ChallengeBanner ---------- */
+export type ChallengeBannerProps = {
+  /** The challenge in one line: "Sam was 0.04s off. Same puzzle, your turn." */
+  text: ReactNode
+  /** Game colour for the banner (token name). Defaults to `primary`. */
+  color?: string
+}
+export function ChallengeBanner({ text, color }: ChallengeBannerProps) {
+  return (
+    <div className="qg-banner" style={fill(color)} role="status">
+      <span className="qg-banner-eyebrow">Challenge</span>
+      <span className="qg-banner-text">{text}</span>
+    </div>
+  )
+}
+
+/* ---------- ChallengeBoard ---------- */
+export type BoardRow = { name: string; score: string; me?: boolean }
+export function ChallengeBoard({ rows }: { rows: BoardRow[] }) {
+  return (
+    <ol className="qg-board" aria-label="Everyone who played this challenge">
+      {rows.map((r, i) => (
+        <li key={i} data-me={r.me || undefined}>
+          <span className="qg-board-rank">{i + 1}</span>
+          <span className="qg-board-name">{r.name}</span>
+          <span className="qg-board-score">{r.score}</span>
+        </li>
+      ))}
+    </ol>
+  )
+}
+
+/* ---------- TextField ---------- */
+export type TextFieldProps = {
+  id: string
+  label: string
+  value: string
+  onChange: (v: string) => void
+  placeholder?: string
+  maxLength?: number
+}
+export function TextField({ id, label, value, onChange, placeholder, maxLength }: TextFieldProps) {
+  return (
+    <div className="qg-field">
+      <label htmlFor={id}>{label}</label>
+      <input id={id} value={value} placeholder={placeholder} maxLength={maxLength} autoComplete="nickname" onChange={(e) => onChange(e.target.value)} />
+    </div>
   )
 }
 

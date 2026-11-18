@@ -60,3 +60,18 @@ export function puzzleLabel(d = new Date()): string {
   const n = dayNumber(d)
   return n >= 1 ? `#${n}` : dateKey(d)
 }
+
+/** Parses a YYYY-MM-DD key back to a local date, or null if it isn't one. */
+export function parseDateKey(k: string): Date | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(k)
+  if (!m) return null
+  const d = new Date(+m[1], +m[2] - 1, +m[3])
+  return dateKey(d) === k ? d : null
+}
+
+/** The day a daily game should show: today, or the day of a challenge from another date. */
+export function dailyDayFor(challengeSeed: string | undefined): { day: Date; oneOff: boolean } {
+  const parsed = challengeSeed ? parseDateKey(challengeSeed) : null
+  if (!parsed || challengeSeed === dateKey()) return { day: new Date(), oneOff: false }
+  return { day: parsed, oneOff: true }
+}

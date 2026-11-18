@@ -1,0 +1,12 @@
+<!-- @dsCard group="Friends" height=190 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>preview</title><style>body{margin:0;padding:16px;background:var(--canvas);color:var(--ink);font-family:var(--font-body)}.col{max-width:560px;display:grid;gap:12px}</style></head>
+<body>
+<div id="root" class="col"></div>
+<script>
+  var Q = window.QuickGames, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(Q.ChallengeBoard, {rows:[{name:'Sam', score:'0.04s'}, {name:'You', score:'0.12s', me:true}, {name:'A friend', score:'0.31s'}]}));
+</script>
+</body>
+</html>

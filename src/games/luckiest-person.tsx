@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { getGame } from './registry'
-import { dailyRandom, puzzleLabel } from '../shell/daily'
+import { readChallenge } from '../shell/challenge'
+import { dailyDayFor, dailyRandom, dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
@@ -80,8 +81,11 @@ function Practice({ onBack }: { onBack: () => void }) {
 const ordinal = (n: number) => ['best', '2nd best', 'middle', '2nd worst', 'worst'].at(n - 1) ?? ''
 
 export default function LuckiestPerson() {
-  const cards = cardsFor()
+  // A challenge from another day deals that day's cards for one pick that isn't saved.
+  const { day, oneOff } = dailyDayFor(readChallenge(game.slug)?.s)
+  const cards = cardsFor(day)
   const [pick, setPick] = useState<number | null>(() => {
+    if (oneOff) return null
     const saved = loadToday<number | null>(game.slug, null)
     // Only a card position (0–4) counts; anything else is from the old version of the game.
     return saved != null && Number.isInteger(saved) && saved >= 0 && saved < CARDS ? saved : null
@@ -99,8 +103,10 @@ export default function LuckiestPerson() {
     if (pick != null) return
     const v = cards[i]
     const r = sorted.indexOf(v) + 1
-    saveToday(game.slug, i) // saved first so a reload can't pick again
-    recordDaily(game.slug, v, new Date(), String(v))
+    if (!oneOff) {
+      saveToday(game.slug, i) // saved first so a reload can't pick again
+      recordDaily(game.slug, v, new Date(), String(v))
+    }
     setPick(i)
     if (r === 1) feel.good()
     else if (r === CARDS) feel.bad()
@@ -131,10 +137,11 @@ export default function LuckiestPerson() {
         <ResultCard
           game={game}
           headline={`You drew ${value}`}
-          detail={<>The {ordinal(rank)} of today's five{stats.streak > 1 && <> · {stats.streak} days in a row</>}</>}
-          shareText={`🍀 Luckiest Person ${puzzleLabel()}\nDrew ${value}, the ${ordinal(rank)} of 5`}
+          detail={<>The {ordinal(rank)} of {oneOff ? 'that day’s' : 'today’s'} five{stats.streak > 1 && <> · {stats.streak} days in a row</>}</>}
+          shareText={`🍀 Luckiest Person ${puzzleLabel(day)}\nDrew ${value}, the ${ordinal(rank)} of 5`}
           trackFinish={!alreadyPicked.current}
           finishData={{ value, rank }}
+          challenge={{ seed: dateKey(day), score: value, text: String(value), lowerIsBetter: false }}
           extra={<Button variant="ghost" onClick={() => setPractice(true)}>Practice with a random deck</Button>}
         />
       )}

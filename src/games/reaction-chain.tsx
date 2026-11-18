@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { getGame } from './registry'
 import { ResultCard } from '../shell/ResultCard'
+import { newSeed, readChallenge } from '../shell/challenge'
+import { seededRandom } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { getStats, recordPlay } from '../shell/stats'
 import { AttemptTiles, Score, Stage, type Attempt } from '../ui'
@@ -20,6 +22,10 @@ export default function ReactionChain() {
   const [phase, setPhase] = useState<Phase>('idle')
   const [times, setTimes] = useState<number[]>([])
   const [last, setLast] = useState<{ ms: number; early: boolean; guess?: boolean } | null>(null)
+  // A challenge replays the same waits; otherwise every game gets a new seed.
+  const challenge = readChallenge(game.slug)
+  const [seed, setSeed] = useState(() => challenge?.s ?? newSeed())
+  const rng = useRef(seededRandom(seed))
   const goAt = useRef(0)
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
@@ -30,7 +36,7 @@ export default function ReactionChain() {
     timer.current = setTimeout(() => {
       goAt.current = performance.now()
       setPhase('go')
-    }, 1200 + Math.random() * 2300)
+    }, 1200 + rng.current() * 2300)
   }
 
   function finishRound(ms: number, early: boolean, guess = false) {
@@ -61,6 +67,9 @@ export default function ReactionChain() {
   }
 
   function reset() {
+    const next = challenge ? seed : newSeed()
+    setSeed(next)
+    rng.current = seededRandom(next)
     setTimes([])
     setLast(null)
     setPhase('idle')
@@ -108,6 +117,7 @@ export default function ReactionChain() {
           detail={`Fastest round ${Math.min(...times)} ms${best != null && best < avg ? ` · your best average ${best} ms` : best === avg && getStats(game.slug).plays > 1 ? ' · a new best' : ''}`}
           shareText={`⚡ Reaction Chain\n${times.map(square).join('')} ${avg} ms average`}
           finishData={{ avg }}
+          challenge={{ seed, score: avg, text: `${avg} ms`, lowerIsBetter: true }}
           onReplay={reset}
         />
       )}

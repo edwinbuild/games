@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { getGame } from './registry'
-import { dailyRandom, puzzleLabel } from '../shell/daily'
+import { readChallenge } from '../shell/challenge'
+import { dailyDayFor, dailyRandom, dateKey, puzzleLabel } from '../shell/daily'
 import { feel, tone } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
@@ -107,8 +108,10 @@ const score = (r: number[]) => Math.round(r.reduce((s, x) => s + accuracy(x), 0)
 
 export default function PitchMatch() {
   // Unlimited tries at today's three tones; the best try counts and is what gets shared.
-  const targets = targetsFor()
-  const [state, setState] = useState<Today>(loadTodayState)
+  // A challenge from another day plays that day's tones once, without touching today's tries or streak.
+  const { day, oneOff } = dailyDayFor(readChallenge(game.slug)?.s)
+  const targets = targetsFor(day)
+  const [state, setState] = useState<Today>(() => (oneOff ? { done: [], current: [] } : loadTodayState()))
   const [playing, setPlaying] = useState(state.done.length === 0 || state.current.length > 0)
   const { done, current } = state
   const round = current.length
@@ -118,10 +121,10 @@ export default function PitchMatch() {
     const cur = [...current, c]
     const next: Today = cur.length >= ROUNDS ? { done: [...done, cur], current: [] } : { done, current: cur }
     setState(next)
-    saveToday(game.slug, next)
+    if (!oneOff) saveToday(game.slug, next)
     if (cur.length >= ROUNDS) {
       const best = Math.max(...next.done.map(score))
-      recordDaily(game.slug, best, new Date(), `${best}%`)
+      if (!oneOff) recordDaily(game.slug, best, new Date(), `${best}%`)
       setPlaying(false)
     }
   }
@@ -155,9 +158,10 @@ export default function PitchMatch() {
         <ResultCard
           game={game}
           headline={`${best}% accurate`}
-          detail={<>Your best of {tries} today{done.length > 1 ? ` · last try ${score(done[done.length - 1])}%` : ''}{stats.streak > 1 ? ` · ${stats.streak} day streak` : ''}</>}
-          shareText={`🎵 Pitch Match ${puzzleLabel()}\n${bestTry.map(square).join('')} ${best}% accurate\nBest of ${tries}`}
+          detail={<>Your best of {tries} {oneOff ? `on the ${puzzleLabel(day)} tones` : 'today'}{done.length > 1 ? ` · last try ${score(done[done.length - 1])}%` : ''}{stats.streak > 1 ? ` · ${stats.streak} day streak` : ''}</>}
+          shareText={`🎵 Pitch Match ${puzzleLabel(day)}\n${bestTry.map(square).join('')} ${best}% accurate\nBest of ${tries}`}
           finishData={{ accuracy: best, tries: done.length }}
+          challenge={{ seed: dateKey(day), score: best, text: `${best}%`, lowerIsBetter: false }}
           onReplay={() => setPlaying(true)}
           replayLabel="Try again"
         />

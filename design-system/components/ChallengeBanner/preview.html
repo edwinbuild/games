@@ -1,0 +1,12 @@
+<!-- @dsCard group="Friends" height=150 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>preview</title><style>body{margin:0;padding:16px;background:var(--canvas);color:var(--ink);font-family:var(--font-body)}.col{max-width:560px;display:grid;gap:12px}</style></head>
+<body>
+<div id="root" class="col"></div>
+<script>
+  var Q = window.QuickGames, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null, h(Q.ChallengeBanner, {color:'grape', text:'Ana got Lv 3. Same puzzle, your turn.'}), h(Q.ChallengeBanner, {text:'3 friends have played. Best so far: Sam, 0.04s. Same puzzle, your turn.'})));
+</script>
+</body>
+</html>

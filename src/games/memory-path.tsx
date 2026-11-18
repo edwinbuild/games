@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { getGame } from './registry'
 import { ResultCard } from '../shell/ResultCard'
+import { newSeed, readChallenge } from '../shell/challenge'
+import { seededRandom } from '../shell/daily'
 import { feel, tone } from '../shell/feel'
 import { getStats, recordPlay } from '../shell/stats'
 import { Button, Score, Stage } from '../ui'
@@ -15,17 +17,21 @@ const note = (cell: number) => tone(NOTES.at(cell) ?? 440, 220, { type: 'triangl
 const onMs = (len: number) => Math.max(260, 480 - Math.max(0, len - 8) * 25)
 const GAP_MS = 140
 
-function extend(path: number[]): number[] {
+function extend(path: number[], rng: () => number): number[] {
   const last = path[path.length - 1]
   let next = last
-  while (next === last) next = Math.floor(Math.random() * N * N)
+  while (next === last) next = Math.floor(rng() * N * N)
   return [...path, next]
 }
 
 type Phase = 'ready' | 'showing' | 'input' | 'done'
 
 export default function MemoryPath() {
-  const [path, setPath] = useState<number[]>(() => extend(extend([])))
+  // A challenge replays the same path; otherwise every game gets a new seed.
+  const challenge = readChallenge(game.slug)
+  const [seed, setSeed] = useState(() => challenge?.s ?? newSeed())
+  const rng = useRef(seededRandom(seed))
+  const [path, setPath] = useState<number[]>(() => extend(extend([], rng.current), rng.current))
   const [phase, setPhase] = useState<Phase>('ready')
   const [lit, setLit] = useState<number | null>(null)
   const [pos, setPos] = useState(0)
@@ -60,7 +66,7 @@ export default function MemoryPath() {
     timers.current.push(setTimeout(() => setLit((l) => (l === cell ? null : l)), 180))
     if (pos + 1 === path.length) {
       setScore(path.length)
-      const next = extend(path)
+      const next = extend(path, rng.current)
       setPath(next)
       setPhase('showing')
       timers.current.push(setTimeout(() => play(next), 500))
@@ -74,7 +80,10 @@ export default function MemoryPath() {
     setWrong(null)
     setScore(0)
     setLit(null)
-    const p = extend(extend([]))
+    const nextSeed = challenge ? seed : newSeed()
+    setSeed(nextSeed)
+    rng.current = seededRandom(nextSeed)
+    const p = extend(extend([], rng.current), rng.current)
     setPath(p)
     setPhase('ready')
   }
@@ -122,6 +131,7 @@ export default function MemoryPath() {
           detail={best != null && best > score ? `Your best: ${best} steps` : best === score && score > 0 && getStats(game.slug).plays > 1 ? 'A new best' : undefined}
           shareText={score > 0 ? `🧠 Memory Path\nRepeated a ${score}-step path\n${'🟦'.repeat(Math.min(score, 20))}` : '🧠 Memory Path\nMissed the very first path'}
           finishData={{ steps: score }}
+          challenge={{ seed, score, text: `${score} steps`, lowerIsBetter: false }}
           onReplay={reset}
         />
       )}

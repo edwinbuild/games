@@ -161,3 +161,34 @@
 .qg-footer a { color: var(--ink-muted); }
 .qg-card-score { display: grid; gap: 2px; }
 .qg-card-sample-label { font: 800 12px/16px var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--on-fill); }
+
+/* Challenge banner: shown above the stage when a friend's link was opened. */
+.qg-banner {
+  display: grid; gap: var(--space-1); padding: var(--space-3) var(--space-4); margin-bottom: var(--space-4);
+  border: var(--border-edge) solid var(--edge); border-radius: var(--radius-md);
+  background: var(--qg-fill, var(--primary)); color: var(--qg-on, var(--on-primary));
+}
+.qg-banner-eyebrow { font: 800 12px/16px var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; }
+.qg-banner-text { font: 700 16px/22px var(--font-body); }
+
+/* Challenge board: everyone who played this link, best first. */
+.qg-board { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-1); text-align: left; }
+.qg-board li {
+  display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: var(--space-2);
+  padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); background: var(--surface-sunken);
+  font: 500 15px/20px var(--font-body);
+}
+.qg-board li[data-me] { background: var(--primary); color: var(--on-primary); font-weight: 800; }
+.qg-board-rank { font: 700 14px/20px var(--font-mono); }
+.qg-board-score { font: 700 15px/20px var(--font-mono); font-variant-numeric: tabular-nums; }
+.qg-board-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Text field. */
+.qg-field { display: grid; gap: var(--space-1); text-align: left; }
+.qg-field label { font: 800 12px/16px var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
+.qg-field input {
+  min-height: 44px; padding: 0 var(--space-3); border-radius: var(--radius-md);
+  border: var(--border-edge) solid var(--edge); background: var(--surface); color: var(--ink);
+  font: 500 16px/20px var(--font-body);
+}
+.qg-field input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }

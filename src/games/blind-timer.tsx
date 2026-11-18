@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { getGame } from './registry'
-import { dailyRandom, puzzleLabel } from '../shell/daily'
+import { readChallenge } from '../shell/challenge'
+import { dailyDayFor, dailyRandom, dateKey, puzzleLabel } from '../shell/daily'
 import { ResultCard } from '../shell/ResultCard'
 import { feel } from '../shell/feel'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
@@ -26,17 +27,21 @@ function offText(off: number) {
 
 export default function BlindTimer() {
   // Unlimited tries on today's target; the closest one counts and is what gets shared.
-  const [offs, setOffs] = useState<number[]>(() => loadToday(game.slug, [] as number[]))
+  // A challenge from another day plays that day's target once, without touching today's tries or streak.
+  const { day, oneOff } = dailyDayFor(readChallenge(game.slug)?.s)
+  const [offs, setOffs] = useState<number[]>(() => (oneOff ? [] : loadToday(game.slug, [] as number[])))
   const [playing, setPlaying] = useState(offs.length === 0)
-  const target = targetFor()
+  const target = targetFor(day)
 
   function onStop(elapsed: number) {
     const off = Math.round((elapsed - target) * 100) / 100
     const next = [...offs, off]
     setOffs(next)
-    saveToday(game.slug, next)
-    const best = Math.abs(bestOf(next))
-    recordDaily(game.slug, best, new Date(), `${fmt(best)}s`)
+    if (!oneOff) {
+      saveToday(game.slug, next)
+      const best = Math.abs(bestOf(next))
+      recordDaily(game.slug, best, new Date(), `${fmt(best)}s`)
+    }
     setTimeout(() => setPlaying(false), 600)
   }
 
@@ -71,9 +76,10 @@ export default function BlindTimer() {
       <ResultCard
         game={game}
         headline={offText(best)}
-        detail={<>Your best of {tries} today{stats.streak > 1 && <> · {stats.streak} day streak</>}</>}
-        shareText={`⏱️ Blind Timer ${puzzleLabel()}\nTarget ${fmt(target)}s\n${recent.map(square).join('')}\n${offText(best)}, best of ${tries}`}
+        detail={oneOff ? <>Your best of {tries} on the {puzzleLabel(day)} puzzle</> : <>Your best of {tries} today{stats.streak > 1 && <> · {stats.streak} day streak</>}</>}
+        shareText={`⏱️ Blind Timer ${puzzleLabel(day)}\nTarget ${fmt(target)}s\n${recent.map(square).join('')}\n${offText(best)}, best of ${tries}`}
         finishData={{ off: Math.abs(best), tries: offs.length }}
+        challenge={{ seed: dateKey(day), score: Math.abs(best), text: `${fmt(Math.abs(best))}s`, lowerIsBetter: true }}
         onReplay={() => setPlaying(true)}
         replayLabel="Try again"
       />

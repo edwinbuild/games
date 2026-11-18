@@ -1,7 +1,8 @@
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { GAMES, type GameMeta } from '../games/registry'
 import { SITE } from '../site'
-import { Button, Countdown, PlayNext, ResultTicket } from '../ui'
+import { Button, ChallengeBoard, Countdown, PlayNext, ResultTicket, TextField } from '../ui'
+import { challengeUrl, displayName, mergeRow, myId, myName, readChallenge, setMyName } from './challenge'
 import { puzzleLabel } from './daily'
 import { getStats, todaysDailyText } from './stats'
 import { feel } from './feel'
@@ -23,6 +24,8 @@ type Props = {
   /** Send a 'finish' event when shown. Off when re-showing an earlier result. */
   trackFinish?: boolean
   finishData?: Record<string, string | number>
+  /** Makes the share link a challenge: the puzzle seed and this result. */
+  challenge: { seed: string; score: number; text: string; lowerIsBetter: boolean }
 }
 
 /** Pick one other game to suggest; rotates by day. */
@@ -43,7 +46,14 @@ export function ResultCard(p: Props) {
     }
   }, [p.trackFinish, p.game.slug, p.finishData])
 
-  const url = `${typeof location !== 'undefined' ? location.origin : SITE.url}/${p.game.slug}/`
+  const origin = typeof location !== 'undefined' ? location.origin : SITE.url
+  const [name, setName] = useState(myName)
+  const me = myId()
+  const incoming = readChallenge(p.game.slug)
+  const others = incoming && incoming.s === p.challenge.seed ? incoming.r : []
+  const rows = mergeRow(others, { n: name, i: me, x: p.challenge.score, t: p.challenge.text }, p.challenge.lowerIsBetter)
+  const url = challengeUrl(origin, { g: p.game.slug, s: p.challenge.seed, r: rows })
+  const hasOthers = rows.some((r) => r.i !== me)
   const next = nextGame(p.game.slug)
   // The chip shows the player's own result for that game, or "New" if they haven't played it.
   const nextScore = (next.daily ? todaysDailyText(next.slug) : getStats(next.slug).bestText) ?? 'New'
@@ -56,10 +66,19 @@ export function ResultCard(p: Props) {
         color={p.game.color}
         headline={p.headline}
         detail={p.detail}
-        shareText={p.shareText}
+        shareText={`${p.shareText}\n${hasOthers ? 'Same puzzle. Your turn:' : 'Same puzzle. Beat me:'}`}
         url={url}
+        board={hasOthers ? <ChallengeBoard rows={rows.map((r) => ({ name: displayName(r, me), score: r.t, me: r.i === me }))} /> : undefined}
         onShare={(via) => track('share', p.game.slug, { via })}
       >
+        <TextField
+          id="nickname"
+          label="Your name on challenges (optional)"
+          value={name}
+          placeholder="Shown to friends instead of “A friend”"
+          maxLength={16}
+          onChange={(v) => { setName(v); setMyName(v) }}
+        />
         {p.onReplay && (
           <Button size="lg" block color={p.game.color} onClick={p.onReplay}>
             {p.replayLabel ?? 'Play again'}

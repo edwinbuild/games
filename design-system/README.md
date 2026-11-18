@@ -95,6 +95,15 @@ Multiplayer games use the same shell plus shared multiplayer parts, so players l
 - Online rooms come later and add: a room code and invite link, a lobby with the player list, a turn marker, a scoreboard and a rematch key. These become design-system components before the first online game ships.
 - The result ticket of a multiplayer game names the winner and the score line (for example "Blue wins 3–2"); its share text never needs the other player's name.
 
+## Challenges
+
+Every result ticket's share link is a challenge: it carries the puzzle and the scores so far, so a friend who opens it plays exactly the same puzzle.
+
+- A friend arriving from a link sees a `ChallengeBanner` above the stage: who to beat and their score, in one sentence.
+- After playing, the ticket's `board` slot shows a `ChallengeBoard` of everyone on that link (at most 8), best first, the player's row in `primary`.
+- The nickname is optional (`TextField`, kept in the browser). Anonymous players appear as "A friend"; never ask for anything else.
+- Share text for a challenge ends with "Same puzzle. Beat me:" (first player) or "Same puzzle. Your turn:" (when others have played), followed by the link.
+
 ## Iconography
 
 - There is no icon set. Controls are labelled with words; the only glyphs are ✓ ✕ ~ in attempt tiles and → on Play next.

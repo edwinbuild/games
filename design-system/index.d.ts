@@ -71,6 +71,8 @@ export interface ResultTicketProps {
   shareText: string
   url: string
   onShare?: (via: ShareVia) => void
+  /** A challenge leaderboard (`ChallengeBoard`), shown between the result and the share text. */
+  board?: ReactNode
   children?: ReactNode
 }
 export declare function ResultTicket(props: ResultTicketProps): JSX.Element
@@ -101,3 +103,15 @@ export declare function ToggleChip(props: ToggleChipProps): JSX.Element
 /** The quiet row of links under every page. */
 export interface FooterProps { links: { label: string; href: string }[]; note?: ReactNode }
 export declare function Footer(props: FooterProps): JSX.Element
+
+/** The strip above the stage when a friend's challenge link was opened. */
+export interface ChallengeBannerProps { text: ReactNode; color?: string }
+export declare function ChallengeBanner(props: ChallengeBannerProps): JSX.Element
+
+/** Everyone who played a challenge link, best first; the player's own row is highlighted. */
+export interface BoardRow { name: string; score: string; me?: boolean }
+export declare function ChallengeBoard(props: { rows: BoardRow[] }): JSX.Element
+
+/** A labelled single-line text field (the optional challenge nickname). */
+export interface TextFieldProps { id: string; label: string; value: string; onChange: (v: string) => void; placeholder?: string; maxLength?: number }
+export declare function TextField(props: TextFieldProps): JSX.Element
