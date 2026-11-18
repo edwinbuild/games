@@ -33,7 +33,11 @@ function page(opts: {
     <meta name="description" content="${esc(opts.description)}" />
     <link rel="canonical" href="${url}" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta name="theme-color" content="#0f0f14" />
+    <meta name="theme-color" content="#eceef5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121428" media="(prefers-color-scheme: dark)" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="${esc(SITE.name)}" />
     <meta property="og:title" content="${esc(opts.title)}" />
@@ -60,7 +64,7 @@ function gamePage(g: GameMeta) {
     path: `/${g.slug}/`,
     image: `/og/${g.slug}.png`,
     entry: '../../src/entries/game.tsx',
-    bodyAttrs: `data-game="${g.slug}" style="--accent:${g.color}"`,
+    bodyAttrs: `data-game="${g.slug}" style="--game: var(--${g.color})"`,
     body: `    <div id="root"></div>
     <section class="howto">
       <h2>How to play ${esc(g.title)}</h2>
@@ -97,4 +101,11 @@ for (const g of GAMES) {
   mkdirSync(resolve(site, g.slug), { recursive: true })
   writeFileSync(resolve(site, g.slug, 'index.html'), gamePage(g))
 }
+// Sitemap and robots.txt for search engines.
+const urls = ['/', ...GAMES.map((g) => `/${g.slug}/`)]
+writeFileSync(
+  resolve(root, 'public/sitemap.xml'),
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${SITE.url}${u}</loc></url>`).join('\n')}\n</urlset>\n`,
+)
+writeFileSync(resolve(root, 'public/robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${SITE.url}/sitemap.xml\n`)
 console.log(`Generated ${GAMES.length + 1} pages in site/`)

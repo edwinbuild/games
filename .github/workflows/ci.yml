@@ -1,0 +1,27 @@
+name: CI
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Tokens are up to date
+        run: |
+          npm run tokens
+          git diff --exit-code -- src/ui/tokens.css || (echo "src/ui/tokens.css is out of date: run npm run tokens and commit it" && exit 1)
+      - run: npx tsc -b
+      - run: npm test
+      - run: npm run build
+      - name: JavaScript budget (90 KB gzipped per page)
+        run: |
+          total=$(cat dist/assets/*.js | gzip -c | wc -c)
+          echo "All JavaScript, gzipped: $total bytes"
+          test "$total" -lt 92160

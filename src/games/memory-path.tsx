@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { getGame } from './registry'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, recordPlay } from '../shell/stats'
+import { Button, Score, Stage } from '../ui'
 
 const game = getGame('memory-path')
 const N = 4
@@ -74,40 +75,36 @@ export default function MemoryPath() {
     phase === 'ready' ? 'Press Start and watch closely'
     : phase === 'showing' ? `Watch… (${path.length} steps)`
     : phase === 'input' ? `Your turn: ${pos} / ${path.length}`
-    : `The path was ${path.length} steps`
+    : `✕ The path was ${path.length} steps`
 
   return (
     <>
-      <p className="label" style={{ textAlign: 'center', margin: '0 0 10px' }}>{status}</p>
-      <div className="stage" style={{ display: 'grid', gridTemplateColumns: `repeat(${N}, 1fr)`, gap: 8, padding: 12 }}>
-        {Array.from({ length: N * N }, (_, i) => {
-          const isLit = lit === i
-          const isWrong = wrong === i
-          const isAnswer = phase === 'done' && path[pos] === i
-          return (
-            <button
-              key={i}
-              aria-label={`Square ${i + 1}`}
-              onPointerDown={() => tap(i)}
-              onClick={(e) => e.detail === 0 && tap(i)}
-              style={{
-                aspectRatio: '1',
-                border: isAnswer ? '3px solid var(--good)' : 'none',
-                borderRadius: 12,
-                background: isWrong ? 'var(--bad)' : isLit ? 'var(--accent)' : 'var(--surface-2)',
-                boxShadow: isLit ? '0 0 24px var(--accent)' : 'none',
-                transition: 'background 0.08s',
-                cursor: phase === 'input' ? 'pointer' : 'default',
-                touchAction: 'manipulation',
-              }}
-            />
-          )
-        })}
+      <div className="between" style={{ marginBottom: 'var(--space-3)' }}>
+        <span className="small muted">{status}</span>
+        <Score label="Steps" value={score} size="md" />
       </div>
+      <Stage flush>
+        <div className="grid" style={{ gridTemplateColumns: `repeat(${N}, 1fr)` }}>
+          {Array.from({ length: N * N }, (_, i) => {
+            const state = wrong === i ? 'wrong' : lit === i ? 'lit' : phase === 'done' && path[pos] === i ? 'answer' : undefined
+            return (
+              <button
+                key={i}
+                className="qg-cell"
+                data-state={state}
+                aria-label={`Square ${i + 1}`}
+                onPointerDown={() => tap(i)}
+                onClick={(e) => e.detail === 0 && tap(i)}
+                style={{ cursor: phase === 'input' ? 'pointer' : 'default' }}
+              />
+            )
+          })}
+        </div>
+      </Stage>
       {phase === 'ready' && (
-        <button className="btn btn-big" style={{ marginTop: 14 }} onClick={() => play(path)}>
-          Start
-        </button>
+        <div style={{ marginTop: 'var(--space-4)' }}>
+          <Button size="lg" block color={game.color} onClick={() => play(path)}>Start</Button>
+        </div>
       )}
       {phase === 'done' && (
         <ResultCard

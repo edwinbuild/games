@@ -1,36 +1,38 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
-import type { GameMeta } from '../games/registry'
+import { useEffect, useRef, type ReactNode } from 'react'
+import { GAMES, type GameMeta } from '../games/registry'
 import { SITE } from '../site'
-import { Countdown } from './Countdown'
-import { PlayNext } from './PlayNext'
-import { canNativeShare, copyText, nativeShare, shareUrls } from './share'
+import { Button, Countdown, PlayNext, ResultTicket } from '../ui'
+import { puzzleLabel } from './daily'
 import { track } from './track'
 
 type Props = {
   game: GameMeta
-  /** The big number or phrase, e.g. "Off by 0.04s". */
+  /** The result in the game's units, e.g. "Late by 0.04s". */
   headline: string
-  /** Smaller line under it: best score, streak, etc. */
+  /** One line under it: target, best, streak. */
   detail?: ReactNode
-  /** Spoiler-free text that gets shared (emoji grid, score). The link is added automatically. */
+  /** Spoiler-free text that gets shared. The link is added automatically. */
   shareText: string
-  /** Score games: replay button. */
+  /** Score games: replay key. */
   onReplay?: () => void
   replayLabel?: string
-  /** Extra controls under the share buttons (e.g. "Practice"). */
+  /** Extra controls after sharing (e.g. a practice link). */
   extra?: ReactNode
   /** Send a 'finish' event when shown. Off when re-showing an earlier result. */
   trackFinish?: boolean
   finishData?: Record<string, string | number>
 }
 
-export function ResultCard(p: Props) {
-  const url = `${SITE.url}/${p.game.slug}/`
-  const pageUrl = typeof location !== 'undefined' ? location.origin + location.pathname : url
-  const shareLink = SITE.url.includes('example.com') ? pageUrl : url
-  const [copied, setCopied] = useState(false)
-  const tracked = useRef(false)
+/** Pick one other game to suggest; rotates by day. */
+function nextGame(current: string) {
+  const others = GAMES.filter((g) => g.slug !== current)
+  const day = Math.floor(Date.now() / 86_400_000)
+  return others[(day + current.length) % others.length]
+}
 
+/** The end of every game: the design system's ticket, wired to sharing and tracking. */
+export function ResultCard(p: Props) {
+  const tracked = useRef(false)
   useEffect(() => {
     if ((p.trackFinish ?? true) && !tracked.current) {
       tracked.current = true
@@ -38,62 +40,41 @@ export function ResultCard(p: Props) {
     }
   }, [p.trackFinish, p.game.slug, p.finishData])
 
-  const links = shareUrls(p.shareText, shareLink)
-  const onShare = (via: string) => track('share', p.game.slug, { via })
+  const url = `${typeof location !== 'undefined' ? location.origin : SITE.url}/${p.game.slug}/`
+  const next = nextGame(p.game.slug)
 
   return (
-    <section className="result" aria-live="polite">
-      <p className="result-headline">{p.headline}</p>
-      {p.detail && <div className="result-detail">{p.detail}</div>}
-
-      <pre className="share-preview">{p.shareText}</pre>
-
-      <div className="share-row">
-        {canNativeShare() && (
-          <button
-            className="btn btn-primary"
-            onClick={async () => {
-              if (await nativeShare(p.shareText, shareLink)) onShare('native')
-            }}
-          >
-            Share
-          </button>
+    <div style={{ marginTop: 'var(--space-5)' }}>
+      <ResultTicket
+        game={p.game.title}
+        stamp={p.game.daily ? puzzleLabel() : undefined}
+        color={p.game.color}
+        headline={p.headline}
+        detail={p.detail}
+        shareText={p.shareText}
+        url={url}
+        onShare={(via) => track('share', p.game.slug, { via })}
+      >
+        {p.onReplay && (
+          <Button size="lg" block color={p.game.color} onClick={p.onReplay}>
+            {p.replayLabel ?? 'Play again'}
+          </Button>
         )}
-        <a className="btn btn-wa" href={links.whatsapp} target="_blank" rel="noopener" onClick={() => onShare('whatsapp')}>
-          WhatsApp
-        </a>
-        <a className="btn btn-x" href={links.x} target="_blank" rel="noopener" onClick={() => onShare('x')}>
-          X
-        </a>
-        <button
-          className="btn"
-          onClick={async () => {
-            if (await copyText(`${p.shareText}\n${shareLink}`)) {
-              setCopied(true)
-              onShare('copy')
-              setTimeout(() => setCopied(false), 1800)
-            }
-          }}
-        >
-          {copied ? 'Copied ✓' : 'Copy'}
-        </button>
-      </div>
-
-      {p.onReplay && (
-        <button className="btn btn-big" onClick={p.onReplay}>
-          {p.replayLabel ?? 'Play again'}
-        </button>
-      )}
-      {p.game.daily && <Countdown />}
-      {p.extra}
-
-      <PlayNext current={p.game.slug} />
-
-      {SITE.supportUrl && (
-        <p className="support">
-          Enjoying these? <a href={SITE.supportUrl} target="_blank" rel="noopener">Buy me a coffee ☕</a>
-        </p>
-      )}
-    </section>
+        {p.game.daily && <Countdown onMidnight={() => location.reload()} />}
+        {p.extra}
+        <PlayNext
+          title={next.title}
+          href={`/${next.slug}/`}
+          color={next.color}
+          sample={next.sample}
+          onClick={() => track('play_next', p.game.slug, { to: next.slug })}
+        />
+        {SITE.supportUrl && (
+          <p className="support">
+            Enjoying these? <a href={SITE.supportUrl} target="_blank" rel="noopener">Buy me a coffee</a>
+          </p>
+        )}
+      </ResultTicket>
+    </div>
   )
 }

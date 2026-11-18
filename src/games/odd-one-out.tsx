@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { getGame } from './registry'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, recordPlay } from '../shell/stats'
+import { Score, Stage } from '../ui'
 
 const game = getGame('odd-one-out')
 const TIME = 60
@@ -67,47 +68,31 @@ export default function OddOneOut() {
 
   return (
     <>
-      <div className="row" style={{ justifyContent: 'space-between', marginBottom: 10 }}>
-        <span className="label">Level <strong style={{ color: 'var(--text)' }}>{level}</strong></span>
-        <span className="label" style={{ color: left < 10 ? 'var(--bad)' : undefined }}>
-          ⏳ <strong style={{ color: 'inherit', fontVariantNumeric: 'tabular-nums' }}>{Math.ceil(left)}s</strong>
-          {!started && ' · starts on your first tap'}
-        </span>
+      <div className="between" style={{ marginBottom: 'var(--space-3)' }}>
+        <Score label="Level" value={level} size="md" />
+        <Score label={started ? 'Time' : 'Starts on first tap'} value={`${Math.ceil(left)}s`} size="md" />
       </div>
 
       {!done && (
-        <div
-          className="stage"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(${setup.size}, 1fr)`,
-            gap: 4,
-            padding: 10,
-          }}
-        >
-          {Array.from({ length: setup.size * setup.size }, (_, i) => (
-            <button
-              key={`${level}-${i}`}
-              onPointerDown={() => pick(i)}
-              onClick={(e) => e.detail === 0 && pick(i)}
-              aria-label={`Square ${i + 1}`}
-              style={{
-                aspectRatio: '1',
-                border: 'none',
-                borderRadius: 8,
-                background: shake === i ? 'var(--bad)' : 'var(--surface-2)',
-                fontSize: `min(${Math.floor(40 / setup.size * 1.6)}vw, ${Math.floor(220 / setup.size)}px)`,
-                lineHeight: 1,
-                padding: 0,
-                cursor: 'pointer',
-                touchAction: 'manipulation',
-              }}
-            >
-              {i === setup.oddIndex ? setup.odd : setup.common}
-            </button>
-          ))}
-        </div>
+        <Stage flush>
+          <div className="grid" style={{ gridTemplateColumns: `repeat(${setup.size}, 1fr)`, gap: setup.size > 5 ? 4 : 'var(--space-2)' }}>
+            {Array.from({ length: setup.size * setup.size }, (_, i) => (
+              <button
+                key={`${level}-${i}`}
+                className="qg-cell"
+                data-state={shake === i ? 'wrong' : undefined}
+                onPointerDown={() => pick(i)}
+                onClick={(e) => e.detail === 0 && pick(i)}
+                aria-label={`Square ${i + 1}`}
+                style={{ fontSize: `min(${Math.floor((40 / setup.size) * 1.6)}vw, ${Math.floor(220 / setup.size)}px)`, borderRadius: setup.size > 5 ? 'var(--radius-sm)' : undefined }}
+              >
+                {i === setup.oddIndex ? setup.odd : setup.common}
+              </button>
+            ))}
+          </div>
+        </Stage>
       )}
+      {shake !== null && <p className="small center" style={{ color: 'var(--danger)', margin: 'var(--space-2) 0 0' }}>✕ Wrong one, −{WRONG_PENALTY}s</p>}
 
       {done && (
         <ResultCard

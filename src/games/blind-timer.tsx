@@ -3,6 +3,7 @@ import { getGame } from './registry'
 import { dailyRandom, puzzleLabel } from '../shell/daily'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, recordPlay, saveToday } from '../shell/stats'
+import { AttemptTiles, Button, Score, Stage, type Attempt } from '../ui'
 
 const game = getGame('blind-timer')
 const ATTEMPTS = 3
@@ -15,13 +16,20 @@ export function targetFor(d = new Date()): number {
 
 const randomTarget = () => Math.round((5 + Math.random() * 7) * 100) / 100
 const fmt = (s: number) => s.toFixed(2)
-const square = (off: number) => (Math.abs(off) < 0.1 ? '🟩' : Math.abs(off) < 0.5 ? '🟨' : '🟥')
+const grade = (off: number): Attempt => (Math.abs(off) < 0.1 ? 'hit' : Math.abs(off) < 0.5 ? 'near' : 'miss')
+const square = (off: number) => ({ hit: '🟩', near: '🟨', miss: '🟥', empty: '⬜' })[grade(off)]
 const bestOf = (offs: number[]) => offs.reduce((a, b) => (Math.abs(b) < Math.abs(a) ? b : a))
+const tiles = (offs: number[]): Attempt[] => Array.from({ length: ATTEMPTS }, (_, i) => (i < offs.length ? grade(offs[i]) : 'empty'))
+
+function offText(off: number) {
+  if (Math.abs(off) < 0.005) return 'Perfect! 0.00s'
+  return `${off > 0 ? 'Late' : 'Early'} by ${fmt(Math.abs(off))}s`
+}
 
 export default function BlindTimer() {
   const [mode, setMode] = useState<'daily' | 'practice'>('daily')
   const [dailyOffs, setDailyOffs] = useState<number[]>(() => loadToday(game.slug, [] as number[]))
-  const [practiceTarget, setPracticeTarget] = useState(() => randomTarget())
+  const [practiceTarget, setPracticeTarget] = useState(randomTarget)
   const [practiceOff, setPracticeOff] = useState<number | null>(null)
 
   const target = mode === 'daily' ? targetFor() : practiceTarget
@@ -32,9 +40,7 @@ export default function BlindTimer() {
     const next = [...dailyOffs, off]
     setDailyOffs(next)
     saveToday(game.slug, next)
-    if (next.length >= ATTEMPTS || Math.abs(off) < 0.005) {
-      recordDaily(game.slug, Math.abs(bestOf(next)))
-    }
+    if (next.length >= ATTEMPTS || Math.abs(off) < 0.005) recordDaily(game.slug, Math.abs(bestOf(next)))
   }
 
   function onPracticeStop(elapsed: number) {
@@ -46,68 +52,63 @@ export default function BlindTimer() {
   if (mode === 'practice') {
     const best = getStats('blind-timer-practice').best
     return (
-      <>
-        <Timer key={practiceTarget} target={target} onStop={onPracticeStop} disabled={practiceOff !== null} />
+      <div className="stack">
+        <Timer key={practiceTarget} target={target} onStop={onPracticeStop} />
         {practiceOff !== null && (
-          <div className="stage" style={{ marginTop: 12 }}>
-            <p className="big-number">{offText(practiceOff)}</p>
-            {best != null && <p className="label">Best practice: off by {fmt(best)}s</p>}
-            <div className="row">
-              <button className="btn btn-primary" onClick={() => { setPracticeOff(null); setPracticeTarget(randomTarget()) }}>
-                New target
-              </button>
-              <button className="btn" onClick={() => setMode('daily')}>Back to daily</button>
+          <Stage>
+            <div className="stack">
+              <p className="result">{offText(practiceOff)}</p>
+              {best != null && <p className="small muted">Best practice: off by {fmt(best)}s</p>}
+              <div className="row">
+                <Button color={game.color} onClick={() => { setPracticeOff(null); setPracticeTarget(randomTarget()) }}>New target</Button>
+                <Button variant="secondary" onClick={() => setMode('daily')}>Back to daily</Button>
+              </div>
             </div>
-          </div>
+          </Stage>
         )}
-      </>
+      </div>
     )
   }
 
   const stats = getStats(game.slug)
-  return (
-    <>
-      {!dailyDone && <p className="label" style={{ textAlign: 'center', margin: '0 0 8px' }}>
-        Attempt {Math.min(dailyOffs.length + 1, ATTEMPTS)} of {ATTEMPTS}
-      </p>}
-      {!dailyDone && <Timer key={dailyOffs.length} target={target} onStop={onDailyStop} />}
-
-      {dailyOffs.length > 0 && !dailyDone && (
-        <p className="label" style={{ textAlign: 'center' }}>
-          Last try: {offText(dailyOffs[dailyOffs.length - 1])} {square(dailyOffs[dailyOffs.length - 1])}
-        </p>
-      )}
-
-      {dailyDone && (
+  if (dailyDone) {
+    const best = bestOf(dailyOffs)
+    return (
+      <>
+        <Stage>
+          <div className="stack" style={{ justifyItems: 'center' }}>
+            <Score label="Today's target" value={`${fmt(target)}s`} size="md" />
+            <AttemptTiles attempts={tiles(dailyOffs)} />
+          </div>
+        </Stage>
         <ResultCard
           game={game}
-          headline={offText(bestOf(dailyOffs))}
-          detail={
-            <>
-              Target {fmt(target)}s · tries {dailyOffs.map(square).join('')}
-              {stats.streak > 0 && <> · 🔥 {stats.streak} day streak</>}
-            </>
-          }
-          shareText={`⏱️ Blind Timer ${puzzleLabel()}\nTarget ${fmt(target)}s\n${dailyOffs.map(square).join('')} ${offText(bestOf(dailyOffs))}`}
-          finishData={{ off: Math.abs(bestOf(dailyOffs)) }}
-          extra={
-            <button className="btn btn-link" onClick={() => setMode('practice')}>
-              Practice with random targets
-            </button>
-          }
+          headline={offText(best)}
+          detail={<>Target {fmt(target)}s{stats.streak > 0 && <> · {stats.streak} day streak</>}</>}
+          shareText={`⏱️ Blind Timer ${puzzleLabel()}\nTarget ${fmt(target)}s\n${dailyOffs.map(square).join('')} ${offText(best)}`}
+          finishData={{ off: Math.abs(best) }}
+          extra={<Button variant="ghost" onClick={() => setMode('practice')}>Practice with random targets</Button>}
         />
+      </>
+    )
+  }
+
+  return (
+    <div className="stack">
+      <div className="between">
+        <span className="small muted">Attempt {dailyOffs.length + 1} of {ATTEMPTS}</span>
+        <AttemptTiles attempts={tiles(dailyOffs)} />
+      </div>
+      <Timer key={dailyOffs.length} target={target} onStop={onDailyStop} />
+      {dailyOffs.length > 0 && (
+        <p className="small muted center">Last try: {offText(dailyOffs[dailyOffs.length - 1])}</p>
       )}
-    </>
+    </div>
   )
 }
 
-function offText(off: number) {
-  if (Math.abs(off) < 0.005) return 'Perfect! 0.00s'
-  return `${off > 0 ? 'Late' : 'Early'} by ${fmt(Math.abs(off))}s`
-}
-
-/** Start/stop button with a clock that hides after the first second. */
-function Timer({ target, onStop, disabled }: { target: number; onStop: (elapsed: number) => void; disabled?: boolean }) {
+/** Start/stop key with a clock that hides after the first second. */
+function Timer({ target, onStop }: { target: number; onStop: (elapsed: number) => void }) {
   const [start, setStart] = useState<number | null>(null)
   const [now, setNow] = useState(0)
   const [stopped, setStopped] = useState<number | null>(null)
@@ -127,7 +128,6 @@ function Timer({ target, onStop, disabled }: { target: number; onStop: (elapsed:
   const hidden = start != null && stopped == null && elapsed * 1000 > VISIBLE_MS
 
   function press() {
-    if (disabled) return
     const t = performance.now()
     if (start == null) {
       setStart(t)
@@ -140,19 +140,21 @@ function Timer({ target, onStop, disabled }: { target: number; onStop: (elapsed:
   }
 
   return (
-    <div className="stage">
-      <p className="label" style={{ margin: 0 }}>Target</p>
-      <p className="big-number" style={{ margin: '0 0 12px', color: 'var(--accent)' }}>{fmt(target)}s</p>
-      <p className="big-number" style={{ margin: '0 0 16px', opacity: hidden ? 0.35 : 1 }} aria-live="off">
-        {hidden ? '??.??' : fmt(elapsed)}
-      </p>
-      <button
-        className="btn btn-big"
-        onPointerDown={press}
-        onClick={(e) => e.detail === 0 && press() /* keyboard */}
-        disabled={disabled || stopped != null}>
-        {start == null ? 'Start' : stopped == null ? 'Stop' : 'Stopped'}
-      </button>
-    </div>
+    <Stage>
+      <div className="stack">
+        <Score label="Target" value={`${fmt(target)}s`} size="md" />
+        <Score value={hidden ? '??.??' : fmt(elapsed)} tone={hidden ? 'hidden' : 'default'} />
+        <Button
+          size="lg"
+          block
+          color={game.color}
+          disabled={stopped != null}
+          onPointerDown={press}
+          onClick={(e) => e.detail === 0 && press() /* keyboard */}
+        >
+          {start == null ? 'Start' : stopped == null ? 'Stop' : 'Stopped'}
+        </Button>
+      </div>
+    </Stage>
   )
 }

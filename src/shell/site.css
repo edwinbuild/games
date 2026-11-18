@@ -1,0 +1,60 @@
+/* Page layout around the design-system components. Values come from tokens.css. */
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font: 400 16px/24px var(--font-body);
+  -webkit-tap-highlight-color: transparent;
+  min-height: 100dvh;
+}
+a { color: inherit; }
+button { font: inherit; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+.page {
+  max-width: 560px; margin: 0 auto;
+  padding-left: max(var(--space-4), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--space-4), env(safe-area-inset-right, 0px));
+  padding-bottom: var(--space-6);
+}
+.game-head { display: grid; gap: var(--space-1); margin: var(--space-3) 0 var(--space-5); }
+.game-head h1 { margin: 0; }
+.game-head p { margin: 0; color: var(--ink-muted); }
+.stack { display: grid; gap: var(--space-3); }
+.row { display: flex; gap: var(--space-2); justify-content: center; flex-wrap: wrap; align-items: center; }
+.between { display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); }
+.muted { color: var(--ink-muted); }
+.center { text-align: center; }
+.loading { color: var(--ink-muted); padding: var(--space-7) 0; text-align: center; }
+.support { margin: 0; color: var(--ink-muted); font: 500 14px/20px var(--font-body); }
+
+/* Static how-to-play text in the HTML (for search engines and first paint). */
+.howto {
+  max-width: 560px; margin: var(--space-7) auto;
+  padding-left: max(var(--space-4), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--space-4), env(safe-area-inset-right, 0px));
+  color: var(--ink-muted); font: 400 15px/24px var(--font-body);
+}
+.howto h2 { color: var(--ink); font: 700 20px/24px var(--font-display); }
+#root:has(.home) ~ .howto { display: none; }
+
+/* Home */
+.hero { display: grid; gap: var(--space-2); padding: var(--space-6) 0 var(--space-2); }
+.hero h1 { margin: 0; }
+.hero p { margin: 0; color: var(--ink-muted); font-size: 18px; line-height: 26px; }
+.section-title { margin: var(--space-6) 0 var(--space-3); color: var(--ink-muted); }
+.cards { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: var(--space-3); }
+
+/* Grids of cells inside a stage (Odd One Out, Memory Path). */
+.grid { display: grid; gap: var(--space-2); }
+.qg-cell {
+  aspect-ratio: 1; border: var(--border-edge) solid transparent; border-radius: var(--radius-md);
+  background: var(--surface-sunken); padding: 0; cursor: pointer; touch-action: manipulation; line-height: 1;
+  transition: background 60ms;
+}
+.qg-cell[data-state="lit"] { background: var(--game); border-color: var(--edge); }
+.qg-cell[data-state="wrong"] { background: var(--danger); border-color: var(--edge); }
+.qg-cell[data-state="answer"] { border-color: var(--success); border-width: 3px; }
+.eyebrow { text-transform: uppercase; }
+.hero p, .game-head p { text-wrap: pretty; }

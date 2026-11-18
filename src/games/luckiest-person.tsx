@@ -3,6 +3,7 @@ import { getGame } from './registry'
 import { dateKey } from '../shell/daily'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
+import { Button, Score, Stage } from '../ui'
 
 const game = getGame('luckiest-person')
 
@@ -47,24 +48,23 @@ export default function LuckiestPerson() {
 
   return (
     <>
-      <div className="stage" style={{ padding: '32px 20px' }}>
-        <p className="label" style={{ margin: 0 }}>Today’s luck · {dateKey()}</p>
-        <p className="big-number" style={{ fontSize: 96, margin: '8px 0', color: roll != null ? 'var(--accent)' : undefined }}>
-          {roll == null && !rolling ? '?' : shown}
-        </p>
-        {roll == null && (
-          <button className="btn btn-big" onClick={doRoll} disabled={rolling}>
-            {rolling ? 'Rolling…' : '🍀 Roll my luck'}
-          </button>
-        )}
-        {roll != null && <p style={{ margin: 0, fontWeight: 700 }}>{verdict(roll)}</p>}
-      </div>
+      <Stage>
+        <div className="stack" style={{ padding: 'var(--space-3) 0' }}>
+          <Score label={`Today's luck · ${dateKey()}`} value={roll == null && !rolling ? '?' : shown} />
+          {roll == null && (
+            <Button size="lg" block color={game.color} onClick={doRoll} disabled={rolling}>
+              {rolling ? 'Rolling…' : 'Roll my luck'}
+            </Button>
+          )}
+          {roll != null && <p className="body-strong" style={{ margin: 0 }}>{verdict(roll)}</p>}
+        </div>
+      </Stage>
 
       {roll != null && (
         <ResultCard
           game={game}
           headline={`Luckier than ${roll - 1}% of rolls`}
-          detail={<>Your luck: {roll}/100{stats.streak > 1 && <> · 🔥 {stats.streak} days in a row</>}</>}
+          detail={<>Your luck: {roll}/100{stats.streak > 1 && <> · {stats.streak} days in a row</>}</>}
           shareText={`🍀 Luckiest Person ${dateKey()}\n${bar(roll)} ${roll}/100\nLuckier than ${roll - 1}% of rolls today`}
           trackFinish={!alreadyRolled.current}
           finishData={{ roll }}

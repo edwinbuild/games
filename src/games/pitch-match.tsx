@@ -3,6 +3,7 @@ import { getGame } from './registry'
 import { dailyRandom, puzzleLabel } from '../shell/daily'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
+import { AttemptTiles, Button, Stage, type Attempt } from '../ui'
 
 const game = getGame('pitch-match')
 const ROUNDS = 3
@@ -13,7 +14,8 @@ const MAX_HZ = 1000
 const toHz = (v: number) => MIN_HZ * Math.pow(MAX_HZ / MIN_HZ, v / 1000)
 const cents = (f: number, target: number) => Math.round(1200 * Math.log2(f / target))
 const accuracy = (c: number) => Math.max(0, Math.round(100 - Math.abs(c) / 2))
-const square = (c: number) => (Math.abs(c) < 15 ? '🟩' : Math.abs(c) < 50 ? '🟨' : '🟥')
+const grade = (c: number): Attempt => (Math.abs(c) < 15 ? 'hit' : Math.abs(c) < 50 ? 'near' : 'miss')
+const square = (c: number) => ({ hit: '🟩', near: '🟨', miss: '🟥', empty: '⬜' })[grade(c)]
 
 export function targetsFor(d = new Date()): number[] {
   const r = dailyRandom(game.slug, d)
@@ -73,37 +75,42 @@ export default function PitchMatch() {
   return (
     <>
       {!done && (
-        <div className="stage" style={{ display: 'grid', gap: 16 }}>
-          <p className="label" style={{ margin: 0 }}>Tone {round + 1} of {ROUNDS} · 🔊 sound on</p>
-          <button className="btn btn-big" onClick={() => { beep(targets[round]); setHeard(true) }}>
-            🎧 Listen to target
-          </button>
-          <label className="label" htmlFor="pitch">Your tone</label>
-          <input
-            id="pitch"
-            type="range"
-            min={0}
-            max={1000}
-            value={slider}
-            disabled={!heard}
-            onChange={(e) => setSlider(+e.target.value)}
-            onPointerUp={() => playMine()}
-            onKeyUp={() => playMine()}
-            style={{ width: '100%', height: 44, accentColor: 'var(--accent)' }}
-          />
-          <div className="row">
-            <button className="btn" disabled={!heard} onClick={() => playMine()}>▶ Play mine</button>
-            <button className="btn btn-primary" disabled={!heard} onClick={lockIn}>Lock in</button>
+        <Stage>
+          <div className="stack">
+            <div className="between">
+              <span className="small muted">Tone {round + 1} of {ROUNDS} · sound on</span>
+              <AttemptTiles attempts={Array.from({ length: ROUNDS }, (_, i) => (i < results.length ? grade(results[i]) : 'empty'))} />
+            </div>
+            <Button size="lg" block color={game.color} onClick={() => { beep(targets[round]); setHeard(true) }}>
+              {heard ? 'Hear it again' : 'Listen to the target'}
+            </Button>
+            <label className="eyebrow muted" htmlFor="pitch">Your tone</label>
+            <input
+              id="pitch"
+              type="range"
+              min={0}
+              max={1000}
+              value={slider}
+              disabled={!heard}
+              onChange={(e) => setSlider(+e.target.value)}
+              onPointerUp={() => playMine()}
+              onKeyUp={() => playMine()}
+              style={{ width: '100%', height: 44, accentColor: 'var(--game)' }}
+            />
+            <div className="row">
+              <Button variant="secondary" disabled={!heard} onClick={() => playMine()}>Play mine</Button>
+              <Button color={game.color} disabled={!heard} onClick={lockIn}>Lock in</Button>
+            </div>
+            {!heard && <p className="small muted" style={{ margin: 0 }}>Listen first, then slide.</p>}
           </div>
-          {!heard && <p className="label" style={{ margin: 0 }}>Listen first, then slide.</p>}
-        </div>
+        </Stage>
       )}
 
       {results.length > 0 && (
-        <p className="label" style={{ textAlign: 'center' }}>
+        <p className="small muted center">
           {results.map((c, i) => (
             <span key={i} style={{ marginRight: 12 }}>
-              {square(c)} {c === 0 ? 'spot on' : `${Math.abs(c)} cents ${c > 0 ? 'high' : 'low'}`}
+              Tone {i + 1}: {c === 0 ? 'spot on' : `${Math.abs(c)} cents ${c > 0 ? 'high ↑' : 'low ↓'}`}
             </span>
           ))}
         </p>
@@ -113,7 +120,7 @@ export default function PitchMatch() {
         <ResultCard
           game={game}
           headline={`${avg}% accurate`}
-          detail={<>{stats.streak > 0 && <>🔥 {stats.streak} day streak</>}</>}
+          detail={stats.streak > 0 ? `${stats.streak} day streak` : undefined}
           shareText={`🎵 Pitch Match ${puzzleLabel()}\n${results.map(square).join('')} ${avg}% accurate`}
           finishData={{ accuracy: avg }}
         />

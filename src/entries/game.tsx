@@ -2,7 +2,7 @@ import { StrictMode, Suspense, lazy, type ComponentType } from 'react'
 import { createRoot } from 'react-dom/client'
 import { getGame } from '../games/registry'
 import { GameShell } from '../shell/GameShell'
-import '../shell/styles.css'
+import '../shell/styles'
 
 // Each game lives in src/games/<slug>.tsx and is loaded only on its own page.
 const modules = import.meta.glob<{ default: ComponentType }>('../games/*.tsx')

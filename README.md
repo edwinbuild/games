@@ -14,25 +14,23 @@ npm run og         # regenerate link-preview images in public/og/ (needs Playwri
 
 Needs Node 22.18+ (scripts are TypeScript run directly by Node).
 
-## Deploy (Cloudflare Pages)
+## Deploy
 
-Connect the GitHub repo in Cloudflare Pages with:
+The site is deployed on Vercel from this repository: every push to `main` goes to production, every other branch gets a preview URL. Settings live in `vercel.json` (build `npm run build`, output `dist`, Node 22).
 
-- Build command: `npm run build`
-- Output directory: `dist`
-- Environment variable: `NODE_VERSION=22`
+Before the public launch, edit `src/site.ts`: the site name (a placeholder for now), the real domain in `url`, and the optional `supportUrl` (Buy me a coffee). Then run `npm run og` again.
 
-Turn on Cloudflare Web Analytics for the site in the dashboard (no code needed).
+## Design system
 
-Before launch, edit `src/site.ts`: the site name (a placeholder for now), the real domain in `url`, and the optional `supportUrl` (Buy me a coffee). Then run `npm run og` again.
+Every colour, font, size, radius and shadow is set in `design-system/tokens.json`. `npm run tokens` regenerates `src/ui/tokens.css` (CI fails if it is out of date); `npm run ds` also packages the published design system into `design-system/out/`. Components live in `src/ui/`; guidelines and previews in `design-system/components/`. Game code uses components and tokens only: no hex colours or pixel sizes.
 
 ## How it's built
 
 - `src/games/registry.ts`: the list of games (title, instructions, how-to-play text, colour, daily or not).
 - `scripts/pages.ts` generates one static HTML page per game into `site/` (its own title, description, link preview and a "How to play" section for Google). Vite builds those pages; each game's code loads only on its own page.
 - `src/shell/`: the shared game shell every game uses:
-  - `GameShell`: header, title and the one line of instructions
-  - `ResultCard`: result, spoiler-free share text, Share / WhatsApp / X / Copy buttons, replay, countdown to the next daily puzzle, "Play next", supporter link
+  - `GameShell`: top bar, title and the one line of instructions
+  - `ResultCard`: the design system's result ticket wired to sharing and tracking: replay, countdown to the next daily puzzle, "Play next", supporter link
   - `daily.ts`: same puzzle for everyone on the same date (seeded random)
   - `stats.ts`: plays, best scores and daily streaks in browser storage (no accounts)
   - `track.ts`: `start` / `finish` / `share` / `play_next` events. They are sent to `VITE_EVENTS_ENDPOINT` when set (e.g. a small Worker + D1 later) and are otherwise only logged in dev.

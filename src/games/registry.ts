@@ -11,7 +11,10 @@ export type GameMeta = {
   /** How-to-play paragraphs rendered as static HTML for search engines. */
   howTo: string[]
   daily: boolean
+  /** A colour token from design-system/tokens.json (e.g. "tangerine"). */
   color: string
+  /** A typical score in the game's own units, shown on its card. */
+  sample: string
 }
 
 export const GAMES: GameMeta[] = [
@@ -26,7 +29,8 @@ export const GAMES: GameMeta[] = [
       'You get three attempts a day and your best one counts. Share how far off you were, then come back tomorrow for a new target. Practice mode is open any time.',
     ],
     daily: true,
-    color: '#f97316',
+    color: 'tangerine',
+    sample: '07.30',
   },
   {
     slug: 'reaction-chain',
@@ -39,7 +43,8 @@ export const GAMES: GameMeta[] = [
       'After five rounds you get your average reaction time in milliseconds. Most people land between 200 and 300 ms.',
     ],
     daily: false,
-    color: '#22c55e',
+    color: 'mint',
+    sample: '243ms',
   },
   {
     slug: 'odd-one-out',
@@ -52,7 +57,8 @@ export const GAMES: GameMeta[] = [
       'You have 60 seconds in total, and each wrong tap costs 3 seconds. Share the level you reached.',
     ],
     daily: false,
-    color: '#a855f7',
+    color: 'grape',
+    sample: 'Lv 12',
   },
   {
     slug: 'memory-path',
@@ -65,7 +71,8 @@ export const GAMES: GameMeta[] = [
       'One wrong tap ends the game. Your score is the longest path you repeated.',
     ],
     daily: false,
-    color: '#3b82f6',
+    color: 'sky',
+    sample: '9',
   },
   {
     slug: 'pitch-match',
@@ -78,7 +85,8 @@ export const GAMES: GameMeta[] = [
       'There are three tones a day, the same for everyone. Your accuracy is based on how many cents (hundredths of a semitone) you were off.',
     ],
     daily: true,
-    color: '#ec4899',
+    color: 'bubblegum',
+    sample: '92%',
   },
   {
     slug: 'luckiest-person',
@@ -91,7 +99,8 @@ export const GAMES: GameMeta[] = [
       'You only get one roll a day, so share it and come back tomorrow. Your streak counts the days in a row you rolled.',
     ],
     daily: true,
-    color: '#14b8a6',
+    color: 'lagoon',
+    sample: '94',
   },
 ]
 
