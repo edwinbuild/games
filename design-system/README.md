@@ -10,9 +10,9 @@ The site name is a placeholder until a real name is picked. The mark (an admit-o
 - Results are concrete and in the game's own units: "Late by 0.04s", "243 ms average", "Level 12", "Luckier than 93% of rolls".
 - Verdicts can be a little cheeky ("Maybe stay in bed."), never mean, never about the player's intelligence.
 - Sentence case everywhere except `eyebrow` labels, which are uppercase.
-- Numbers: decimals with a full stop (7.30s), milliseconds as "243 ms", Indian grouping for big counts once they appear (1,00,000 players).
+- Numbers: decimals with a full stop (7.30s), milliseconds as "243 ms", big counts with commas (100,000 players).
 - Emoji appear **only inside share text** (⏱️ 🟩🟨🟥 🔥), because that is how results travel on WhatsApp and X. Never use emoji as icons, bullets or decoration in the UI.
-- Kerala and India games may use Malayalam words; the `body` stack falls back to Noto Sans Malayalam.
+- The audience is worldwide: write in plain international English, with no country-specific slang, trivia or references a player abroad wouldn't get.
 
 ## Colour
 
@@ -70,6 +70,24 @@ Every game ends on a `ResultTicket`. In order:
 6. Then, depending on the game: **Play again** (score games), the `Countdown` (daily games), a `ghost` link for practice, and `PlayNext`.
 
 Share text format: first line `<emoji> <Game> <stamp>`, then one or two lines of result, then the link (added automatically).
+
+## Game stages: what each game may change
+
+Everything around play is shared; inside its `Stage` each game may have its own world.
+
+- **Shared, never changed per game:** `TopBar`, the title and instruction line, `ResultTicket`, sharing, streaks, `PlayNext`, keys, the focus ring, tap sizes and the contrast rules in this book.
+- **Free inside the stage:** background, illustration, texture, animation, sound, board layout, physics and in-game lettering. A game may add its own colours there, as long as text keeps 4.5:1 and anything the player acts on keeps 3:1 against what is behind it.
+- The game colour still marks the game everywhere outside the stage: its card band, ticket stub and main key.
+- Respect reduced motion inside the stage too, and never put sound before the first tap.
+
+## Multiplayer
+
+Multiplayer games use the same shell plus shared multiplayer parts, so players learn rooms and turns once.
+
+- First come **same-phone** games (two thumbs on one screen, or pass and play), which need no backend. Each player's half of the screen is a `Stage` filled with that player's colour, rotated to face them.
+- **Player colours** are a fixed set of four, told apart by lightness and by a shape marker (circle, square, triangle, diamond), never by hue alone.
+- Online rooms come later and add: a room code and invite link, a lobby with the player list, a turn marker, a scoreboard and a rematch key. These become design-system components before the first online game ships.
+- The result ticket of a multiplayer game names the winner and the score line (for example "Blue wins 3–2"); its share text never needs the other player's name.
 
 ## Iconography
 

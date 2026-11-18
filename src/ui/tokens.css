@@ -76,7 +76,7 @@
   --duration-reveal: 240ms;
   --border-edge: 2px;
   --font-display: "Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
-  --font-body: Figtree, "Noto Sans Malayalam", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body: Figtree, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
 }
 .site-title {
