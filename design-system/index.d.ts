@@ -97,6 +97,8 @@ export interface GameCardProps {
   done?: boolean
   /** Names the band and title for the page transition into the game (the game page uses band-<name> and title-<name>). */
   transitionName?: string
+  /** Tag for multiplayer games on the band ("2 players", "Online · 2–8"). */
+  tag?: string
 }
 export declare function GameCard(props: GameCardProps): JSX.Element
 
@@ -123,3 +125,25 @@ export declare function TextField(props: TextFieldProps): JSX.Element
 /** A small set of mutually exclusive choices, such as the theme (Auto, Light, Dark). */
 export interface SegmentedProps<T extends string> { label: string; options: { value: T; label: string }[]; value: T; onChange: (v: T) => void }
 export declare function Segmented<T extends string>(props: SegmentedProps<T>): JSX.Element
+
+/** The four player identities: colour token, name, shape. */
+export declare const PLAYERS: readonly { color: string; name: string; shape: 'circle' | 'square' | 'triangle' | 'diamond' }[]
+
+/** A player's colour, shape and name (P1–P4), optionally with a score. */
+export interface PlayerChipProps { player: number; name?: string; detail?: ReactNode }
+export declare function PlayerChip(props: PlayerChipProps): JSX.Element
+
+/** Same-phone play: one pressable half per player; with two, the top half faces the far side. */
+export interface SplitStageProps { halves: { content: ReactNode; color?: string; label: string }[]; onPress: (half: number) => void; className?: string }
+export declare function SplitStage(props: SplitStageProps): JSX.Element
+
+/** An online room's code with Share and Copy link keys. */
+export interface RoomCodeProps { code: string; url: string; onShare?: (via: ShareVia) => void }
+export declare function RoomCode(props: RoomCodeProps): JSX.Element
+
+/** Who is in an online room and whether they are ready. */
+export interface LobbyPlayer { name: string; ready: boolean; me?: boolean; host?: boolean }
+export declare function Lobby(props: { players: LobbyPlayer[]; max: number }): JSX.Element
+
+/** Every player's score in a row during play. */
+export declare function ScoreStrip(props: { players: { name?: string; score: ReactNode; me?: boolean }[] }): JSX.Element

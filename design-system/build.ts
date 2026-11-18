@@ -87,7 +87,7 @@ cpSync(resolve(here, 'index.d.ts'), resolve(proj, 'components/index.d.ts'))
 // Bundle the React components as one classic script reading window.React.
 execSync('npx vite build --config design-system/vite.bundle.config.ts --logLevel warn', { cwd: root, stdio: 'inherit' })
 const built = readFileSync(resolve(out, 'bundle/bundle.js'), 'utf8')
-const names = ['Button', 'Pill', 'BrandMark', 'TopBar', 'Stage', 'Score', 'AttemptTiles', 'Countdown', 'ShareButtons', 'ResultTicket', 'PlayNext', 'GameCard', 'ToggleChip', 'Footer', 'ChallengeBanner', 'ChallengeBoard', 'TextField', 'Segmented']
+const names = ['Button', 'Pill', 'BrandMark', 'TopBar', 'Stage', 'Score', 'AttemptTiles', 'Countdown', 'ShareButtons', 'ResultTicket', 'PlayNext', 'GameCard', 'ToggleChip', 'Footer', 'ChallengeBanner', 'ChallengeBoard', 'TextField', 'Segmented', 'PlayerChip', 'SplitStage', 'RoomCode', 'Lobby', 'ScoreStrip']
 const header = `/* @ds-bundle: ${JSON.stringify({ format: 4, namespace: 'QuickGames', components: names.map((name) => ({ name })) })} */\n`
 if (/<\/script|<!--/i.test(built)) throw new Error('bundle contains </script or <!--')
 writeFileSync(resolve(proj, 'components/bundle.js'), header + built)

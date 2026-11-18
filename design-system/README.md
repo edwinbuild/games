@@ -29,7 +29,16 @@ Pocket Fair is the working name: a fairground of small stalls you can play alone
   | Memory Path | `sky` |
   | Pitch Match | `bubblegum` |
   | Luckiest Person | `lagoon` |
-  | Next new game | `chili` |
+  | Stack Tower | `chili` |
+  | Tap Duel | `coral` |
+  | This or That | `aqua` |
+  | Color Recall | `orchid` |
+  | Count Flash | `sand` |
+  | Tug of Taps | `lime` |
+  | Angle Eye | `periwinkle` |
+  | Reaction Duel Online | `peach` |
+  | Flip Grid | `pistachio` |
+  | Spot Race Online | `grape` (shares Odd One Out's colour) |
 
 - Text on any game colour or on `ticket` is always `on-fill`, which stays dark in both themes. Never put white text on a game colour.
 - Game colours are fills, never text colours: on `surface` they fall below 3:1. Always outline a fill with `edge`.
@@ -104,7 +113,8 @@ Multiplayer games use the same shell plus shared multiplayer parts, so players l
 
 - First come **same-phone** games (two thumbs on one screen, or pass and play), which need no backend. Each player's half of the screen is a `Stage` filled with that player's colour, rotated to face them.
 - **Player colours** are a fixed set of four, told apart by lightness and by a shape marker (circle, square, triangle, diamond), never by hue alone.
-- Online rooms come later and add: a room code and invite link, a lobby with the player list, a turn marker, a scoreboard and a rematch key. These become design-system components before the first online game ships.
+- Online rooms use `RoomCode` (code plus invite link), `Lobby` (players, ready, host first), and `ScoreStrip` during play; the result ticket offers Rematch in the same room.
+- Same-phone games use `SplitStage`; each player is a `PlayerChip` identity (P1 Coral circle, P2 Aqua square, P3 Lime triangle, P4 Orchid diamond).
 - The result ticket of a multiplayer game names the winner and the score line (for example "Blue wins 3–2"); its share text never needs the other player's name.
 
 ## Challenges

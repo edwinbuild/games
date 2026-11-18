@@ -1,0 +1,12 @@
+<!-- @dsCard group="Multiplayer" height=64 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>preview</title><style>body{margin:0;padding:16px;background:var(--canvas);color:var(--ink);font-family:var(--font-body)}.col{max-width:560px;display:grid;gap:12px}</style></head>
+<body>
+<div id="root" class="col"></div>
+<script>
+  var Q = window.QuickGames, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div',{style:{display:'flex',gap:8,flexWrap:'wrap'}}, h(Q.PlayerChip,{player:0}), h(Q.PlayerChip,{player:1,name:'Sam'}), h(Q.PlayerChip,{player:2,detail:'3'}), h(Q.PlayerChip,{player:3,name:'Ana',detail:'Lv 9'})));
+</script>
+</body>
+</html>
