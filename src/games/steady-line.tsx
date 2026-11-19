@@ -23,7 +23,7 @@ export default function SteadyLine() {
   const ch = useMemo(() => channelFor(seed), [seed])
   const [tries, setTries] = useState<Try[]>(() => (oneOff ? [] : loadToday(game.slug, [] as Try[])))
   const [phase, setPhase] = useState<Phase>(tries.length ? 'done' : 'ready')
-  const [last, setLast] = useState<Try | null>(null)
+  const [last, setLast] = useState<(Try & { letGo?: boolean }) | null>(null)
   const [fresh, setFresh] = useState(false)
   const canvas = useRef<HTMLCanvasElement>(null)
   const colors = useRef<Colors | null>(null)
@@ -96,9 +96,9 @@ export default function SteadyLine() {
     }
   }
 
-  function end(pct: number, time: number | null) {
+  function end(pct: number, time: number | null, letGo = false) {
     const t = { pct, time }
-    setLast(t)
+    setLast({ ...t, letGo })
     setPhase('over')
     phaseRef.current = 'over'
     if (pct === 100) { feel.chime(4); feel.success() } else feel.bad()
@@ -139,7 +139,7 @@ export default function SteadyLine() {
   }
   function onUp() {
     if (phaseRef.current !== 'trace') return
-    end(percent(ch, run.current.s), null)
+    end(percent(ch, run.current.s), null, true)
   }
 
   function again() {
@@ -188,7 +188,7 @@ export default function SteadyLine() {
         {phase === 'over' && last?.pct === 100 && <Burst y="8%" color={game.color} />}
       </Stage>
       <p className="small muted center" style={{ margin: 'var(--space-2) 0 0' }} aria-live="polite">
-        {phase === 'over' && last ? (last.pct === 100 ? `All the way in ${last.time!.toFixed(1)}s!` : `Touched the edge at ${last.pct}%`) : 'Put your finger on Start and trace to the flag. Don’t touch the edges, and don’t lift your finger.'}
+        {phase === 'over' && last ? (last.pct === 100 ? `All the way in ${last.time!.toFixed(1)}s!` : last.letGo ? `You let go at ${last.pct}%` : `Touched the edge at ${last.pct}%`) : 'Put your finger on Start and trace to the flag. Don’t touch the edges, and don’t lift your finger.'}
       </p>
     </>
   )
