@@ -289,7 +289,7 @@
 .qg-hist-summary { font: 500 14px/20px var(--font-body); color: var(--ink-muted); }
 
 /* SplitBars: shares of a few choices. */
-.qg-splitbars { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.qg-splitbars { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); text-align: left; }
 .qg-splitbars li { display: grid; grid-template-columns: minmax(0, 9em) 1fr 3.2em; align-items: center; gap: var(--space-2); }
 .qg-splitbars-label { font: 700 14px/18px var(--font-body); display: flex; flex-direction: column; min-width: 0; overflow-wrap: anywhere; }
 .qg-splitbars-mine { font: 800 10px/14px var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); }

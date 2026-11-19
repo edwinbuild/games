@@ -329,6 +329,20 @@ export const GAMES: GameMeta[] = [
     color: 'butter',
     sample: '38 of 40',
   },
+  {
+    slug: 'odd-pick',
+    title: 'Odd Pick',
+    emoji: '🎯',
+    instructions: 'Five options. Pick the one you think the fewest people will choose. Results tomorrow.',
+    tagline: 'Pick the option nobody else picks. One pick a day; tomorrow you find out how rare you were.',
+    howTo: [
+      'Every day has one question with five options, the same for everyone, like “Pick a fruit” or “Pick a number”. Choose the one you think the fewest people will pick, and lock it in. One pick a day.',
+      'The split is hidden until the day is over, so nobody can copy the crowd. Come back tomorrow to see how everyone picked and how rare your pick was. Only the number of picks for each option is stored; nothing about you.',
+    ],
+    daily: true,
+    color: 'citrus',
+    sample: 'Rarest!',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

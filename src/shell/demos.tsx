@@ -438,6 +438,24 @@ function DominoDropDemo() {
   )
 }
 
+
+function OddPickDemo() {
+  const d = 3.6
+  const shares = [70, 48, 14, 56, 40] // the tapped one (index 2) ends up the shortest
+  return (
+    <Scene still={3}>
+      {shares.map((h, i) => (
+        <span key={i}>
+          <A d={d} className="demo-op-tile" style={{ left: 8 + i * 26 }} k={i === 2 ? '0%,20%{background:var(--paper)}22%,96%{background:var(--line)}100%{background:var(--paper)}' : '0%,100%{background:var(--paper)}'} />
+          <A d={d} className="demo-op-bar" style={{ left: 12 + i * 26 }} ease="cubic-bezier(.2,.8,.3,1)" k={`0%,40%{height:0}${60 + i * 3}%,96%{height:${h * 0.5}px}100%{height:0}`} />
+        </span>
+      ))}
+      <Tap d={d} at={20} x={8 + 2 * 26 + 11} y={62} />
+      <A d={d} k={show([[74, 96]])} className="demo-small" style={{ left: 2, top: 2 }}>Rarest!</A>
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -460,4 +478,5 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'fair-slice': FairSliceDemo,
   'tidy-up': TidyUpDemo,
   'domino-drop': DominoDropDemo,
+  'odd-pick': OddPickDemo,
 }
