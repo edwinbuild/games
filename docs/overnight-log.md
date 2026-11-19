@@ -145,3 +145,18 @@ Goal (2026-11-19): build `docs/launch-plan.md` parts A, B, C, D, then F; **skip 
   - Known limit: results come from the browser, so a determined person could post a fake best; the range checks and rate limit make it work, and the percentile comes first. Stated on the About page, which now also says exactly what the boards keep.
   - Tests: `supabase/tests/daily_boards.sql` run against the live database and rolled back (refused input, best kept, rate limit, filter with letter swaps, ranks, percentile, ties); a unit test that the client's list of board games matches the migration; e2e for submit with your best and name, rank line, top 50, reopen without resubmitting, no board for another day. Security advisor: the new functions were also open to signed-in users by default; revoked, like the rest.
 
+- 2026-11-19 · Part D · five deeper games (37 games, 36 with cards). Rated with formula v2:
+
+  | Game | What it is | Kind | Rating |
+  |---|---|---|---|
+  | Dots & Boxes | The pen-and-paper game against the computer (easy 3×3; medium and hard 4×4), two on one phone, or online by room link | Any time | 76.0 |
+  | Rule Stack | Paint a 4×4 grid; each of twelve levels adds a rule that may break your grid. All twelve hold for one hidden grid. Levels, then time | Daily | 71.5 |
+  | Garden Path | One path through every square; stones say turn (●) or straight (○). Exactly one answer, 5×5 early in the week, 6×6 at the weekend | Daily | 68.5 |
+  | Word Ladder | Change one letter at a time from start to end word; par is the shortest ladder (1,194 everyday words, written by hand) | Daily | 67.0 |
+  | Untangle Lights | Drag lights until no wires cross; fewest moves vs par. Generated from an untangled layout, so always solvable | Daily | 63.5 |
+
+  - Dots & Boxes computer: medium takes every free box and never gives one away while a safe line is left; hard also counts the last 12 safe lines exactly (so you open the first long chain) and hands back the last two boxes of a chain when keeping control is worth more. Over 100 games hard beat medium 76 times, medium beat easy every time; the slowest move took 22 ms. Online rooms send the whole board with each line, so a lost message is caught up by the next.
+  - Boards: the four new daily games have leaderboards (migration `20261119180000_daily_boards_new_games.sql`; Rule Stack ranks by levels, then time). Checked against the live database and rolled back (`supabase/tests/daily_boards_new_games.sql`).
+  - Budget: the shared bundle had crept to 84.6 KB and pushed Odd Pick and Word Ladder over 90 KB. Taglines (only used on the home page and in the generated pages) moved out of the registry into `src/games/taglines.ts`; shared code is 83.5 KB, every page under budget.
+  - Also: Rule Stack's keys now work when a square has focus (Tab to a square, arrows move focus, 1–4 paint). Link-preview images for the five games; design system v23 (five new colours: twilight, lemon, fern, amber, salmon).
+  - Tests: unit tests for each game's rules and generator (unique Garden Path answers, solvable Untangle and Rule Stack days, shortest ladders, Dots & Boxes boxes, extra turns, chain values, the safe-line and hand-back rules); e2e plays every game to the end, including a full Dots & Boxes match between two phones in a real room.

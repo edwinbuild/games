@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import sql from '../../supabase/migrations/20261119170000_daily_boards.sql?raw'
+import first from '../../supabase/migrations/20261119170000_daily_boards.sql?raw'
+import added from '../../supabase/migrations/20261119180000_daily_boards_new_games.sql?raw'
 import { LISTED } from '../games/registry'
 import { BOARD_GAMES } from './board'
 
 describe('daily boards', () => {
   it('lists exactly the games the database accepts', () => {
-    const rules = sql.slice(sql.indexOf('insert into app.board_rules'), sql.indexOf('create table app.scores'))
+    const rules = first.slice(first.indexOf('insert into app.board_rules'), first.indexOf('create table app.scores')) + added
     const inDb = [...rules.matchAll(/\('([a-z-]+)', (true|false)/g)].map((m) => m[1]).sort()
     expect([...BOARD_GAMES].sort()).toEqual(inDb)
   })

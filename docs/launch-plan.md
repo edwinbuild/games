@@ -73,7 +73,7 @@ Each change: unit tests for the rules, an updated e2e script, how-to text, card 
 3. **Cheating**: scores are sent by the browser, so a determined person can fake one. Mitigations: range checks, rate limits, minimum play time per game, and the board shows percentile first (a faker at #1 matters less). Documented as a known limit.
 4. **Tests**: SQL tests against a scratch day (cleaned up after, as before) for ranges, rate limits, one row per device and the filter; e2e with stand-in functions for the ticket's rank line.
 
-## Part D: new games (deeper, still quick to start)
+## Part D: new games (done: deeper, still quick to start)
 
 Each meets the satisfying bar and adds Challenge where we're thin. Original designs on public puzzle genres.
 
