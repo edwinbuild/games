@@ -1,5 +1,5 @@
 // Run progress that survives a refresh (but not closing the tab): kept in sessionStorage.
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 const KEY = (k: string) => `qg:run:${k}`
 
@@ -20,9 +20,21 @@ export function saveRun(key: string, value: unknown): void {
   }
 }
 
-/** useState that is also kept for this tab, so a refresh mid-run resumes it. */
+/**
+ * useState that is also kept for this tab, so a refresh mid-run resumes it. When the key changes
+ * (the next try, another challenge) the value is loaded for the new key instead of carried over.
+ */
 export function useRunState<T>(key: string, initial: T | (() => T)): [T, (v: T | ((prev: T) => T)) => void] {
-  const [value, setValue] = useState<T>(() => loadRun<T>(key, typeof initial === 'function' ? (initial as () => T)() : initial))
-  useEffect(() => saveRun(key, value), [key, value])
-  return [value, setValue]
+  const fresh = () => loadRun<T>(key, typeof initial === 'function' ? (initial as () => T)() : initial)
+  const [state, setState] = useState(() => ({ key, value: fresh() }))
+  let current = state
+  if (state.key !== key) {
+    current = { key, value: fresh() }
+    setState(current) // React re-renders straight away with the new key's value
+  }
+  useEffect(() => saveRun(current.key, current.value), [current.key, current.value])
+  const set = useCallback((v: T | ((prev: T) => T)) => {
+    setState((s) => ({ key: s.key, value: typeof v === 'function' ? (v as (prev: T) => T)(s.value) : v }))
+  }, [])
+  return [current.value, set]
 }

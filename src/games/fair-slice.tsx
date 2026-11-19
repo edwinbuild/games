@@ -5,6 +5,7 @@ import { readChallenge } from '../shell/challenge'
 import { dailyDayFor, dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
+import { useRunState } from '../shell/session'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { AttemptTiles, Burst, Stage } from '../ui'
 
@@ -23,8 +24,11 @@ export default function FairSlice() {
   const seed = dateKey(day)
   const shapes = useMemo(() => shapesFor(seed), [seed])
   const [tries, setTries] = useState<number[][]>(() => (oneOff ? [] : loadToday(game.slug, [] as number[][])))
-  const [offs, setOffs] = useState<number[]>([])
-  const [done, setDone] = useState(tries.length > 0)
+  // The try in progress survives a refresh.
+  const [offs, setOffs] = useRunState<number[]>(`${game.slug}:${seed}:${oneOff ? 'once' : tries.length}`, [])
+  const [done, setDone] = useState(tries.length > 0 && offs.length === 0)
+  const cutTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  useEffect(() => () => clearTimeout(cutTimer.current), [])
   const [fresh, setFresh] = useState(false)
   const [cut, setCut] = useState<Cut | null>(null)
   const [keyboard, setKeyboard] = useState(false)
@@ -152,23 +156,24 @@ export default function FairSlice() {
     const next = [...offs, off]
     setOffs(next)
     setCut({ a, b, left: s.left, right: s.right, off, at: performance.now() })
-    setTimeout(() => {
+    // The fifth cut finishes the try now, so a refresh during the cut animation can't lose it.
+    const list = next.length === ROUNDS ? record(next) : null
+    cutTimer.current = setTimeout(() => {
       setCut(null)
       guide.current = { angle: 0.35 + next.length * 0.6, offset: 45 }
-      if (next.length === ROUNDS) finish(next)
+      if (list) { setTries(list); setDone(true) }
     }, off <= PERFECT ? 1500 : 1200)
   }
 
-  function finish(all: number[]) {
+  function record(all: number[]): number[][] {
     const list = [...tries, all]
-    setTries(list)
     if (!oneOff) {
       saveToday(game.slug, list)
       const best = Math.min(...list.map(average))
       recordDaily(game.slug, best, new Date(), `${best.toFixed(1)}% off`, true)
     }
     setFresh(true)
-    setDone(true)
+    return list
   }
 
   function again() {

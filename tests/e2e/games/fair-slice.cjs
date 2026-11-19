@@ -18,16 +18,27 @@ module.exports = async ({ page, B }) => {
   // Any cut through the centre of the square is fair.
   await swipe(0.05, 0.5, 0.95, 0.5)
   await page.getByText(/^Perfect! 50\.0% \/ 50\.0%$/).waitFor({ timeout: 3000 })
-  // The rest by keyboard.
+  // The rest by keyboard, with a refresh mid-run (it resumes) and one straight after the last cut.
   await page.getByText('Shape 2 of 5').waitFor({ timeout: 5000 })
-  for (let s = 2; s <= 5; s++) {
+  const keyCut = async () => {
     await page.locator('body').click({ position: { x: 2, y: 2 } })
     await page.keyboard.press('ArrowRight')
     await page.keyboard.press('Shift+ArrowDown')
     await page.keyboard.press('Space')
-    await page.getByText(/% off$|^Perfect!/).first().waitFor({ timeout: 3000 })
-    if (s < 5) await page.getByText(`Shape ${s + 1} of 5`).waitFor({ timeout: 5000 })
   }
+  for (let s = 2; s <= 5; s++) {
+    await keyCut()
+    if (s === 5) break
+    await page.getByText(/% off$|^Perfect!/).first().waitFor({ timeout: 3000 })
+    await page.getByText(`Shape ${s + 1} of 5`).waitFor({ timeout: 5000 })
+    if (s === 3) {
+      await page.reload()
+      await page.getByText('Shape 4 of 5').waitFor({ timeout: 5000 })
+    }
+  }
+  // Refresh during the last cut's animation: the try is already saved.
+  await page.waitForTimeout(150)
+  await page.reload()
   await page.locator('.qg-ticket').waitFor({ timeout: 5000 })
   const t = await page.locator('.qg-ticket').innerText()
   if (!/% off/.test(t) || !/best of 1 try/i.test(t)) throw new Error('ticket wrong: ' + t)
