@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { getGame } from './registry'
-import { judgeRound, matchWinner, type Press } from './duel-rules'
+import { judgeRound, matchWinner, TIE_MS, type Press } from './duel-rules'
 import { newSeed, readChallenge } from '../shell/challenge'
 import { seededRandom } from '../shell/daily'
 import { feel } from '../shell/feel'
@@ -27,6 +27,8 @@ export default function TapDuel() {
   const timers = useRef<ReturnType<typeof setTimeout>[]>([])
   const phaseRef = useRef(phase)
   phaseRef.current = phase
+  // Set once a winning tap is in: later taps are still collected for the tie window, then judged once.
+  const judging = useRef(false)
 
   useEffect(() => () => timers.current.forEach(clearTimeout), [])
   const later = (fn: () => void, ms: number) => timers.current.push(setTimeout(fn, ms))
@@ -36,6 +38,7 @@ export default function TapDuel() {
     document.querySelector('.qg-split')?.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
     presses.current = []
     goAt.current = null
+    judging.current = false
     setNote('')
     setPhase('wait')
     later(() => {
@@ -77,12 +80,13 @@ export default function TapDuel() {
     const p = phaseRef.current
     if (p !== 'wait' && p !== 'go') return
     presses.current.push({ player, t: performance.now() })
+    if (judging.current) return // inside the tie window: this tap is judged with the first
     const outcome = judgeRound(presses.current, goAt.current)
     if (outcome === 'pending') return
     if (outcome.kind === 'win') {
-      // Wait out the tie window before declaring a winner.
-      later(() => finish(judgeRound(presses.current, goAt.current)), 12)
-      phaseRef.current = 'between'
+      // Wait out the tie window (keeping the other player's tap if it comes) before declaring a winner.
+      judging.current = true
+      later(() => finish(judgeRound(presses.current, goAt.current)), TIE_MS + 2)
     } else finish(outcome)
   }
 

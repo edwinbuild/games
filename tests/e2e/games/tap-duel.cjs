@@ -6,6 +6,11 @@ module.exports = async ({ page, B }) => {
   await page.getByText('Wait…').first().waitFor()
   await halves.nth(0).dispatchEvent('pointerdown')
   await page.getByText(/tapped too early/).first().waitFor()
+  // Round 2: both tap within a few milliseconds of each other: a tie, played again.
+  await page.getByText('TAP!').first().waitFor({ timeout: 8000 })
+  await page.waitForTimeout(150)
+  await halves.evaluateAll((els) => { for (const el of els) el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })) })
+  await page.getByText('Tie! Same round again.').first().waitFor({ timeout: 3000 })
   // Then Aqua wins rounds until the match ends.
   for (let i = 0; i < 5 && !(await page.locator('.qg-ticket').count()); i++) {
     await page.getByText('TAP!').first().waitFor({ timeout: 8000 })
