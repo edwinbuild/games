@@ -21,6 +21,27 @@ const DAILY = new Set([...registry.matchAll(/slug: '([a-z-]+)'[\s\S]*?(?=slug: '
  * deliberately didn't): the game recorded something in local stats, nothing overflows sideways,
  * and a daily game shows today's result again on reopening without sending another finish.
  */
+/**
+ * The game slides in on load (420 ms). Scripts measure positions right after loading, so every
+ * goto/reload waits for that entrance animation to finish (checked on the animation itself, since
+ * some scripts pause a fake clock).
+ */
+const entered = (p) => p.waitForFunction(() => document.getAnimations().filter((a) => a.animationName === 'game-in').every((a) => a.playState === 'finished'), null, { timeout: 4000 }).catch(() => {})
+function settle(p) {
+  const goto = p.goto.bind(p), reload = p.reload.bind(p)
+  p.goto = async (...a) => { const r = await goto(...a); await entered(p); return r }
+  p.reload = async (...a) => { const r = await reload(...a); await entered(p); return r }
+  return p
+}
+/** The browser as scripts see it: pages in contexts they create settle too. */
+const withSettle = (browser) => new Proxy(browser, {
+  get(target, prop) {
+    if (prop === 'newContext') return async (...a) => { const ctx = await target.newContext(...a); ctx.on('page', settle); return ctx }
+    const v = target[prop]
+    return typeof v === 'function' ? v.bind(target) : v
+  },
+})
+
 async function sharedChecks(page, slug, clocked) {
   const problems = []
   const over = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth).catch(() => 0)
@@ -104,7 +125,8 @@ async function waitForServer() {
         const install = page.clock.install.bind(page.clock)
         page.clock.install = (...a) => { clocked = true; return install(...a) }
         try {
-          const outcome = await require(path.join(__dirname, 'games', f))({ page, B, browser, scheme })
+          settle(page)
+          const outcome = await require(path.join(__dirname, 'games', f))({ page, B, browser: withSettle(browser), scheme })
           if (outcome !== 'skip' && !errors.length) errors.push(...(await sharedChecks(page, slug, clocked)))
         } catch (e) {
           errors.push(String(e.message || e).split('\n')[0])

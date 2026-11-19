@@ -1,6 +1,6 @@
 const { assertFullyVisible, assertReopenQuiet, finishes, SMALL_PHONE } = require('../helpers.cjs')
 
-module.exports = async ({ page, B }) => {
+module.exports = async ({ page, B, browser }) => {
   await page.clock.install()
   await page.goto(B + '/blind-timer/')
   for (let i = 0; i < 2; i++) {
@@ -16,7 +16,7 @@ module.exports = async ({ page, B }) => {
   await assertReopenQuiet(page)
 
   // On a small phone, after Try again the timer (visible for its first second only) is fully on screen.
-  const ctx = await page.context().browser().newContext(SMALL_PHONE)
+  const ctx = await browser.newContext(SMALL_PHONE)
   const p = await ctx.newPage()
   try {
     await p.goto(B + '/blind-timer/')

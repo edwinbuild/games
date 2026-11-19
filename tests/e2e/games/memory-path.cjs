@@ -1,6 +1,6 @@
 const { assertFullyVisible, SMALL_PHONE } = require('../helpers.cjs')
 
-module.exports = async ({ page, B }) => {
+module.exports = async ({ page, B, browser }) => {
   await page.clock.install()
   await page.goto(B + '/memory-path/')
   await page.getByRole('button', { name: 'Start' }).click()
@@ -11,7 +11,7 @@ module.exports = async ({ page, B }) => {
   await page.locator('.qg-ticket').waitFor()
 
   // Small phone: after Play again, the grid is fully on screen when the path starts showing.
-  const ctx = await page.context().browser().newContext(SMALL_PHONE)
+  const ctx = await browser.newContext(SMALL_PHONE)
   const p = await ctx.newPage()
   try {
     await p.goto(B + '/memory-path/')
