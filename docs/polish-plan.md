@@ -43,25 +43,25 @@ An independent review of all 31 games lists every place the seven bug classes oc
 
 ### Part 2 checklist (from the independent review)
 
-- [ ] Online: a player who refreshes mid-game is still in presence but back in the lobby, so others wait forever (Higher Lower, Reaction Duel, Quick Draw).
-- [ ] Online: at start only the host sets ready to false, so Rematch can start at once and pull players off their results.
-- [ ] Reaction Duel: Rematch never clears `started`, so a new friend is told the match already started.
-- [ ] Beat Keeper: drumming fast scores well (extra taps cost nothing).
-- [ ] Blind Timer, Pitch Match: no `trackFinish={fresh}`, so every reload sends another finish event and replays the done sound.
-- [ ] Color Recall: Try again started the reveal off-screen (done in Part 1); compare screen showed the colour then retried the same colours (done in Part 1).
-- [ ] Pour Line: if every try spills, the day is never recorded (streak breaks, card says New).
-- [ ] Guess the Crowd: the day is recorded only once 20 have answered, so an early player loses the streak.
-- [ ] This or That: your own vote counts towards the split you guess; text shows the old split next to a live bar; "off" is percentage points.
-- [ ] Challenge-link replays reuse the same seed in Memory Path, Odd One Out, Reaction Chain, Pendulum Stop and Tidy Up, so memorised runs become personal bests.
-- [ ] Reaction Chain: "a new best" shown when equal to an older best (removed in Part 1).
-- [ ] Tap Duel: ties inside 10 ms can never happen (the second tap is ignored).
-- [ ] Fair Slice: the fifth cut is saved after a delay (refresh loses it) and the timer isn't cleared; Chain Pop and Domino Drop save after the animation.
-- [ ] Domino Drop: Enter before using the arrows presses Push.
-- [ ] Angle Eye: about 16% of angle rounds draw the answer or handle outside the board.
-- [ ] Session runs restored across different challenge links (keyed by challenge seed in Part 1).
-- [ ] Steady Line: lifting your finger says "Touched the edge".
-- [ ] Tidy Up: a wrong-slot drop can send an item back to a spot outside the board.
-- [ ] Plurals: "1 rounds", "1 mirrors", "1 blocks" in stored text.
+- [x] Online: a player who refreshes mid-game is still in presence but back in the lobby, so others wait forever (Higher Lower, Reaction Duel, Quick Draw).
+- [x] Online: at start only the host sets ready to false, so Rematch can start at once and pull players off their results.
+- [x] Reaction Duel: Rematch never clears `started`, so a new friend is told the match already started.
+- [x] Beat Keeper: drumming fast scores well (extra taps cost nothing).
+- [x] Blind Timer, Pitch Match: no `trackFinish={fresh}`, so every reload sends another finish event and replays the done sound.
+- [x] Color Recall: Try again started the reveal off-screen (done in Part 1); compare screen showed the colour then retried the same colours (done in Part 1).
+- [x] Pour Line: if every try spills, the day is never recorded (streak breaks, card says New).
+- [x] Guess the Crowd: the day is recorded only once 20 have answered, so an early player loses the streak.
+- [x] This or That: your own vote counts towards the split you guess; text shows the old split next to a live bar; "off" is percentage points.
+- [x] Challenge-link replays reuse the same seed in Memory Path, Odd One Out, Reaction Chain, Pendulum Stop and Tidy Up, so memorised runs become personal bests.
+- [x] Reaction Chain: "a new best" shown when equal to an older best (removed in Part 1).
+- [x] Tap Duel: ties inside 10 ms can never happen (the second tap is ignored).
+- [x] Fair Slice: the fifth cut is saved after a delay (refresh loses it) and the timer isn't cleared; Chain Pop and Domino Drop save after the animation.
+- [x] Domino Drop: Enter before using the arrows presses Push.
+- [x] Angle Eye: about 16% of angle rounds draw the answer or handle outside the board.
+- [x] Session runs restored across different challenge links (keyed by challenge seed in Part 1).
+- [x] Steady Line: lifting your finger says "Touched the edge".
+- [x] Tidy Up: a wrong-slot drop can send an item back to a spot outside the board.
+- [x] Plurals: "1 rounds", "1 mirrors", "1 blocks" in stored text.
 
 ## Part 3: tests that catch these for every game
 

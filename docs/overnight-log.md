@@ -77,3 +77,16 @@ One line per game: date, game, commit, what was tested, what is left.
   5. Count Flash reports the true average error (uncapped); old saved tries still load. Unit tests for the maths.
   6. Online rooms remember Ready per room for the tab. e2e on real Realtime: refresh in the lobby keeps Ready.
   7. Every finished multiplayer match counts as played (recorded once, by the result ticket); the record panel says "1 match played". e2e for Tap Duel and Tug of Taps.
+- 2026-11-19 · Part 2 · the same bugs everywhere, from an independent review of all 31 games; each fix has a test that fails without it:
+  - Online rooms (Higher Lower, Reaction Duel, Quick Draw, Spot Race): a player who refreshes mid-match steps out instead of leaving the others waiting; everyone's Ready resets at start, so Rematch can't pull players off their results; Reaction Duel's Rematch lets a new friend in; repeated presence updates are skipped (they made the other phone see a stale room). e2e on real Realtime.
+  - Beat Keeper: extra taps in the silent stretch cost half a beat each, so drumming fast no longer scores well (unit tests).
+  - Blind Timer, Pitch Match: reopening today's result no longer sends another finish or replays the sound. The ticket now counts finishes on the page and a shared e2e helper (`assertReopenQuiet`) checks it; it fails with the old code.
+  - Pour Line: a day where every try spills counts as played (streak, "Spilled"), with no score; a later pour replaces it. `recordDaily` takes a null score for this (unit tests, including streaks over month and year ends).
+  - Guess the Crowd: answering counts the day before 20 people have answered; the score arrives when you come back.
+  - This or That: your own vote is left out of the split you guessed; the text says it was scored at lock-in next to the live bar; the distance is in percentage points ("4 points off").
+  - Challenge links: playing again always gets a new puzzle (Memory Path, Odd One Out, Reaction Chain, Pendulum Stop, Tidy Up), so a memorised run can't become a best. e2e via a challenge link.
+  - Tap Duel: ties inside 10 ms happen again (the second tap was being ignored).
+  - Fair Slice, Chain Pop, Domino Drop: the try is saved at the last cut, the tap or the push, not after the animation; Fair Slice also resumes mid-try after a refresh. `useRunState` now loads the new key's value when its key changes. Domino Drop: Enter with no cursor brings the cursor out instead of pressing Push.
+  - Angle Eye: angle rounds stay on the board (test over 400 seeds).
+  - Steady Line: letting go says "You let go at X%".
+  - Tidy Up: a drop near the edge can't set a home outside the board. Shared `count()` fixes "1 rounds", "1 mirrors", "1 blocks", "1 pts".
