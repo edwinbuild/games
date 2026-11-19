@@ -8,8 +8,6 @@ export type GameMeta = {
   instructions: string
   /** Short description for cards, <meta description> and link previews. */
   tagline: string
-  /** How-to-play paragraphs rendered as static HTML for search engines. */
-  howTo: string[]
   daily: boolean
   /** A colour token from design-system/tokens.json (e.g. "tangerine"). */
   color: string
@@ -37,10 +35,6 @@ export const GAMES: GameMeta[] = [
     emoji: '⏱️',
     instructions: 'Press Start, then Stop when you think the target time is up. The clock hides after one second.',
     tagline: 'Stop a hidden clock on the target time. A new target every day.',
-    howTo: [
-      'Each day has one target time, the same for everyone, such as 7.30 seconds. Press Start, count in your head, and press Stop when you think the time is up. The clock hides after the first second.',
-      'Try as many times as you like. Your closest try is your result for the day, and the share says how many tries it took.',
-    ],
     daily: true,
     color: 'tangerine',
     sample: '07.30',
@@ -51,10 +45,6 @@ export const GAMES: GameMeta[] = [
     emoji: '⚡',
     instructions: 'Tap the panel the moment it turns green. Five rounds.',
     tagline: 'Tap the moment the panel turns green. Five rounds, one average.',
-    howTo: [
-      'Tap the panel to start a round. Wait while it is red, then tap as soon as it turns green. A tap while it is still red, or faster than 100 ms after it turns green, counts as 500 ms.',
-      'After five rounds you get your average reaction time in milliseconds, and your fastest round.',
-    ],
     daily: false,
     color: 'mint',
     sample: '243ms',
@@ -65,10 +55,6 @@ export const GAMES: GameMeta[] = [
     emoji: '👀',
     instructions: 'Tap the one that is different. 60 seconds; a wrong tap costs 3.',
     tagline: 'Find the one different emoji before the minute runs out.',
-    howTo: [
-      'Each grid hides exactly one emoji that is different. Tap it to go to the next level, where the grid gets bigger and the difference gets smaller.',
-      'You have 60 seconds in total, starting from your first tap. A wrong tap takes 3 seconds off. Your score is the number of levels you clear.',
-    ],
     daily: false,
     color: 'grape',
     sample: 'Lv 12',
@@ -79,10 +65,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🧠',
     instructions: 'Watch the squares light up, then tap them in the same order.',
     tagline: 'Repeat a path of lit squares. It gets one step longer every round.',
-    howTo: [
-      'Squares on a 4×4 grid light up one at a time. When they stop, tap the same squares in the same order. Each round adds one step, and after eight steps the squares light up faster.',
-      'One wrong tap ends the game. Your score is the longest path you repeated. Turn sound on to hear a note for each square.',
-    ],
     daily: false,
     color: 'sky',
     sample: '9',
@@ -93,10 +75,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🎵',
     instructions: 'Listen to the tone, then slide yours until they match. Three tones, as many tries as you like.',
     tagline: 'Hear a tone, then match it by ear. Three new tones every day.',
-    howTo: [
-      'Press Listen to hear the target tone. Move the slider, play your tone, and press Lock in when they sound the same. You need your phone\'s sound on.',
-      'There are three tones a day, the same for everyone. Being one semitone off (one piano key) scores 50%; matching exactly scores 100%. Try as many times as you like; your best try counts and the share says how many it took.',
-    ],
     daily: true,
     color: 'bubblegum',
     sample: '92%',
@@ -107,10 +85,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🍀',
     instructions: 'Pick one of today\'s five face-down cards. Higher is luckier.',
     tagline: 'Five face-down cards, one pick a day. Everyone gets the same five.',
-    howTo: [
-      'Every day there are five face-down cards, each with a number from 1 to 100. Everyone gets the same five cards in the same places, so you and your friends are choosing from the same row.',
-      'You get one pick a day. Then all five turn over and you see whether you took the best one. Share your card and compare with friends. After your pick you can practise with random decks; they don\'t count.',
-    ],
     daily: true,
     color: 'lagoon',
     sample: '87',
@@ -121,10 +95,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🤝',
     instructions: 'Two players, one phone. Tap your side the moment it turns green. First to three.',
     tagline: 'Two players, one phone: first to tap after the signal wins the round.',
-    howTo: [
-      'Put the phone flat between you; each player gets one half of the screen. Both halves say Wait, then turn green at the same moment. The first player to tap their own half wins the round.',
-      'Tapping before it turns green loses the round. If you both tap within 10 milliseconds it is a tie and the round is replayed. First to three rounds wins. On a computer, use the A and L keys.',
-    ],
     daily: false,
     color: 'coral',
     sample: '3–1',
@@ -136,10 +106,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🔀',
     instructions: 'Pick your answer, then guess how today’s players split.',
     tagline: 'One question a day. Pick a side, then guess how everyone else picked.',
-    howTo: [
-      'Every day there is one two-way question, the same for everyone, like “Window seat or aisle seat?”. Pick your answer, then guess what share of today’s players picked the first option.',
-      'Lock in to see the real split so far. Your score is how close your guess was: within 3% is a great read of the crowd. One vote a day; the split keeps moving as more people play.',
-    ],
     daily: true,
     color: 'aqua',
     sample: '4% off',
@@ -150,10 +116,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🎨',
     instructions: 'Each colour shows for 2 seconds. Rebuild it from memory with three sliders.',
     tagline: 'See a colour for two seconds, then rebuild it from memory. Three new colours every day.',
-    howTo: [
-      'A colour fills the screen for two seconds, then hides. Rebuild it with the hue, saturation and lightness sliders and press Lock in. After each colour you see yours next to the real one.',
-      'There are three colours a day, the same for everyone. Each match is scored by how different the two colours look to the human eye (the CIEDE2000 measure), and your day’s result is the average. Try as many times as you like; your best try counts.',
-    ],
     daily: true,
     color: 'orchid',
     sample: '86%',
@@ -164,10 +126,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🔢',
     instructions: 'A field of dots flashes for under a second. Estimate how many there were.',
     tagline: 'Dots flash for less than a second. How many were there? Five new fields every day.',
-    howTo: [
-      'Each field of dots shows for 0.8 seconds, which is too short to count. Type your estimate and lock it in; the field comes back with the real number.',
-      'There are five fields a day, from about a dozen dots to three hundred, the same for everyone. Each guess scores 100 minus your percentage error, and your result is the average. Try as many times as you like; your best try counts.',
-    ],
     daily: true,
     color: 'sand',
     sample: '9% off',
@@ -178,10 +136,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🪢',
     instructions: 'Two players, one phone. After Go, tap your side as fast as you can to pull the rope over.',
     tagline: 'Two players, one phone, one rope. Tap faster to pull it to your side.',
-    howTo: [
-      'Put the phone between you; each player gets one half of the screen. After a 3-2-1 countdown, tap your own half as fast as you can. Every tap pulls the rope one step toward you.',
-      'The first player to pull the rope 20 steps to their side wins. Taps before Go don’t count, and both players can tap at the same time. On a computer, use the A and L keys.',
-    ],
     daily: false,
     color: 'lime',
     sample: '9.4 s',
@@ -193,10 +147,6 @@ export const GAMES: GameMeta[] = [
     emoji: '📐',
     instructions: 'Ten quick rounds: set angles, find middles and centres, double lines. By eye only.',
     tagline: 'How good is your eye? Judge angles, middles and centres in ten quick rounds.',
-    howTo: [
-      'Each round asks for one thing by eye: make an angle of a given size, mark the exact middle of a line, extend a line to twice its length, or mark the centre of a circle. Drag the handle (or use the arrow keys) and lock in.',
-      'After each round the true answer appears in green with how far off you were. Each round scores up to 10, for a total out of 100. Send the link to a friend and they get the exact same ten rounds.',
-    ],
     daily: false,
     color: 'periwinkle',
     sample: '82/100',
@@ -207,10 +157,6 @@ export const GAMES: GameMeta[] = [
     emoji: '⚡',
     instructions: 'Duel a friend on their own phone: tap the moment it turns green. First to three.',
     tagline: 'Duel a friend on another phone. The faster reaction wins each round, first to three.',
-    howTo: [
-      'Create a room and send the link (or the five-letter code) to a friend. When you are both in, press Ready; the host starts the duel. Each round both screens say Wait, then turn green; tap as fast as you can.',
-      'Each phone times its own reaction from the moment it turned green, so a slow connection never decides a round. Tapping before green loses the round. First to three rounds wins; Rematch keeps you in the same room.',
-    ],
     daily: false,
     color: 'peach',
     sample: '3–2',
@@ -222,10 +168,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🔲',
     instructions: 'Tap a tile to flip it and its neighbours. Clear every lit tile in as few moves as you can.',
     tagline: 'Flip tiles and their neighbours until the grid is clear. One puzzle a day, with a par to beat.',
-    howTo: [
-      'Each day has one 5×5 puzzle, the same for everyone. Tapping a tile flips it and the tiles directly above, below and beside it, from lit to off or back. Turn every tile off to solve it.',
-      'Par is the fewest moves that can solve the day\'s grid. Undo as often as you like; only a solved grid counts. Try as many times as you like; your fewest moves is your result. On a computer, use the arrow keys and Space, and Z to undo.',
-    ],
     daily: true,
     color: 'pistachio',
     sample: '7 moves',
@@ -236,10 +178,6 @@ export const GAMES: GameMeta[] = [
     emoji: '👀',
     instructions: 'Race up to seven friends, each on your own phone, through the same odd-one-out grids. 60 seconds.',
     tagline: 'Up to eight friends, one minute, the same grids. Who spots the odd one out fastest?',
-    howTo: [
-      'Create a room and send the link (or the five-letter code). Two to eight players can join. When everyone is ready, the host starts the race and every phone gets the same sequence of grids.',
-      'Tap the one emoji that is different to go to the next level; a wrong tap costs 3 seconds. Everyone sees each other’s level live. After 60 seconds the most levels wins; on a tie, whoever got there first. A player who leaves keeps their last level.',
-    ],
     daily: false,
     color: 'grape',
     sample: '2nd of 5',
@@ -251,10 +189,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🧱',
     instructions: 'Tap to drop each sliding block onto the tower. Anything that overhangs is cut off.',
     tagline: 'Drop sliding blocks into a tower. Overhangs get cut, perfect drops don’t. One tower a day.',
-    howTo: [
-      'A block slides back and forth above the tower. Tap (or press Space) to drop it. Whatever hangs over the block below is cut off, so the next block is narrower. Drop it almost exactly on top and it keeps its full width.',
-      'Every five blocks the slide gets faster. Miss the tower completely and the try is over. Everyone gets the same tower each day, with the same starting width and speeds. Try as many times as you like; your tallest tower counts.',
-    ],
     daily: true,
     color: 'chili',
     sample: '23 blocks',
@@ -265,10 +199,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🥛',
     instructions: 'Press and hold to pour, let go to stop. Fill the glass exactly to the line.',
     tagline: 'Hold to pour, let go at the line. The drink keeps falling after you let go. One glass a day.',
-    howTo: [
-      'Press and hold anywhere on the glass to pour from the tap; let go to stop. The stream already in the air still lands after you let go, so stop a moment early. Pour past the rim and the try is spilled.',
-      'Every day has one glass, the same for everyone: its shape, the height of the line and how fast the tap runs. Narrow parts of a glass fill faster. Your score is how far the settled drink is from the line, as a share of the glass height. Try as many times as you like; your closest pour counts. On a computer, hold Space.',
-    ],
     daily: true,
     color: 'honey',
     sample: '0.6% off',
@@ -279,10 +209,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🫧',
     instructions: 'One tap. The bubble you tap pops and sets off its neighbours. Pop as many as you can.',
     tagline: 'One tap sets off a chain of popping bubbles. Same board for everyone, every day.',
-    howTo: [
-      'Tap one bubble. It pops and sends out a ring; any bubble the ring reaches pops too and sends out its own ring. Big bubbles send bigger rings. Then sit back and watch the chain run.',
-      'Every day has one board of 60 bubbles, the same for everyone. Your score is how many popped from your one tap. Try as many times as you like; your longest chain counts. On a computer, choose a bubble with the arrow keys and press Space.',
-    ],
     daily: true,
     color: 'lilac',
     sample: '41 of 60',
@@ -293,10 +219,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🔪',
     instructions: 'Swipe one straight cut across each shape. Make the two halves exactly equal.',
     tagline: 'Cut five shapes exactly in half with one swipe each. A square is easy; a star is not.',
-    howTo: [
-      'Each shape gets one straight cut: swipe across it and it splits in two, showing each half’s share of the area. Aim for 50% / 50%. A swipe that misses the shape doesn’t count; if a cut leaves three or more pieces, every piece on one side of the line counts as that side.',
-      'There are five shapes a day, the same for everyone, getting harder from a square to a wobbly blob. Your score is how far your cuts were from a fair half, on average. Try as many times as you like; your best try counts. On a computer, turn and move the cut with the arrow keys (hold Shift for fine steps) and press Space.',
-    ],
     daily: true,
     color: 'apricot',
     sample: '1.4% off',
@@ -307,10 +229,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🧺',
     instructions: 'Drag each thing into its outline in the organiser, the right way round. Tap a thing to turn it.',
     tagline: 'Put twelve little things away, each in its own outline. Click, click, click, done.',
-    howTo: [
-      'The organiser has an outline for each thing in the mess below. Drag a thing onto its outline and it clicks into place, as long as it is the right way round: tap a thing to turn it a quarter turn. Coins and buttons fit any way round.',
-      'The clock starts at your first touch. Dropping a thing into someone else’s outline sends it back and adds 2 seconds. Send the link to a friend and they tidy the exact same mess. On a computer, Tab to a thing, move it with the arrow keys, turn it with R and drop it with Enter.',
-    ],
     daily: false,
     color: 'seafoam',
     sample: '38.2s',
@@ -321,10 +239,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🁢',
     instructions: 'Fill the gaps with five spare dominoes, then push the first one and watch the run fall.',
     tagline: 'Place five spare dominoes in the gaps, push, and watch the whole line go down. One run a day.',
-    howTo: [
-      'A winding line of dominoes has five gaps where the run would stop. Tap to place a spare domino; it lines up with its neighbours, you can drag it to adjust and tap it again to turn it. Then press Push. A domino tips the next only if it is close enough and roughly in the way it falls; blocks stop the run.',
-      'Every day has one board, the same for everyone. Your score is how many of the 40 dominoes fall. Try as many times as you like; your best run counts. On a computer, move a cursor with the arrow keys, press Enter to place or turn a spare, and Space to push.',
-    ],
     daily: true,
     color: 'butter',
     sample: '38 of 40',
@@ -335,10 +249,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🎯',
     instructions: 'Five options. Pick the one you think the fewest people will choose. Results tomorrow.',
     tagline: 'Pick the option nobody else picks. One pick a day; tomorrow you find out how rare you were.',
-    howTo: [
-      'Every day has one question with five options, the same for everyone, like “Pick a fruit” or “Pick a number”. Choose the one you think the fewest people will pick, and lock it in. One pick a day.',
-      'The split is hidden until the day is over, so nobody can copy the crowd. Come back tomorrow to see how everyone picked and how rare your pick was. Only the number of picks for each option is stored; nothing about you.',
-    ],
     daily: true,
     color: 'citrus',
     sample: 'Rarest!',
@@ -349,10 +259,6 @@ export const GAMES: GameMeta[] = [
     emoji: '👥',
     instructions: 'Answer today’s number question, then guess the average answer of everyone who plays.',
     tagline: 'One number question a day. Give your answer, then guess what everyone else said.',
-    howTo: [
-      'Every day has one number question, the same for everyone, like “How many hours did you sleep last night?”. Slide to your own answer, then guess the average answer of everyone who plays today. One answer a day.',
-      'You then see how everyone answered so far, with your answer, your guess and the real average marked. Your score is how far your guess was from the average, as a share of the range; within 3% is a great read of the crowd. Until 20 people have answered there is nothing to compare with, so check back later. Only the answers are stored, never who gave them.',
-    ],
     daily: true,
     color: 'blush',
     sample: '3.0% off',
@@ -363,10 +269,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🥁',
     instructions: 'Tap along with the beat. When it goes silent, keep tapping in time.',
     tagline: 'The beat plays, then stops. Can you keep perfect time on your own? One tempo a day.',
-    howTo: [
-      'Press Start and tap along with eight beats: you hear them (with sound on) and see the circle pulse. Then the beat goes silent and the circle fades. Keep tapping in time for eight more beats, on the screen or with Space.',
-      'Your score is how far your silent taps were from the real beats, on average, in milliseconds; a missed beat counts as half a beat out. The reveal shows each tap against its beat and whether you drifted fast or slow. Everyone gets the same tempo each day. Try as many times as you like; your best counts.',
-    ],
     daily: true,
     color: 'iris',
     sample: '±23 ms',
@@ -377,10 +279,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🚰',
     instructions: 'Tap pipes to turn them until water runs from the tap to the plant.',
     tagline: 'Turn the pipes, water the plant. One puzzle a day, with a par to beat.',
-    howTo: [
-      'Water comes from the tap on the left. Tap a pipe to turn it a quarter turn; water flows through every pipe that connects back to the tap, so you can see how far it gets. Connect it all the way to the plant on the right.',
-      'Every day has one 6×6 board, the same for everyone. Par is the number of turns the puzzle was made with; beat it if you can. Try as many times as you like; your fewest turns counts. On a computer, move with the arrow keys and turn with Space.',
-    ],
     daily: true,
     color: 'glacier',
     sample: '9 turns',
@@ -391,10 +289,6 @@ export const GAMES: GameMeta[] = [
     emoji: '🔦',
     instructions: 'Place up to three mirrors so the laser beam lights every target.',
     tagline: 'Bend a laser with three mirrors to light every target. One puzzle a day.',
-    howTo: [
-      'The laser on the left fires a beam to the right. Tap a square to place a mirror, tap it again to flip it the other way, and a third time to take it away. The beam bounces off mirrors, passes through targets and stops at walls. Light every target.',
-      'You have three mirrors at most. Every day has one board, the same for everyone; par is the fewest mirrors it can be solved with, and fewer moves breaks ties. Try as many times as you like; your best try counts. On a computer, move with the arrow keys and press Space to place or flip a mirror.',
-    ],
     daily: true,
     color: 'sunbeam',
     sample: '2 mirrors',

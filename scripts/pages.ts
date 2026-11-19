@@ -5,6 +5,7 @@
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { GAMES, type GameMeta } from '../src/games/registry.ts'
+import { HOW_TO } from '../src/games/howto.ts'
 import { SITE } from '../src/site.ts'
 
 const root = resolve(import.meta.dirname, '..')
@@ -63,7 +64,7 @@ ${opts.body}
 }
 
 function gamePage(g: GameMeta) {
-  const howTo = g.howTo.map((p) => `        <p>${esc(p)}</p>`).join('\n')
+  const howTo = (HOW_TO[g.slug] ?? []).map((p) => `        <p>${esc(p)}</p>`).join('\n')
   return page({
     title: `${g.title}: ${g.tagline.split('.')[0]} | ${SITE.name}`,
     description: g.tagline,
