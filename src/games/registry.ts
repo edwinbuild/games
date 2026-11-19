@@ -385,6 +385,20 @@ export const GAMES: GameMeta[] = [
     color: 'glacier',
     sample: '9 turns',
   },
+  {
+    slug: 'light-path',
+    title: 'Light Path',
+    emoji: '🔦',
+    instructions: 'Place up to three mirrors so the laser beam lights every target.',
+    tagline: 'Bend a laser with three mirrors to light every target. One puzzle a day.',
+    howTo: [
+      'The laser on the left fires a beam to the right. Tap a square to place a mirror, tap it again to flip it the other way, and a third time to take it away. The beam bounces off mirrors, passes through targets and stops at walls. Light every target.',
+      'You have three mirrors at most. Every day has one board, the same for everyone; par is the fewest mirrors it can be solved with, and fewer moves breaks ties. Try as many times as you like; your best try counts. On a computer, move with the arrow keys and press Space to place or flip a mirror.',
+    ],
+    daily: true,
+    color: 'sunbeam',
+    sample: '2 mirrors',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

@@ -483,3 +483,31 @@ button { font: inherit; }
 .demo-pt-cell { position: absolute; top: 26px; width: 28px; height: 28px; border: 1.5px solid var(--line); border-radius: 4px; box-sizing: border-box; background: var(--paper); }
 .demo-pt-pipe { position: absolute; left: -2px; right: -2px; top: 9px; height: 8px; border: 2px solid var(--line); border-left: 0; border-right: 0; }
 .demo-pt-plant { position: absolute; left: 114px; top: 28px; width: 20px; height: 22px; border-radius: 50% 50% 4px 4px; background: var(--line); }
+
+/* Light Path */
+.lp-stage { padding: var(--space-3); }
+.lp-wrap { position: relative; width: 100%; max-width: 440px; margin-inline: auto; }
+.lp-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.lp-cell { aspect-ratio: 1; padding: 0; border: 1.5px solid var(--edge); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); cursor: pointer; display: grid; place-items: center; font-size: 18px; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.lp-cell:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+@media (hover: hover) and (pointer: fine) { .lp-cell[data-cursor] { outline: 2px dashed var(--edge); outline-offset: 1px; } }
+.lp-wall { background: repeating-linear-gradient(45deg, var(--ink) 0 3px, var(--surface-sunken) 3px 8px); cursor: default; }
+.lp-laser { background: var(--game); color: var(--on-fill); cursor: default; }
+.lp-target { width: 52%; aspect-ratio: 1; border-radius: 50%; border: 3px solid var(--ink); background: var(--surface-sunken); transition: background-color 200ms, transform 200ms; }
+.lp-cell.is-lit .lp-target { background: var(--game); transform: scale(1.15); box-shadow: 0 0 0 4px color-mix(in srgb, var(--game) 45%, transparent); }
+.lp-target { cursor: default; }
+.lp-mirror { width: 80%; height: 5px; border-radius: 3px; background: var(--ink); }
+.lp-m1 .lp-mirror { rotate: -45deg; }
+.lp-m2 .lp-mirror { rotate: 45deg; }
+.lp-beam { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.lp-beam polyline { fill: none; stroke: var(--game); stroke-width: 0.11; stroke-linejoin: round; stroke-linecap: round; filter: drop-shadow(0 0 0.05px var(--edge)); stroke-dasharray: 60; stroke-dashoffset: 60; animation: lp-draw 500ms ease-out forwards; }
+.lp-beam .lp-beam-edge { stroke: var(--edge); stroke-width: 0.19; }
+@keyframes lp-draw { to { stroke-dashoffset: 0 } }
+@media (prefers-reduced-motion: reduce) { .lp-beam polyline { animation: none; stroke-dashoffset: 0; } }
+.demo-lp-laser { position: absolute; left: 10px; top: 50px; width: 18px; height: 16px; border-radius: 3px; background: var(--line); }
+.demo-lp-beam { position: absolute; background: var(--paper); border: 1.5px solid var(--line); box-sizing: border-box; }
+.demo-lp-beam--a { left: 28px; top: 55px; height: 6px; }
+.demo-lp-beam--b { left: 99px; bottom: 11px; width: 6px; }
+.demo-lp-mirror { position: absolute; left: 90px; top: 56px; width: 24px; height: 4px; border-radius: 2px; background: var(--line); }
+.demo-lp-target { position: absolute; width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--line); background: var(--qg-fill); box-sizing: border-box; }
+.demo-lp-target--lit { background: var(--paper); box-shadow: 0 0 0 3px var(--paper); }

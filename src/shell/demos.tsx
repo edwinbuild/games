@@ -512,6 +512,22 @@ function PipeTurnDemo() {
   )
 }
 
+
+function LightPathDemo() {
+  const d = 3.6
+  return (
+    <Scene still={3}>
+      <span className="demo-lp-laser" />
+      <span className="demo-lp-target" style={{ left: 96, top: 6 }} />
+      <A d={d} className="demo-lp-mirror" ease="cubic-bezier(.3,1.5,.5,1)" k="0%,18%{transform:rotate(-45deg) scale(0)}26%,96%{transform:rotate(-45deg) scale(1)}100%{transform:rotate(-45deg) scale(0)}" />
+      <A d={d} className="demo-lp-beam demo-lp-beam--a" k="0%,4%{width:0}16%,96%{width:76px}100%{width:0}" />
+      <A d={d} className="demo-lp-beam demo-lp-beam--b" k="0%,28%{height:0}44%,96%{height:44px}100%{height:0}" />
+      <A d={d} className="demo-lp-target demo-lp-target--lit" style={{ left: 96, top: 6 }} k={show([[44, 96]])} />
+      <Tap d={d} at={20} x={102} y={58} />
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -538,4 +554,5 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'guess-the-crowd': GuessTheCrowdDemo,
   'beat-keeper': BeatKeeperDemo,
   'pipe-turn': PipeTurnDemo,
+  'light-path': LightPathDemo,
 }
