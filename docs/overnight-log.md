@@ -123,4 +123,20 @@ Goal (2026-11-19): build `docs/launch-plan.md` parts A, B, C, D, then F; **skip 
   - Desktop home (≥1100px): a sticky rail with today's progress ring and countdown, both filters as lists, and your three longest streaks; the chips hide. The page widens to 1360px so three cards a row keep the size their scenes need; between 760 and 1359px cards are two a row (three a row at 820px had card scenes running into the scores; that was there before today).
   - Desktop game pages: boards grow into the wider column, bounded by the screen height (Pipe Turn's board goes from 460 to 580px at 1440×900).
   - e2e: home filters, memory, empty state, category page, desktop rail; the page checks now include 1920px and the category pages.
+- 2026-11-19 · Part B · the weak games reworked, one retired, two merged. Re-rated with formula v2 (Challenge 30%, Fun 25%, Replay 20%, Social 15%, Accessible 10%):
+
+  | Game | Change | Before | After |
+  |---|---|---|---|
+  | Paint Mix | Five colours a day (tint → muted three-paint mix), one shared tube (exact recipes + 10 drops), no undo, scores hidden until lock-in, a star for an exact match, five new colours per try | 45.5 | 65.0 |
+  | Balance Beam | Weights 1–5, two of each, par 3–4; Thursday to Sunday a second beam hangs from the first (it must level itself and pulls on the top beam) | 58.0 | 67.5 |
+  | Guess the Crowd | Provisional score before 20 answers; This or That is now its bonus round | 57.0 | 63.0 |
+  | Pitch Match | Plays with the sound off: the tone drawn as a wave | 55.5 | 61.0 |
+  | Tug of Taps | Thumbs must alternate (left, right…); mashing one spot does nothing | 57.5 | 62.5 |
+  | Reaction Duel | Tap Duel and Reaction Duel Online share one card with a One phone / Online switch (the online page still serves room links) | 63.5 / 60.5 | 63.5 |
+  | Luckiest Person | Retired (pure luck); `/luckiest-person/` redirects home | 43.5 | — |
+  | This or That | Folded into Guess the Crowd; `/this-or-that/` redirects there | 54.0 | — |
+
+  No solo game is now under 55 (the lowest are Count Flash and Odd Pick at 59). 32 games, 31 with cards.
+  - Found on the way: the page-transition opt-in arrived with the JavaScript-loaded stylesheet, too late, so the card-to-game transition was always aborted and every navigation logged an error. It now sits in each page's HTML head (e2e: card → game, the duel's mode switch).
+  - Tests: unit tests for the new Paint Mix days, the two-beam solver and generator, alternating thumbs; e2e finds every Paint Mix recipe by search, solves today's two-beam puzzle by keyboard and a Monday's via a challenge link, plays Pitch Match by sight, checks the bonus round with stand-in votes, the provisional score, and the tug's mashing vs alternating.
 

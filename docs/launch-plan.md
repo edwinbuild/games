@@ -45,7 +45,7 @@ If a decision is overridden, the affected part changes and the rest carries on.
 4. **Desktop game page**: a wider game column (the board uses the space, up to a sensible maximum), the side column keeps How to play / your record / leaderboard, and the footer spans the page.
 5. **Checks**: screenshot sheets at 360, 412, 820, 1024, 1440 and 1920 in light and dark; the e2e page checks gain 1920 and a rule that the footer is on one line at ≥ 820px.
 
-## Part B: rework the weak games
+## Part B: rework the weak games (done)
 
 1. **Paint Mix → a real planning puzzle**
    - Paint can't come out: **no Undo, no Empty**. Overshoot and you have to correct with other paints.

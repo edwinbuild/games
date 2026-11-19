@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { getGame } from './registry'
 import { fromShare, offBy, questionFor, show, toShare, type Question } from './guess-the-crowd/questions'
 import { rpc } from '../shell/api'
@@ -6,10 +6,11 @@ import { dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
-import { ThisOrThatBonus } from './guess-the-crowd/ThisOrThatBonus'
 import { Burst, Button, Histogram, Stage } from '../ui'
 
 const game = getGame('guess-the-crowd')
+// The bonus round (and its question list) loads after the result, so the game itself stays small.
+const ThisOrThatBonus = lazy(() => import('./guess-the-crowd/ThisOrThatBonus').then((m) => ({ default: m.ThisOrThatBonus })))
 /** Below this many answers, the crowd isn't shown: it wouldn't mean much. */
 const ENOUGH = 20
 /** Within this many percent of the range is a great read of the crowd. */
@@ -142,7 +143,7 @@ function Result({ q, saved, crowd, off, fresh, error }: { q: Question; saved: Sa
         challenge={{ seed: dateKey(today), score: off ?? 0, text: off != null ? `${off.toFixed(1)}% off` : 'Answered', lowerIsBetter: true }}
         plainLink
       />
-      <ThisOrThatBonus color={game.color} />
+      <Suspense fallback={null}><ThisOrThatBonus color={game.color} /></Suspense>
     </>
   )
 }
