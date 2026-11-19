@@ -88,7 +88,7 @@ export function ResultCard(p: Props) {
         game={p.game.title}
         stamp={p.game.daily ? puzzleLabel() : undefined}
         color={p.game.color}
-        headline={<span className="qg-best-anchor"><CountUp text={p.headline} animate={p.trackFinish ?? true} />{newBest && <Burst color={p.game.color} />}</span>}
+        headline={<span className="qg-best-anchor"><CountUp text={p.headline} animate={p.trackFinish ?? true} onDone={() => feel.tick(6)} />{newBest && <Burst color={p.game.color} />}</span>}
         detail={newBest ? (p.detail ? <>New personal best · {p.detail}</> : 'New personal best') : p.detail}
         shareText={p.plainLink ? p.shareText : `${p.shareText}\n${hasOthers ? 'Same puzzle. Your turn:' : 'Same puzzle. Beat me:'}`}
         url={url}

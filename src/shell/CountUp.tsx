@@ -7,12 +7,13 @@ const reducedMotion = () => typeof matchMedia !== 'undefined' && matchMedia('(pr
  * keeping its decimals and the words around it. Shows the final text at once with
  * reduced motion, or when `animate` is off (a result shown again later).
  */
-export function CountUp({ text, animate = true, ms = 650 }: { text: string; animate?: boolean; ms?: number }) {
+export function CountUp({ text, animate = true, ms = 650, onDone }: { text: string; animate?: boolean; ms?: number; onDone?: () => void }) {
   const m = /(\d+(?:\.\d+)?)/.exec(text)
   const target = m ? Number(m[1]) : 0
   const decimals = m && m[1].includes('.') ? m[1].split('.')[1].length : 0
   const run = !!m && animate && !reducedMotion() && target > 0
   const [value, setValue] = useState(run ? 0 : target)
+  const [landed, setLanded] = useState(false)
 
   useEffect(() => {
     if (!run) return
@@ -23,10 +24,11 @@ export function CountUp({ text, animate = true, ms = 650 }: { text: string; anim
       const eased = 1 - Math.pow(1 - p, 3)
       setValue(target * eased)
       if (p < 1) raf = requestAnimationFrame(tick)
+      else { setLanded(true); onDone?.() }
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [run, target, ms])
+  }, [run, target, ms]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!m) return <>{text}</>
   const shown = value.toFixed(decimals)
@@ -34,7 +36,7 @@ export function CountUp({ text, animate = true, ms = 650 }: { text: string; anim
     <span aria-label={text}>
       <span aria-hidden="true">
         {text.slice(0, m.index)}
-        <span className="count-up">{shown}</span>
+        <span className={landed ? 'count-up count-up--landed' : 'count-up'}>{shown}</span>
         {text.slice(m.index + m[1].length)}
       </span>
     </span>
