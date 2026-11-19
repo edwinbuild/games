@@ -112,3 +112,15 @@ One line per game: date, game, commit, what was tested, what is left.
 - 2026-11-19 · Follow-ups after the plan:
   - e2e runs three game scripts at once (`E2E_WORKERS`) and the page checks run every width side by side: the full suite went from about 20 minutes to about 4, passing twice in a row.
   - Tuning from simulation over a year of puzzles: Paint Mix targets drew orange on half the days and never blue (recipes had to mix primaries); each day now draws a colour family first and tints like blue + white are allowed, so every family comes up and none takes more than a third of days (unit test). Balance Beam had par 2 on 84% of days; now about a quarter are par 3 (unit test). Orbit Drop: an average tapper (about ±60 ms) reaches about 12 planets and a sharp one 30+; it now keeps getting harder up to planet 45 instead of 30.
+
+## Launch
+
+Goal (2026-11-19): build `docs/launch-plan.md` parts A, B, C, D, then F; **skip E** (accounts). The goal as set asks for leaderboards *without accounts*, so Part C uses a random device id and the optional name field; the accounts part (usernames, icons, friends) stays written up for later.
+
+- 2026-11-19 · Part A · structure and desktop:
+  - Footer on every page (game, home, category, About, 404): a ticket stub with the brand, "Made with ♥ by edwinsm.me" (links to https://edwinsm.me), All games · About and the theme switch; stacked on phones, one row from 820px (e2e checks it's one row at 820, 1440 and 1920).
+  - Categories: every game has a `skill` (Logic, Timing, Memory, Eye & ear, Crowd, With friends; Words appears once a word game exists). Home filters are two rows: *When* (All, Daily, Any time) and *Kind*, combined, remembered (old saved filters carry over). Category pages at `/c/<kind>/` (in the sitemap) open filtered with their own heading and description.
+  - Desktop home (≥1100px): a sticky rail with today's progress ring and countdown, both filters as lists, and your three longest streaks; the chips hide. The page widens to 1360px so three cards a row keep the size their scenes need; between 760 and 1359px cards are two a row (three a row at 820px had card scenes running into the scores; that was there before today).
+  - Desktop game pages: boards grow into the wider column, bounded by the screen height (Pipe Turn's board goes from 460 to 580px at 1440×900).
+  - e2e: home filters, memory, empty state, category page, desktop rail; the page checks now include 1920px and the category pages.
+

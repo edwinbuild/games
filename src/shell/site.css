@@ -65,6 +65,36 @@ button { font: inherit; }
 }
 @media (prefers-reduced-motion: reduce) { .cards > li { animation: none; } }
 .section-title { margin: var(--space-6) 0 var(--space-3); }
+/* Home: filter chips (two rows) on phones and tablets; a sticky rail on wide screens. */
+.home-chips { display: grid; gap: var(--space-1); margin-top: var(--space-2); }
+.home-rail { display: none; }
+.home-empty { margin: var(--space-6) 0; }
+.linkish { background: none; border: 0; padding: 0; color: var(--ink); text-decoration: underline; cursor: pointer; font: inherit; }
+.rail-today { display: flex; align-items: center; gap: var(--space-3); }
+.rail-title { margin: var(--space-3) 0 2px; font: 800 12px/16px var(--font-body); letter-spacing: 0.08em; }
+.rail-streaks { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.rail-streaks li { display: flex; justify-content: space-between; gap: var(--space-2); padding: 6px var(--space-3); font: 500 14px/20px var(--font-body); }
+.rail-streaks a { color: var(--ink); text-decoration: none; }
+.rail-streaks a:hover { text-decoration: underline; }
+.rail-streaks span { color: var(--ink-muted); font-family: var(--font-mono); white-space: nowrap; }
+@media (min-width: 1100px) {
+  .home-layout { display: grid; grid-template-columns: 248px minmax(0, 1fr); gap: var(--space-7); align-items: start; }
+  .home-rail {
+    display: grid; gap: 4px; position: sticky; top: 72px; max-height: calc(100dvh - 88px); overflow-y: auto;
+    padding: var(--space-4); margin-top: var(--space-6); border: var(--border-edge) solid var(--edge); border-radius: var(--radius-lg);
+    background: var(--surface); box-shadow: var(--shadow-card); scrollbar-width: thin;
+  }
+  .home-rail .qg-countdown, .home-rail .countdown { font-size: 13px; }
+  .home-chips { display: none; }
+  .home .today { grid-template-columns: 1fr; }
+  .home .today-line { display: none; }
+  /* Beside the rail there is room for two cards a row, until the page widens. */
+  .home .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1360px) {
+  .page.page--home { max-width: 1360px; }
+  .home .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 .cards { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: var(--space-4); }
 
 @media (min-width: 760px) {
@@ -72,7 +102,8 @@ button { font: inherit; }
   .today { grid-template-columns: minmax(0, 1fr) auto; align-items: end; padding-top: var(--space-7); }
   .today-line { flex-direction: row-reverse; text-align: right; }
   .today-text { justify-items: end; }
-  .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* Two cards a row until there's room for three at full size (the card scenes need ~330px). */
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cards--daily .qg-card-band { min-height: 120px; }
   .cards--daily .qg-card-sample { font-size: 44px; line-height: 46px; }
   .cards .qg-card-band--demo .qg-card-sample { font-size: 30px; line-height: 32px; }
@@ -675,3 +706,17 @@ button { font: inherit; }
 .bb-pick-box { display: grid; place-items: center; border-radius: 4px; background: var(--game); color: var(--on-fill); border: 2.5px solid var(--edge); font: 800 14px/1 var(--font-mono); }
 .bb-pick .qg-kbd { position: absolute; right: 6px; bottom: 6px; }
 @media (prefers-reduced-motion: reduce) { .bb-weight--mine { animation: none; } }
+
+/* Desktop game pages: boards use the wider column, but never taller than the screen allows
+   (260px is roughly the top bar, title and the key under the board). */
+@media (min-width: 1000px) {
+  .pt-board, .lp-wrap, .fg-grid { max-width: min(580px, calc(100dvh - 300px)); }
+  .fg-grid { width: min(100%, 520px); }
+  .ae-board, .fs-stage, .sr2-stage { max-width: min(580px, calc(100dvh - 300px)); }
+  .bb-stage { max-width: 640px; }
+  .st-stage, .pl-stage, .ps-stage { max-width: 560px; }
+  .cp-stage { max-width: min(520px, calc((100dvh - 300px) * 0.75)); }
+  .sl-stage, .dd-stage { max-width: min(480px, calc((100dvh - 280px) * 0.714)); }
+  .od-stage { max-width: min(480px, calc((100dvh - 280px) * 0.68)); }
+  .tu-board { max-width: min(440px, calc((100dvh - 300px) * 0.615)); }
+}

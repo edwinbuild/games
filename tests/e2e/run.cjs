@@ -10,7 +10,7 @@ const path = require('node:path')
 const root = path.resolve(__dirname, '../..')
 const PORT = 4179
 const B = `http://localhost:${PORT}`
-const WIDTHS = [360, 412, 820, 1440]
+const WIDTHS = [360, 412, 820, 1440, 1920]
 const only = process.argv.slice(2)
 // Daily games (from the registry): reopening one after playing must show the result again, quietly.
 const registry = fs.readFileSync(path.join(root, 'src/games/registry.ts'), 'utf8')
@@ -80,6 +80,7 @@ async function waitForServer() {
     await waitForServer()
     const dist = path.join(root, 'dist')
     const pages = ['/', ...fs.readdirSync(dist).filter((d) => fs.existsSync(path.join(dist, d, 'index.html'))).map((d) => `/${d}/`)]
+    if (fs.existsSync(path.join(dist, 'c'))) pages.push(...fs.readdirSync(path.join(dist, 'c')).map((d) => `/c/${d}/`))
     const browser = await chromium.launch()
     // Every page at each width; the widths run side by side.
     await Promise.all(WIDTHS.map(async (width) => {
@@ -95,6 +96,11 @@ async function waitForServer() {
         await page.waitForTimeout(150)
         const over = await page.evaluate((w) => document.documentElement.scrollWidth - w, width)
         if (over > 1) errors.push(`horizontal overflow ${over}px`)
+        // From 820px the footer is one row: brand and credit, links, theme switch.
+        if (width >= 820) {
+          const rows = await page.evaluate(() => [...document.querySelectorAll('.qg-footer-stub > *')].map((el) => { const r = el.getBoundingClientRect(); return Math.round(r.top + r.height / 2) }))
+          if (rows.length && Math.max(...rows) - Math.min(...rows) > 24) errors.push('footer is not on one row')
+        }
         if (errors.length) failures.push(`${p} @${width}: ${errors.join('; ')}`)
       }
       await ctx.close()

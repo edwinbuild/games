@@ -1,14 +1,13 @@
+import { SITE } from '../site'
 import { Footer } from '../ui'
 import { ThemeSwitch } from './ThemeSwitch'
 
+export const FOOTER_LINKS = [
+  { label: 'All games', href: '/' },
+  { label: 'About', href: '/about/' },
+]
+export const CREDIT = { label: 'edwinsm.me', href: 'https://edwinsm.me' }
+
 export function SiteFooter() {
-  return (
-    <Footer
-      links={[
-        { label: 'All games', href: '/' },
-        { label: 'About', href: '/about/' },
-      ]}
-      note={<ThemeSwitch />}
-    />
-  )
+  return <Footer siteName={SITE.name} links={FOOTER_LINKS} credit={CREDIT} note={<ThemeSwitch />} />
 }

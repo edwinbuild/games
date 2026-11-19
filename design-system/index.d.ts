@@ -109,7 +109,7 @@ export interface ToggleChipProps { label: string; on: boolean; onChange: (on: bo
 export declare function ToggleChip(props: ToggleChipProps): JSX.Element
 
 /** The quiet row of links under every page. */
-export interface FooterProps { links: { label: string; href: string }[]; note?: ReactNode }
+export interface FooterProps { links: { label: string; href: string }[]; note?: ReactNode; siteName?: string; credit?: { label: string; href: string } }
 export declare function Footer(props: FooterProps): JSX.Element
 
 /** The strip above the stage when a friend's challenge link was opened. */
@@ -163,7 +163,7 @@ export declare function SplitBars(props: { items: { label: ReactNode; count: num
 export declare function GetReady(props: { onDone: () => void; from?: number; step?: number }): JSX.Element
 
 /** A row of toggle chips, exactly one on (the home page filters). */
-export declare function FilterChips<T extends string>(props: { label: string; options: { value: T; label: string; count?: number }[]; value: T; onChange: (value: T) => void }): JSX.Element
+export declare function FilterChips<T extends string>(props: { label: string; options: { value: T; label: string; count?: number }[]; value: T; onChange: (value: T) => void; layout?: 'row' | 'column' }): JSX.Element
 
 /** A ring filled to value/max with the count in the middle; drawn in on load. */
 export declare function ProgressRing(props: { value: number; max: number; label: string; color?: string; size?: number }): JSX.Element

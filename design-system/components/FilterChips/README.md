@@ -4,3 +4,4 @@ A row of toggle chips where exactly one is on: the home page's All, Daily, Any t
 
 - On narrow phones the row scrolls sideways rather than wrapping, and the chosen chip is scrolled into view, so a remembered filter is never hidden off the edge.
 - Each chip is 44px tall. Chips are `aria-pressed` buttons in a `role="group"`.
+- `layout="column"` stacks the chips as a plain list for a sidebar (the home page's rail on wide screens): full-width rows, no key shadow, the count on the right; the chosen one is filled in `ink`.

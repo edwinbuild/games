@@ -4,7 +4,7 @@
 // Run with Node 22.18+ (TypeScript types are stripped natively).
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { GAMES, type GameMeta } from '../src/games/registry.ts'
+import { GAMES, SKILLS, type GameMeta } from '../src/games/registry.ts'
 import { HOW_TO } from '../src/games/howto.ts'
 import { SITE } from '../src/site.ts'
 
@@ -101,8 +101,31 @@ ${list}
   })
 }
 
-const footer = `    <footer class="qg-footer"><a href="/">All games</a><a href="/about/">About</a></footer>`
-// (The interactive footer with the theme switch is rendered by React on game and home pages.)
+// The footer is rendered by React (src/entries/static.tsx) into #footer, like on every other page;
+// the plain links are there for the first paint and for no-JavaScript readers.
+/** A category page: the home page filtered to one kind of game, with its own title and list. */
+function categoryPage(k: (typeof SKILLS)[number]) {
+  const games = GAMES.filter((g) => g.skill === k.id)
+  const list = games.map((g) => `        <li><a href="/${g.slug}/">${esc(g.title)}</a>: ${esc(g.tagline)}</li>`).join('\n')
+  return page({
+    title: `${k.label} games | ${SITE.name}`,
+    description: `${k.blurb} ${games.length} quick browser games.`,
+    path: `/c/${k.id}/`,
+    image: '/og/home.png',
+    entry: '../../../src/entries/home.tsx',
+    bodyAttrs: `data-kind="${k.id}"`,
+    body: `    <div id="root"></div>
+    <section class="howto">
+      <h2>${esc(k.label)} games</h2>
+      <ul>
+${list}
+      </ul>
+    </section>`,
+  })
+}
+const CATEGORIES = SKILLS.filter((k) => GAMES.some((g) => g.skill === k.id))
+
+const footer = `    <div id="footer"><footer class="qg-footer"><a href="/">All games</a> · <a href="/about/">About</a> · Made with ♥ by <a href="https://edwinsm.me">edwinsm.me</a></footer></div>`
 
 function staticPage(opts: { title: string; description: string; path: string; entry: string; body: string }) {
   return page({
@@ -163,15 +186,19 @@ mkdirSync(resolve(site, 'about'), { recursive: true })
 writeFileSync(resolve(site, 'about', 'index.html'), aboutPage())
 mkdirSync(resolve(site, 'stats'), { recursive: true })
 writeFileSync(resolve(site, 'stats', 'index.html'), statsPage())
+for (const k of CATEGORIES) {
+  mkdirSync(resolve(site, 'c', k.id), { recursive: true })
+  writeFileSync(resolve(site, 'c', k.id, 'index.html'), categoryPage(k))
+}
 for (const g of GAMES) {
   mkdirSync(resolve(site, g.slug), { recursive: true })
   writeFileSync(resolve(site, g.slug, 'index.html'), gamePage(g))
 }
 // Sitemap and robots.txt for search engines.
-const urls = ['/', ...GAMES.map((g) => `/${g.slug}/`), '/about/']
+const urls = ['/', ...CATEGORIES.map((k) => `/c/${k.id}/`), ...GAMES.map((g) => `/${g.slug}/`), '/about/']
 writeFileSync(
   resolve(root, 'public/sitemap.xml'),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${BASE_URL}${u}</loc></url>`).join('\n')}\n</urlset>\n`,
 )
 writeFileSync(resolve(root, 'public/robots.txt'), `User-agent: *\nAllow: /\nDisallow: /stats/\nSitemap: ${BASE_URL}/sitemap.xml\n`)
-console.log(`Generated ${GAMES.length + 3} pages in site/`)
+console.log(`Generated ${GAMES.length + CATEGORIES.length + 3} pages in site/`)

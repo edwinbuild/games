@@ -287,14 +287,35 @@ export function PlayNext({ title, href, color, sample, onClick }: PlayNextProps)
 }
 
 /* ---------- Footer ---------- */
-export type FooterProps = { links: { label: string; href: string }[]; note?: ReactNode }
-export function Footer({ links, note }: FooterProps) {
+export type FooterProps = {
+  links: { label: string; href: string }[]
+  /** A control at the end of the row, such as the theme switch. */
+  note?: ReactNode
+  /** Site name next to the brand mark. */
+  siteName?: string
+  /** Who made it: "Made with ♥ by <a>label</a>". */
+  credit?: { label: string; href: string }
+}
+/** The page's last thing: a small ticket stub with the brand, the maker's credit, links and a control. */
+export function Footer({ links, note, siteName, credit }: FooterProps) {
   return (
     <footer className="qg-footer">
-      {links.map((l) => (
-        <a key={l.href} href={l.href}>{l.label}</a>
-      ))}
-      {note && <span>{note}</span>}
+      <div className="qg-footer-stub">
+        <div className="qg-footer-who">
+          {siteName && <a className="qg-footer-brand" href="/"><BrandMark size={22} />{siteName}</a>}
+          {credit && (
+            <p className="qg-footer-credit">
+              Made with <span className="qg-footer-heart" aria-label="love">♥</span> by <a href={credit.href} rel="author">{credit.label}</a>
+            </p>
+          )}
+        </div>
+        <nav className="qg-footer-links" aria-label="Site">
+          {links.map((l) => (
+            <a key={l.href} href={l.href}>{l.label}</a>
+          ))}
+        </nav>
+        {note && <div className="qg-footer-note">{note}</div>}
+      </div>
     </footer>
   )
 }
@@ -541,9 +562,11 @@ export type FilterChipsProps<T extends string> = {
   options: { value: T; label: string; count?: number }[]
   value: T
   onChange: (value: T) => void
+  /** `column` stacks them as a list (a sidebar); the default is one sideways-scrolling row. */
+  layout?: 'row' | 'column'
 }
 /** A row of toggle chips; exactly one is on. Scrolls sideways on narrow screens instead of wrapping. */
-export function FilterChips<T extends string>({ label, options, value, onChange }: FilterChipsProps<T>) {
+export function FilterChips<T extends string>({ label, options, value, onChange, layout = 'row' }: FilterChipsProps<T>) {
   // The chosen chip is always in view, even when it was remembered from last time and sits off the edge.
   const row = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -553,7 +576,7 @@ export function FilterChips<T extends string>({ label, options, value, onChange 
     if (el.offsetLeft + el.offsetWidth > r.scrollLeft + r.clientWidth || el.offsetLeft < r.scrollLeft) r.scrollLeft = el.offsetLeft - 8
   }, [value])
   return (
-    <div className="qg-filters" role="group" aria-label={label} ref={row}>
+    <div className={cx('qg-filters', layout === 'column' && 'qg-filters--column')} role="group" aria-label={label} ref={row}>
       {options.map((o) => (
         <button key={o.value} type="button" className="qg-filter" aria-pressed={o.value === value} onClick={() => onChange(o.value)}>
           {o.label}

@@ -1,5 +1,17 @@
 // Every game on the site. This file is also read by scripts/pages.ts
 // (plain Node), so keep it free of imports.
+export type Skill = 'logic' | 'timing' | 'memory' | 'eye' | 'words' | 'crowd' | 'friends'
+/** Categories in the order they're listed, with a name and a line for their page. */
+export const SKILLS: { id: Skill; label: string; blurb: string }[] = [
+  { id: 'logic', label: 'Logic', blurb: 'Puzzles with a best answer: plan, reason, and beat par.' },
+  { id: 'timing', label: 'Timing', blurb: 'Stop, drop, pour or let go at exactly the right moment.' },
+  { id: 'memory', label: 'Memory', blurb: 'See it for a moment, then bring it back.' },
+  { id: 'eye', label: 'Eye & ear', blurb: 'Judge angles, amounts, colours and sounds by eye and ear.' },
+  { id: 'words', label: 'Words', blurb: 'Letters and words, one small puzzle at a time.' },
+  { id: 'crowd', label: 'Crowd', blurb: 'Guess what everyone else thinks, picks or answers.' },
+  { id: 'friends', label: 'With friends', blurb: 'Play together on one phone or on your own phones.' },
+]
+
 export type GameMeta = {
   slug: string
   title: string
@@ -13,6 +25,8 @@ export type GameMeta = {
   color: string
   /** A typical score in the game's own units, shown on its card. */
   sample: string
+  /** What the game asks of you: the category it is listed under. */
+  skill: Skill
   /** Who plays: one person, several on one phone, or several online. Defaults to 1. */
   players?: 1 | 'same-phone-2' | 'same-phone-3' | 'online-2' | 'online-2-8'
 }
@@ -38,6 +52,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'tangerine',
     sample: '07.30',
+    skill: 'timing',
   },
   {
     slug: 'reaction-chain',
@@ -48,6 +63,7 @@ export const GAMES: GameMeta[] = [
     daily: false,
     color: 'mint',
     sample: '243ms',
+    skill: 'timing',
   },
   {
     slug: 'odd-one-out',
@@ -58,6 +74,7 @@ export const GAMES: GameMeta[] = [
     daily: false,
     color: 'grape',
     sample: 'Lv 12',
+    skill: 'eye',
   },
   {
     slug: 'memory-path',
@@ -68,6 +85,7 @@ export const GAMES: GameMeta[] = [
     daily: false,
     color: 'sky',
     sample: '9',
+    skill: 'memory',
   },
   {
     slug: 'pitch-match',
@@ -78,6 +96,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'bubblegum',
     sample: '92%',
+    skill: 'eye',
   },
   {
     slug: 'luckiest-person',
@@ -88,6 +107,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'lagoon',
     sample: '87',
+    skill: 'crowd',
   },
   {
     slug: 'tap-duel',
@@ -99,6 +119,7 @@ export const GAMES: GameMeta[] = [
     color: 'coral',
     sample: '3–1',
     players: 'same-phone-2',
+    skill: 'friends',
   },
   {
     slug: 'this-or-that',
@@ -109,6 +130,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'aqua',
     sample: '4 pts off',
+    skill: 'crowd',
   },
   {
     slug: 'color-recall',
@@ -119,6 +141,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'orchid',
     sample: '86%',
+    skill: 'memory',
   },
   {
     slug: 'count-flash',
@@ -129,6 +152,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'sand',
     sample: '9% off',
+    skill: 'eye',
   },
   {
     slug: 'tug-of-taps',
@@ -140,6 +164,7 @@ export const GAMES: GameMeta[] = [
     color: 'lime',
     sample: '9.4 s',
     players: 'same-phone-2',
+    skill: 'friends',
   },
   {
     slug: 'angle-eye',
@@ -150,6 +175,7 @@ export const GAMES: GameMeta[] = [
     daily: false,
     color: 'periwinkle',
     sample: '82/100',
+    skill: 'eye',
   },
   {
     slug: 'reaction-online',
@@ -161,6 +187,7 @@ export const GAMES: GameMeta[] = [
     color: 'peach',
     sample: '3–2',
     players: 'online-2',
+    skill: 'friends',
   },
   {
     slug: 'flip-grid',
@@ -171,6 +198,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'pistachio',
     sample: '7 moves',
+    skill: 'logic',
   },
   {
     slug: 'spot-race',
@@ -182,6 +210,7 @@ export const GAMES: GameMeta[] = [
     color: 'grape',
     sample: '2nd of 5',
     players: 'online-2-8',
+    skill: 'friends',
   },
   {
     slug: 'stack-tower',
@@ -192,6 +221,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'chili',
     sample: '23 blocks',
+    skill: 'timing',
   },
   {
     slug: 'pour-line',
@@ -202,6 +232,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'honey',
     sample: '0.6% off',
+    skill: 'timing',
   },
   {
     slug: 'chain-pop',
@@ -212,6 +243,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'lilac',
     sample: '41 of 60',
+    skill: 'logic',
   },
   {
     slug: 'fair-slice',
@@ -222,6 +254,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'apricot',
     sample: '1.4% off',
+    skill: 'eye',
   },
   {
     slug: 'tidy-up',
@@ -232,6 +265,7 @@ export const GAMES: GameMeta[] = [
     daily: false,
     color: 'seafoam',
     sample: '38.2s',
+    skill: 'eye',
   },
   {
     slug: 'domino-drop',
@@ -242,6 +276,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'butter',
     sample: '38 of 40',
+    skill: 'logic',
   },
   {
     slug: 'odd-pick',
@@ -252,6 +287,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'citrus',
     sample: 'Rarest!',
+    skill: 'crowd',
   },
   {
     slug: 'guess-the-crowd',
@@ -262,6 +298,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'blush',
     sample: '3.0% off',
+    skill: 'crowd',
   },
   {
     slug: 'beat-keeper',
@@ -272,6 +309,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'iris',
     sample: '±23 ms',
+    skill: 'timing',
   },
   {
     slug: 'pipe-turn',
@@ -282,6 +320,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'glacier',
     sample: '9 turns',
+    skill: 'logic',
   },
   {
     slug: 'light-path',
@@ -292,6 +331,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'sunbeam',
     sample: '2 mirrors',
+    skill: 'logic',
   },
   {
     slug: 'pendulum-stop',
@@ -302,6 +342,7 @@ export const GAMES: GameMeta[] = [
     daily: false,
     color: 'denim',
     sample: '14 rounds',
+    skill: 'timing',
   },
   {
     slug: 'steady-line',
@@ -312,6 +353,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'sage',
     sample: '72%',
+    skill: 'eye',
   },
   {
     slug: 'shape-recall',
@@ -322,6 +364,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'mauve',
     sample: '84%',
+    skill: 'memory',
   },
   {
     slug: 'paint-mix',
@@ -332,6 +375,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'poppy',
     sample: '94%',
+    skill: 'eye',
   },
   {
     slug: 'orbit-drop',
@@ -342,6 +386,7 @@ export const GAMES: GameMeta[] = [
     daily: false,
     color: 'nebula',
     sample: '14 planets',
+    skill: 'timing',
   },
   {
     slug: 'balance-beam',
@@ -352,6 +397,7 @@ export const GAMES: GameMeta[] = [
     daily: true,
     color: 'olive',
     sample: '2 weights',
+    skill: 'logic',
   },
   {
     slug: 'higher-lower',
@@ -363,6 +409,7 @@ export const GAMES: GameMeta[] = [
     color: 'jade',
     sample: '1st of 4',
     players: 'online-2-8',
+    skill: 'friends',
   },
   {
     slug: 'quick-draw',
@@ -374,6 +421,7 @@ export const GAMES: GameMeta[] = [
     color: 'melon',
     sample: '2nd of 5',
     players: 'online-2-8',
+    skill: 'friends',
   },
 ]
 
