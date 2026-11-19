@@ -293,6 +293,16 @@ export const GAMES: GameMeta[] = [
     color: 'sunbeam',
     sample: '2 mirrors',
   },
+  {
+    slug: 'pendulum-stop',
+    title: 'Pendulum Stop',
+    emoji: '🕰️',
+    instructions: 'Tap to stop the swinging pendulum inside the zone. It gets faster, the zone gets smaller.',
+    tagline: 'Stop the swing inside the zone. Faster every round, smaller every round. One miss ends it.',
+    daily: false,
+    color: 'denim',
+    sample: '14 rounds',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

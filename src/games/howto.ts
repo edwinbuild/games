@@ -106,4 +106,8 @@ export const HOW_TO: Record<string, string[]> = {
     'The laser on the left fires a beam to the right. Tap a square to place a mirror, tap it again to flip it the other way, and a third time to take it away. The beam bounces off mirrors, passes through targets and stops at walls. Light every target.',
     'You have three mirrors at most. Every day has one board, the same for everyone; par is the fewest mirrors it can be solved with, and fewer moves breaks ties. Try as many times as you like; your best try counts. On a computer, move with the arrow keys and press Space to place or flip a mirror.',
   ],
+  'pendulum-stop': [
+    'Tap to start the pendulum swinging, then tap again to stop it. If the bob stops inside the coloured zone, the next round starts: a little faster, with a smaller zone somewhere else. One miss ends the run.',
+    'Your score is how many rounds you cleared in a row. Send the link to a friend and they get exactly the same swings and zones. Tap, click or press Space.',
+  ],
 }

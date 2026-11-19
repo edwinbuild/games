@@ -511,3 +511,11 @@ button { font: inherit; }
 .demo-lp-mirror { position: absolute; left: 90px; top: 56px; width: 24px; height: 4px; border-radius: 2px; background: var(--line); }
 .demo-lp-target { position: absolute; width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--line); background: var(--qg-fill); box-sizing: border-box; }
 .demo-lp-target--lit { background: var(--paper); box-shadow: 0 0 0 3px var(--paper); }
+
+/* Pendulum Stop */
+.ps-stage { width: 100%; max-width: 480px; margin-inline: auto; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; position: relative; overflow: hidden; }
+.ps-canvas { display: block; width: 100%; height: min(58dvh, 460px); }
+.demo-ps-track { position: absolute; left: 30px; top: -50px; width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--line); opacity: .25; clip-path: inset(70% 0 0 0); }
+.demo-ps-zone { position: absolute; left: 90px; top: 58px; width: 22px; height: 9px; border-radius: 5px; border: 2px solid var(--line); box-sizing: border-box; rotate: -8deg; }
+.demo-ps-rod { position: absolute; left: 89px; top: 0; width: 2px; height: 62px; background: var(--line); transform-origin: 50% 0; }
+.demo-ps-bob { position: absolute; left: -7px; bottom: -8px; width: 16px; height: 16px; border-radius: 50%; background: var(--paper); border: 2.5px solid var(--line); box-sizing: border-box; }

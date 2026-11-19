@@ -528,6 +528,21 @@ function LightPathDemo() {
   )
 }
 
+
+function PendulumStopDemo() {
+  const d = 3.4
+  return (
+    <Scene still={2.6}>
+      <span className="demo-ps-track" />
+      <A d={d} className="demo-ps-zone" k="0%,58%{background:var(--paper)}60%,70%{background:var(--line)}72%,100%{background:var(--paper)}" />
+      <A d={d} className="demo-ps-rod" ease="ease-in-out" k="0%{transform:rotate(55deg)}18%{transform:rotate(-55deg)}36%{transform:rotate(55deg)}58%,92%{transform:rotate(-12deg)}100%{transform:rotate(55deg)}">
+        <span className="demo-ps-bob" />
+      </A>
+      <Tap d={d} at={58} x={102} y={62} />
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -555,4 +570,5 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'beat-keeper': BeatKeeperDemo,
   'pipe-turn': PipeTurnDemo,
   'light-path': LightPathDemo,
+  'pendulum-stop': PendulumStopDemo,
 }
