@@ -8,7 +8,7 @@ export const HOW_TO: Record<string, string[]> = {
   ],
   'reaction-chain': [
     'Tap the panel to start a round. Wait while it is red, then tap as soon as it turns green. A tap while it is still red, or faster than 100 ms after it turns green, counts as 500 ms.',
-    'After five rounds you get your average reaction time in milliseconds, and your fastest round.',
+    'After five rounds you get your average reaction time in milliseconds, and your fastest clean round. A run needs at least three taps after green to count as a result.',
   ],
   'odd-one-out': [
     'Each grid hides exactly one emoji that is different. Tap it to go to the next level, where the grid gets bigger and the difference gets smaller.',

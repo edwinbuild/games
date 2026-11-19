@@ -4,23 +4,22 @@ import { ResultCard } from '../shell/ResultCard'
 import { newSeed, readChallenge } from '../shell/challenge'
 import { seededRandom } from '../shell/daily'
 import { feel } from '../shell/feel'
-import { getStats, recordPlay } from '../shell/stats'
+import { countPlay, getStats, recordPlay } from '../shell/stats'
+import { MIN_CLEAN, PENALTY, ROUNDS, summarize, type Tap } from './reaction-chain/score'
 import { AttemptTiles, Score, Stage, type Attempt } from '../ui'
 
 const game = getGame('reaction-chain')
-const ROUNDS = 5
-const PENALTY = 500
 /** Faster than this is a guess, not a reaction. */
 const GUESS_MS = 100
 
 type Phase = 'idle' | 'waiting' | 'go' | 'between' | 'done'
 
-const grade = (ms: number): Attempt => (ms < 250 ? 'hit' : ms < 350 ? 'near' : 'miss')
-const square = (ms: number) => ({ hit: '🟩', near: '🟨', miss: '🟥', empty: '⬜' })[grade(ms)]
+const grade = (t: Tap): Attempt => (t.early ? 'miss' : t.ms < 250 ? 'hit' : t.ms < 350 ? 'near' : 'miss')
+const square = (t: Tap) => ({ hit: '🟩', near: '🟨', miss: '🟥', empty: '⬜' })[grade(t)]
 
 export default function ReactionChain() {
   const [phase, setPhase] = useState<Phase>('idle')
-  const [times, setTimes] = useState<number[]>([])
+  const [times, setTimes] = useState<Tap[]>([])
   const [last, setLast] = useState<{ ms: number; early: boolean; guess?: boolean } | null>(null)
   // A challenge replays the same waits; otherwise every game gets a new seed.
   const challenge = readChallenge(game.slug)
@@ -40,14 +39,16 @@ export default function ReactionChain() {
   }
 
   function finishRound(ms: number, early: boolean, guess = false) {
-    const next = [...times, ms]
+    const next = [...times, { ms, early }]
     setTimes(next)
     setLast({ ms, early, guess })
     if (early) feel.bad()
     else feel.good()
     if (next.length >= ROUNDS) {
-      const avg = Math.round(next.reduce((a, b) => a + b, 0) / next.length)
-      recordPlay(game.slug, avg, (a, b) => a < b, `${avg}ms`)
+      const s = summarize(next)
+      // Only a run with enough clean taps is a result; otherwise it just counts as played.
+      if (s.counts) recordPlay(game.slug, s.avg, (a, b) => a < b, `${s.avg}ms`)
+      else countPlay(game.slug)
       setPhase('done')
     } else {
       setPhase('between')
@@ -75,7 +76,8 @@ export default function ReactionChain() {
     setPhase('idle')
   }
 
-  const avg = times.length ? Math.round(times.reduce((a, b) => a + b, 0) / times.length) : 0
+  const sum = summarize(times)
+  const avg = sum.avg
   const best = getStats(game.slug).best
 
   const look: Record<Phase, { color?: string; text: string; sub: string }> = {
@@ -88,7 +90,7 @@ export default function ReactionChain() {
         ? `${last.guess ? `Under ${GUESS_MS} ms is a guess.` : 'It was still red.'} Counts as ${PENALTY} ms. Tap for the next round.`
         : 'Tap for the next round',
     },
-    done: { text: `${avg} ms`, sub: 'average' },
+    done: sum.counts ? { text: `${avg} ms`, sub: 'average' } : { text: 'Too early', sub: `${sum.clean} clean tap${sum.clean === 1 ? '' : 's'} of ${ROUNDS}` },
   }
   const l = look[phase]
 
@@ -115,11 +117,13 @@ export default function ReactionChain() {
       {phase === 'done' && (
         <ResultCard
           game={game}
-          headline={`${avg} ms average`}
-          detail={`Fastest round ${Math.min(...times)} ms${best != null && best < avg ? ` · your best average ${best} ms` : best === avg && getStats(game.slug).plays > 1 ? ' · a new best' : ''}`}
-          shareText={`⚡ Reaction Chain\n${times.map(square).join('')} ${avg} ms average`}
-          finishData={{ avg }}
-          challenge={{ seed, score: avg, text: `${avg} ms`, lowerIsBetter: true }}
+          headline={sum.counts ? `${avg} ms average` : 'Too many early taps'}
+          detail={sum.counts
+            ? `Fastest round ${sum.fastest} ms${best != null && best < avg ? ` · your best average ${best} ms` : ''}`
+            : `Only ${sum.clean} of ${ROUNDS} taps came after green. A run needs at least ${MIN_CLEAN} to count.`}
+          shareText={`⚡ Reaction Chain\n${times.map(square).join('')} ${sum.counts ? `${avg} ms average` : 'too many early taps'}`}
+          finishData={{ avg, clean: sum.clean }}
+          challenge={{ seed, score: sum.counts ? avg : 9999, text: sum.counts ? `${avg} ms` : 'No result', lowerIsBetter: true }}
           onReplay={reset}
         />
       )}

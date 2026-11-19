@@ -48,6 +48,14 @@ export function recordPlay(
   return s
 }
 
+/** Count a play that has no score: a finished match, or a run that didn't qualify for a result. */
+export function countPlay(game: string): Stats {
+  const s = getStats(game)
+  s.plays += 1
+  save(`stats:${game}`, s)
+  return s
+}
+
 /** Record today's daily result and advance the streak (once per day). */
 export function recordDaily(game: string, score: number, now = new Date(), text?: string, lowerIsBetter = false): Stats {
   const s = getStats(game)
