@@ -6,6 +6,7 @@ import { dailyDayFor, dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
+import { useRunState } from '../shell/session'
 import { AttemptTiles, Button, Stage, type Attempt } from '../ui'
 
 const game = getGame('count-flash')
@@ -34,7 +35,8 @@ export default function CountFlash() {
   const seed = dateKey(day)
   const counts = countsFor(seed)
   const [tries, setTries] = useState<number[][]>(() => (oneOff ? [] : loadToday(game.slug, [] as number[][])))
-  const [current, setCurrent] = useState<number[]>([])
+  // The try in progress survives a refresh.
+  const [current, setCurrent] = useRunState<number[]>(`${game.slug}:${seed}:${tries.length}`, [])
   const [phase, setPhase] = useState<Phase>('ready')
   const [guess, setGuess] = useState('')
   const [fresh, setFresh] = useState(false)
@@ -62,22 +64,28 @@ export default function CountFlash() {
     if (s >= 90) feel.good()
     else if (s < 75) feel.bad()
     else feel.tap()
-    setCurrent([...current, s])
+    const next = [...current, s]
+    setCurrent(next)
     setPhase('reveal')
+    // The try is recorded at the last answer, so a refresh before "See your result" can't lose it.
+    if (next.length === ROUNDS) {
+      const all = [...tries, next]
+      finished.current = all
+      if (!oneOff) {
+        saveToday(game.slug, all)
+        const best = Math.max(...all.map(average))
+        recordDaily(game.slug, best, new Date(), `${100 - best}% off`)
+      }
+      setFresh(true)
+    }
   }
+  const finished = useRef<number[][] | null>(null)
 
   function next() {
     if (current.length < ROUNDS) return flash()
-    const all = [...tries, current]
-    setTries(all)
+    setTries(finished.current ?? [...tries, current])
     setCurrent([])
     setPhase('ready')
-    if (!oneOff) {
-      saveToday(game.slug, all)
-      const best = Math.max(...all.map(average))
-      recordDaily(game.slug, best, new Date(), `${100 - best}% off`)
-    }
-    setFresh(true)
   }
 
   const tiles = Array.from({ length: ROUNDS }, (_, i) => (i < current.length ? grade(current[i]) : 'empty' as Attempt))
@@ -124,7 +132,7 @@ export default function CountFlash() {
           {phase === 'guess' && <p className="result cf-hint">How many?</p>}
         </div>
         {phase === 'ready' && (
-          <Button size="lg" block color={game.color} onClick={flash} data-primary="click" hint="Space">Flash the first field</Button>
+          <Button size="lg" block color={game.color} onClick={flash} data-primary="click" hint="Space">{current.length ? `Flash field ${current.length + 1}` : 'Flash the first field'}</Button>
         )}
         {phase === 'guess' && (
           <form className="cf-guess" onSubmit={(e) => { e.preventDefault(); submit() }}>

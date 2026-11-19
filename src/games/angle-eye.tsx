@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
+import { useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
 import { getGame } from './registry'
 import { judge, prompt, roundsFor, ROUNDS, type Judged, type P, type Round } from './angle-eye/rounds'
 import { newSeed, readChallenge } from '../shell/challenge'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, recordPlay } from '../shell/stats'
+import { useRunState } from '../shell/session'
 import { AttemptTiles, Button, Score, Stage, type Attempt } from '../ui'
 
 const game = getGame('angle-eye')
@@ -93,21 +94,18 @@ function Board({ round, point, judged, onMove }: { round: Round; point: P; judge
 
 export default function AngleEye() {
   const challenge = readChallenge(game.slug)
-  const [seed, setSeed] = useState(() => challenge?.s ?? newSeed())
+  // The run (seed and scores so far) survives a refresh, so a finished or half-played run is never lost.
+  const [run, setRun] = useRunState(game.slug, () => ({ seed: challenge?.s ?? newSeed(), scores: [] as number[] }))
+  const seed = run.seed, scores = run.scores
+  const setScores = (s: number[]) => setRun({ seed, scores: s })
   const rounds = roundsFor(seed)
-  const [scores, setScores] = useState<number[]>([])
+  const [fresh, setFresh] = useState(false)
   const [judged, setJudged] = useState<Judged | null>(null)
   const i = scores.length - (judged ? 1 : 0)
   const round = rounds[Math.min(i, ROUNDS - 1)]
-  const [point, setPoint] = useState<P>(() => startPoint(rounds[0]))
+  const [point, setPoint] = useState<P>(() => startPoint(rounds[Math.min(scores.length, ROUNDS - 1)]))
   const done = scores.length === ROUNDS && !judged
 
-  useEffect(() => {
-    if (done) {
-      const total = Math.round(scores.reduce((a, b) => a + b, 0))
-      recordPlay(game.slug, total, undefined, `${total}/100`)
-    }
-  }, [done, scores])
 
   function lockIn() {
     const j = judge(round, point)
@@ -115,17 +113,25 @@ export default function AngleEye() {
     else if (j.score < 5) feel.bad()
     else feel.tap()
     setJudged(j)
-    setScores([...scores, j.score])
+    const next = [...scores, j.score]
+    setScores(next)
+    // Recorded at the final answer, not when the total is opened, so a refresh can't lose it.
+    if (next.length === ROUNDS) {
+      const total = Math.round(next.reduce((a, b) => a + b, 0))
+      recordPlay(game.slug, total, undefined, `${total}/100`)
+      setFresh(true)
+    }
   }
   function next() {
     setJudged(null)
     if (scores.length < ROUNDS) setPoint(startPoint(rounds[scores.length]))
   }
   function replay() {
-    const s = challenge ? seed : newSeed()
-    setSeed(s)
-    setScores([])
+    // Always a new set of rounds: the answers of the last run have just been shown.
+    const s = newSeed()
+    setRun({ seed: s, scores: [] })
     setJudged(null)
+    setFresh(false)
     setPoint(startPoint(roundsFor(s)[0]))
   }
 
@@ -144,6 +150,7 @@ export default function AngleEye() {
           detail={`Best round: ${KIND_NAMES[rounds[bestIdx].kind]}, ${scores[bestIdx]}/10${best != null && best > total ? ` · your best ${best}/100` : ''}`}
           shareText={`📐 Angle Eye\n${tiles.map((t) => ({ hit: '🟩', near: '🟨', miss: '🟥', empty: '⬜' })[t]).join('')}\n${total}/100`}
           finishData={{ total }}
+          trackFinish={fresh}
           challenge={{ seed, score: total, text: `${total}/100`, lowerIsBetter: false }}
           onReplay={replay}
         />
