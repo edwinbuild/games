@@ -21,7 +21,7 @@ export default function ReactionChain() {
   const [phase, setPhase] = useState<Phase>('idle')
   const [times, setTimes] = useState<Tap[]>([])
   const [last, setLast] = useState<{ ms: number; early: boolean; guess?: boolean } | null>(null)
-  // A challenge replays the same waits; otherwise every game gets a new seed.
+  // A challenge link plays its waits first; every other game gets a new seed.
   const challenge = readChallenge(game.slug)
   const [seed, setSeed] = useState(() => challenge?.s ?? newSeed())
   const rng = useRef(seededRandom(seed))
@@ -68,7 +68,8 @@ export default function ReactionChain() {
   }
 
   function reset() {
-    const next = challenge ? seed : newSeed()
+    // Replays always get a new puzzle: replaying a challenge you have now seen would make a memorised run a best.
+    const next = newSeed()
     setSeed(next)
     rng.current = seededRandom(next)
     setTimes([])

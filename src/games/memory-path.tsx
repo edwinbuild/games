@@ -27,7 +27,7 @@ function extend(path: number[], rng: () => number): number[] {
 type Phase = 'countdown' | 'ready' | 'showing' | 'input' | 'done'
 
 export default function MemoryPath() {
-  // A challenge replays the same path; otherwise every game gets a new seed.
+  // A challenge link plays its path first; every other game gets a new seed.
   const challenge = readChallenge(game.slug)
   const [seed, setSeed] = useState(() => challenge?.s ?? newSeed())
   const rng = useRef(seededRandom(seed))
@@ -80,7 +80,8 @@ export default function MemoryPath() {
     setWrong(null)
     setScore(0)
     setLit(null)
-    const nextSeed = challenge ? seed : newSeed()
+    // Replays always get a new puzzle: replaying a challenge you have now seen would make a memorised run a best.
+    const nextSeed = newSeed()
     setSeed(nextSeed)
     rng.current = seededRandom(nextSeed)
     const p = extend(extend([], rng.current), rng.current)

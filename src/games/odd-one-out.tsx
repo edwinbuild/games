@@ -14,7 +14,7 @@ const TIME = 60
 const WRONG_PENALTY = 3
 
 export default function OddOneOut() {
-  // A challenge replays the same grids; otherwise every game gets a new seed.
+  // A challenge link plays its grids first; every other game gets a new seed.
   const challenge = readChallenge(game.slug)
   const [seed, setSeed] = useState(() => challenge?.s ?? newSeed())
   const rng = useRef(seededRandom(seed))
@@ -53,7 +53,8 @@ export default function OddOneOut() {
   }
 
   function reset() {
-    const next = challenge ? seed : newSeed()
+    // Replays always get a new puzzle: replaying a challenge you have now seen would make a memorised run a best.
+    const next = newSeed()
     setSeed(next)
     rng.current = seededRandom(next)
     streak.current = 0

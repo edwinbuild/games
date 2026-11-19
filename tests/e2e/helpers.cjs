@@ -31,3 +31,8 @@ async function assertReopenQuiet(page) {
 }
 
 module.exports = { assertFullyVisible, SMALL_PHONE, stats, finishes, assertReopenQuiet }
+
+/** A challenge link for a game and seed, with no rows yet (same encoding as src/shell/challenge.ts). */
+const challengeLink = (B, g, s) => `${B}/${g}/?c=${Buffer.from(JSON.stringify({ g, s, r: [] })).toString('base64url')}`
+
+module.exports.challengeLink = challengeLink

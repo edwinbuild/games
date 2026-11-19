@@ -139,7 +139,8 @@ export default function PendulumStop() {
   }
 
   function again() {
-    const next = challenge ? seed : newSeed()
+    // Replays always get a new puzzle: replaying a challenge you have now seen would make a memorised run a best.
+    const next = newSeed()
     setSeed(next)
     setRound(0)
     setPhase('ready')
