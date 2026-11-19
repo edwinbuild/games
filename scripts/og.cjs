@@ -5,7 +5,7 @@ const { execSync } = require('node:child_process')
 const path = require('node:path')
 const root = path.resolve(__dirname, '..')
 const games = JSON.parse(execSync(
-  `node -e "import('./src/games/registry.ts').then(m=>console.log(JSON.stringify(m.GAMES)))"`, { cwd: root }).toString())
+  `node -e "Promise.all([import('./src/games/registry.ts'),import('./src/games/taglines.ts')]).then(([m,t])=>console.log(JSON.stringify(m.GAMES.map(g=>({...g,tagline:t.TAGLINES[g.slug]})))))"`, { cwd: root }).toString())
 const site = JSON.parse(execSync(
   `node -e "import('./src/site.ts').then(m=>console.log(JSON.stringify(m.SITE)))"`, { cwd: root }).toString())
 

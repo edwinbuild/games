@@ -1,5 +1,6 @@
 import { StrictMode, useEffect, useState, type CSSProperties } from 'react'
 import { createRoot } from 'react-dom/client'
+import { TAGLINES } from '../games/taglines'
 import { LISTED as GAMES, playersLabel, SKILLS, type GameMeta, type Skill } from '../games/registry'
 import { SITE } from '../site'
 import { formatCount, SHOW_FROM, useRecentPlays } from '../shell/live'
@@ -38,7 +39,7 @@ function Card({ g, i }: { g: GameMeta; i: number }) {
     <li style={{ '--i': i } as CSSProperties}>
       <GameCard
         title={g.title}
-        tagline={g.tagline}
+        tagline={TAGLINES[g.slug]}
         href={`/${g.slug}/`}
         color={g.color}
         sample={sc.sample}

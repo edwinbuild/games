@@ -5,6 +5,7 @@
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { GAMES, LISTED, SKILLS, type GameMeta } from '../src/games/registry.ts'
+import { TAGLINES } from '../src/games/taglines.ts'
 import { HOW_TO } from '../src/games/howto.ts'
 import { SITE } from '../src/site.ts'
 
@@ -68,8 +69,8 @@ ${opts.body}
 function gamePage(g: GameMeta) {
   const howTo = (HOW_TO[g.slug] ?? []).map((p) => `        <p>${esc(p)}</p>`).join('\n')
   return page({
-    title: `${g.title}: ${g.tagline.split('.')[0]} | ${SITE.name}`,
-    description: g.tagline,
+    title: `${g.title}: ${TAGLINES[g.slug].split('.')[0]} | ${SITE.name}`,
+    description: TAGLINES[g.slug],
     path: `/${g.slug}/`,
     image: `/og/${g.slug}.png`,
     entry: '../../src/entries/game.tsx',
@@ -85,7 +86,7 @@ ${howTo}
 
 function homePage() {
   const list = LISTED.map(
-    (g) => `        <li><a href="/${g.slug}/">${esc(g.title)}</a>: ${esc(g.tagline)}</li>`,
+    (g) => `        <li><a href="/${g.slug}/">${esc(g.title)}</a>: ${esc(TAGLINES[g.slug])}</li>`,
   ).join('\n')
   return page({
     title: `${SITE.name}: ${SITE.tagline}`,
@@ -108,7 +109,7 @@ ${list}
 /** A category page: the home page filtered to one kind of game, with its own title and list. */
 function categoryPage(k: (typeof SKILLS)[number]) {
   const games = LISTED.filter((g) => g.skill === k.id)
-  const list = games.map((g) => `        <li><a href="/${g.slug}/">${esc(g.title)}</a>: ${esc(g.tagline)}</li>`).join('\n')
+  const list = games.map((g) => `        <li><a href="/${g.slug}/">${esc(g.title)}</a>: ${esc(TAGLINES[g.slug])}</li>`).join('\n')
   return page({
     title: `${k.label} games | ${SITE.name}`,
     description: `${k.blurb} ${games.length} quick browser games.`,

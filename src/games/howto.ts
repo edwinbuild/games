@@ -138,6 +138,10 @@ export const HOW_TO: Record<string, string[]> = {
     'Pick a colour and tap squares of the 4×4 grid to paint them; tap a square again to clear it. Each colour also has a shape (● ▲ ■ ◆), so you can play without telling colours apart. The rules so far are listed under the grid, each with a ✓ or ✗.',
     'When every rule holds, a new one arrives, like “no two red squares touch” or “every row has a blue”, and it may break your grid. There are twelve rules a day; all twelve can always hold at once. Your score is how many you clear, then your time. Each try gets twelve new rules; the first is the same for everyone. On a keyboard, arrows move, 1 to 4 paint and 0 clears.',
   ],
+  'dots-and-boxes': [
+    'Take turns drawing one line between two neighbouring dots. Whoever draws the fourth side of a box claims it and must draw again. When every line is drawn, the player with more boxes wins. Tap near a line to draw it; on a keyboard, Tab to a line and press Enter.',
+    'Play the computer (easy is a 3×3 board, medium and hard are 4×4), a friend on this phone, or a friend on their own phone with a room link. The trick: near the end, every line gives boxes away. Count the safe lines left so your opponent has to open the first long chain, and sometimes leave the last two boxes of a chain to keep control. Hard plays that way.',
+  ],
   'higher-lower': [
     'Create a room and send the link (or the five-letter code); two to eight players can join. When everyone is ready, the host starts the quiz. Each question shows one country’s population or land area; say whether a second country’s number is higher or lower. You have ten seconds.',
     'The fastest right answer gets 3 points, the next 2, and every other right answer 1. Each phone times its own answer, so a slow connection doesn’t cost you. Ten questions, then the final scores. The numbers are the World Bank’s: population for 2023 and land area for 2022.',

@@ -709,6 +709,23 @@ function RuleStackDemo() {
   )
 }
 
+/** Dots & Boxes: lines appear one by one around two boxes; the last line claims both. */
+function DotsDemo() {
+  const d = 4.4
+  const X = [30, 62, 94], Y = [10, 42]
+  // [from dot x, from dot y, across?, appears at %]
+  const lines: [number, number, boolean, number][] = [[0, 0, true, 6], [2, 0, false, 16], [1, 1, true, 26], [0, 0, false, 36], [1, 0, true, 46], [0, 1, true, 56], [1, 0, false, 66]]
+  return (
+    <Scene still={4}>
+      {[0, 1].map((b) => <A key={b} d={d} className="demo-db-box" style={{ left: X[b] + 3, top: Y[0] + 3 }} k={show([[67, 96]])} />)}
+      {lines.map(([x, y, across, at], i) => (
+        <A key={i} d={d} className={`demo-db-line${across ? ' is-across' : ''}`} style={{ left: X[x] - 2, top: Y[y] - 2 }} k={show([[at, 96]])} />
+      ))}
+      {X.flatMap((x) => Y.map((y) => <span key={`${x}${y}`} className="demo-db-dot" style={{ left: x - 4, top: y - 4 }} />))}
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -744,6 +761,7 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'word-ladder': WordLadderDemo,
   'garden-path': GardenPathDemo,
   'rule-stack': RuleStackDemo,
+  'dots-and-boxes': DotsDemo,
   'higher-lower': HigherLowerDemo,
   'quick-draw': QuickDrawDemo,
 }
