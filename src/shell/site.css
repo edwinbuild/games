@@ -265,6 +265,9 @@ button { font: inherit; }
 .demo * { animation-play-state: paused; }
 .qg-card[data-playing] .demo * { animation-play-state: running; }
 .demo-block { position: absolute; height: 14px; background: var(--paper); border: 2px solid var(--line); border-radius: 3px; box-sizing: border-box; }
+.demo-box { position: absolute; background: var(--paper); border: 2px solid var(--line); border-radius: 6px; box-sizing: border-box; overflow: hidden; }
+.demo-text { position: absolute; inset: 0; display: grid; place-items: center; font: 700 13px/1 var(--font-mono); color: var(--line); white-space: nowrap; }
+.demo-small { position: absolute; font: 800 9px/1 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; color: var(--line); white-space: nowrap; }
 .demo-tap { position: absolute; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; border: 3px solid var(--line); opacity: 0; }
 
 /* Stack Tower: a block slides, stops, drops; the overhang falls away. */
@@ -307,11 +310,41 @@ button { font: inherit; }
   70% { transform: scale(1) } 74% { transform: translateY(-6px) scale(1.08) } 78% { transform: none } 82% { transform: translateY(-6px) scale(1.08) } 86%, 100% { transform: none }
 }
 
-/* Reduced motion: each scene holds its key frame. */
+/* Reduced motion: each scene holds its key frame (--still is set on each scene). */
 @media (prefers-reduced-motion: reduce) {
-  .demo * { animation-play-state: paused !important; }
-  .demo-st-mover, .demo-st-cut { animation-delay: -2.1s; }
-  .demo-fg-hit, .demo-fg-tap { animation-delay: -1.2s; }
-  .demo-tug-knot, .demo-tug-a, .demo-tug-b { animation-delay: -2.6s; }
+  .demo * { animation-play-state: paused !important; animation-delay: var(--still, 0s) !important; }
 }
+
 @media (max-width: 759px) { .qg-card-band--demo .qg-card-sample { font-size: 28px; line-height: 30px; } }
+.demo-emoji { display: grid; place-items: center; font-size: 18px; line-height: 1; }
+.demo-shape { position: absolute; left: 4px; top: 4px; width: 10px; height: 10px; }
+.demo-shape svg { display: block; width: 10px; height: 10px; stroke: var(--line); stroke-width: 2; }
+.demo-track { position: absolute; height: 3px; border-radius: 2px; background: var(--line); opacity: 0.55; }
+.demo-knob { position: absolute; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: var(--paper); border: 2px solid var(--line); box-sizing: border-box; }
+.demo-knob--sm { width: 9px; height: 9px; margin-left: -4px; border-width: 1.5px; }
+.demo-odd { position: absolute; left: 51px; top: 4px; display: grid; grid-template-columns: repeat(4, 20px); gap: 3px; }
+.demo-odd > span:not(.demo-tap) { width: 20px; height: 20px; display: grid; place-items: center; font-size: 12px; line-height: 1; background: var(--paper); border-radius: 4px; }
+.demo-mp-cell { position: absolute; width: 13px; height: 13px; border-radius: 3px; background: var(--paper); border: 1.5px solid var(--line); box-sizing: border-box; overflow: hidden; }
+.demo-mp-lit { position: absolute; inset: 0; background: var(--line); }
+.demo-wave, .demo-wave-wrap { position: absolute; width: 120px; height: 40px; overflow: visible; }
+.demo-wave-wrap .demo-wave { position: static; }
+.demo-wave path { fill: none; stroke: var(--line); stroke-width: 2.5; stroke-linecap: round; }
+.demo-wave .demo-wave-target { stroke-width: 2; stroke-dasharray: 3 4; opacity: 0.5; }
+.demo-lp-card { position: absolute; width: 18px; height: 28px; border-radius: 4px; background: var(--paper); border: 2px solid var(--line); box-sizing: border-box; overflow: hidden; }
+.demo-lp-mine { border-width: 2.5px; }
+.demo-lp-back { position: absolute; inset: 0; background: repeating-linear-gradient(45deg, var(--line) 0 2px, var(--paper) 2px 5px); }
+.demo-tot-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--line); }
+.demo-tot-guess { position: absolute; top: 42px; width: 3px; height: 18px; margin-left: -1.5px; background: var(--chili); border: 1px solid var(--line); box-sizing: content-box; }
+.demo-dots { position: absolute; inset: 0; }
+.demo-dots > span { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: var(--line); }
+.demo-ray { position: absolute; width: 96px; height: 3px; margin-top: -1.5px; background: var(--line); border-radius: 2px; transform-origin: 0 50%; }
+.demo-ray--true { background: repeating-linear-gradient(90deg, var(--paper) 0 5px, transparent 5px 9px); outline: 1px solid transparent; }
+.demo-ray--move { width: 70px; }
+.demo-ray-knob { position: absolute; right: -6px; top: -5px; width: 13px; height: 13px; border-radius: 50%; background: var(--paper); border: 2px solid var(--line); box-sizing: border-box; }
+.demo-phone { border-radius: 8px; }
+.demo-link { position: absolute; left: 54px; right: 54px; top: 34px; border-top: 2px dashed var(--line); }
+.demo-chip { position: absolute; width: 42px; height: 15px; border-radius: 8px; border: 1.5px solid var(--line); box-sizing: border-box; overflow: hidden; }
+.demo-sr-board { position: absolute; display: grid; grid-template-columns: repeat(3, 13px); gap: 2px; }
+.demo-sr-board > span { width: 13px; height: 13px; border-radius: 3px; background: var(--paper); position: relative; }
+.demo-sr-board > span::after { content: ""; position: absolute; inset: 4px; border-radius: 50%; border: 1.5px solid var(--line); }
+.demo-sr-board > span.is-odd::after { border-radius: 1px; background: var(--line); }

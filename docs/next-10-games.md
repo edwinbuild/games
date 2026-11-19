@@ -106,7 +106,7 @@ Each entry: what the player does, exact rules, scoring, what is shared, and done
 1. `git checkout main && git pull`, then `git checkout -b game/<slug>`.
 2. Build the game to its spec. Add unit tests for every scoring and generation rule, and an e2e script.
 3. Run: `npm run tokens`, `npx tsc -b`, `npm test`, `npm run build`, `npm run e2e`. Look at screenshots at 360px, 412px, 820px and 1440px, in light and dark; fix anything clipped, overlapping or unreadable.
-4. Regenerate preview images: `npm run og` (needs Playwright; `NODE_PATH=$(npm root -g)` if it can't find it).
+4. Add the game's card demo to `src/shell/demos.tsx` (a 3–4 second loop of its key moment; see the GameCard notes in the design system). Regenerate preview images: `npm run og` (needs Playwright; `NODE_PATH=$(npm root -g)` if it can't find it).
 5. If the design system changed: `npm run ds`, render all previews, and publish the changed files to the design system artifact (see that artifact's instructions; read its index first).
 6. Commit with a clear message, merge into `main` with `--ff-only`, push.
 7. Wait for both checks on the pushed commit: the Vercel status ("Deployment has completed") and the GitHub Actions `check` job. Use `gh api repos/edwinbuild/games/commits/<sha>/statuses` and `/check-runs`.

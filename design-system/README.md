@@ -78,6 +78,7 @@ Pocket Fair is the working name: a fairground of small stalls you can play alone
 
 Every animation answers something the player did; nothing moves just to decorate.
 
+- Home cards play a short looping demo of each game on their band while on screen (see `GameCard`); with reduced motion they hold a still key frame.
 - Keys press down in `duration-press` (60ms). On devices with a mouse, cards lift 3px and keys 1px toward the pointer.
 - Opening a game from its card: the card's colour band grows into the game page's band and the title moves into place (cross-document view transition, about 340ms). Browsers without it load the page normally.
 - A result ticket prints: revealed from the top down in about 460ms, and the number in its headline counts up to the result.

@@ -38,36 +38,52 @@ export function useRoom(game: string, code: string | null, max: number) {
   const channel = useRef<RealtimeChannel | null>(null)
   const self = useRef<Member>({ id: me, name: myName(), ready: false, joinedAt: Date.now() })
   const handlers = useRef(new Map<string, Set<Handler>>())
+  const tracked = useRef(false) // whether this player is in the room's presence
+  const joined = useRef(false) // whether the channel has been subscribed
 
   useEffect(() => {
     if (!code) return
     setStatus('connecting')
+    tracked.current = false
+    joined.current = false
     const ch = realtime().channel(`room:${game}:${code}`, { config: { presence: { key: me }, broadcast: { self: false } } })
     channel.current = ch
     ch.on('presence', { event: 'sync' }, () => {
       const state = ch.presenceState<Member>()
       const list = order(Object.values(state).map((metas) => metas[metas.length - 1] as unknown as Member))
       setMembers(list)
+      const leave = (why: RoomStatus) => {
+        setStatus(why)
+        if (tracked.current) {
+          tracked.current = false
+          void ch.untrack()
+        }
+      }
+      // Turned away while a match runs; let back in once the room reopens (rematch lobby).
       const started = list.find((m) => m.started)?.started
-      if (started && !started.includes(me)) {
-        setStatus('started')
-        void ch.untrack()
+      if (started && !started.includes(me)) return leave('started')
+      if (!list.some((m) => m.id === me)) {
+        if (!tracked.current && joined.current) {
+          if (list.length < max) {
+            tracked.current = true
+            void ch.track(self.current)
+          } else setStatus('full')
+        }
         return
       }
-      const rank = list.findIndex((m) => m.id === me)
-      if (rank >= max) {
-        setStatus('full')
-        void ch.untrack()
-        return
-      }
-      setStatus((s) => (s === 'connecting' && rank >= 0 ? 'open' : s))
+      if (list.findIndex((m) => m.id === me) >= max) return leave('full')
+      setStatus((s) => (s === 'error' ? s : 'open'))
     })
     ch.on('broadcast', { event: '*' }, ({ event, payload }) => {
       const { from, ...rest } = (payload ?? {}) as Record<string, unknown>
       handlers.current.get(event)?.forEach((h) => h(rest, String(from)))
     })
     ch.subscribe((s) => {
-      if (s === 'SUBSCRIBED') void ch.track(self.current)
+      if (s === 'SUBSCRIBED') {
+        joined.current = true
+        tracked.current = true
+        void ch.track(self.current)
+      }
       if (s === 'CHANNEL_ERROR' || s === 'TIMED_OUT') setStatus('error')
     })
     return () => {
@@ -92,7 +108,7 @@ export function useRoom(game: string, code: string | null, max: number) {
       /** Update this player's presence (name, ready, started line-up). */
       update(patch: Partial<Member>) {
         self.current = { ...self.current, ...patch }
-        void channel.current?.track(self.current)
+        if (tracked.current) void channel.current?.track(self.current)
       },
     }),
     [me],
