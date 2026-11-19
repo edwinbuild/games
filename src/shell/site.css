@@ -43,15 +43,25 @@ button { font: inherit; }
 /* Home: today's line first, then the daily games (unplayed first), then the rest. */
 .today { display: grid; gap: var(--space-3); padding: var(--space-6) 0 var(--space-2); }
 .today h1 { margin: 0; }
-.today-line { display: grid; gap: var(--space-1); }
+.today-line { display: flex; gap: var(--space-4); align-items: center; }
+.today-text { display: grid; gap: var(--space-1); min-width: 0; }
 .today-line p { margin: 0; }
+/* Cards rise in one after another on load (and when a filter brings them back). */
+.cards > li { animation: card-in 420ms cubic-bezier(.2,.8,.2,1) both; animation-delay: min(calc(var(--i, 0) * 45ms), 400ms); }
+@keyframes card-in { from { opacity: 0; transform: translateY(14px); } }
+@media (hover: hover) and (pointer: fine) {
+  .qg-card:hover { transform: translateY(-3px); }
+  .qg-card:hover:active { transform: translateY(6px); box-shadow: var(--shadow-key-pressed); }
+}
+@media (prefers-reduced-motion: reduce) { .cards > li { animation: none; } }
 .section-title { margin: var(--space-6) 0 var(--space-3); }
 .cards { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: var(--space-4); }
 
 @media (min-width: 760px) {
   .page--home { max-width: 1120px; }
   .today { grid-template-columns: minmax(0, 1fr) auto; align-items: end; padding-top: var(--space-7); }
-  .today-line { text-align: right; justify-items: end; }
+  .today-line { flex-direction: row-reverse; text-align: right; }
+  .today-text { justify-items: end; }
   .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .cards--daily .qg-card-band { min-height: 120px; }
   .cards--daily .qg-card-sample { font-size: 44px; line-height: 46px; }

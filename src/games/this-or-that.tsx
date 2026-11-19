@@ -16,8 +16,8 @@ const FEW_VOTES = 20
 
 /** The split when you locked in, your own vote included (the vote endpoint returns it that way). */
 type Saved = { choice: 0 | 1; guess: number; a: number; b: number }
-/** Distance between two percentages, in percentage points. */
-const pts = (off: number) => `${off} ${off === 1 ? 'point' : 'points'} off`
+/** Distance between two percentages, in percentage points ("4 pts off": short enough for the home card). */
+const pts = (off: number) => `${off} ${off === 1 ? 'pt' : 'pts'} off`
 type Split = { a: number; b: number }
 
 export default function ThisOrThat() {

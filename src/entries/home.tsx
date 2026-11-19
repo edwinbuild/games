@@ -1,4 +1,4 @@
-import { StrictMode, useEffect } from 'react'
+import { StrictMode, useEffect, useState, type CSSProperties } from 'react'
 import { createRoot } from 'react-dom/client'
 import { GAMES, playersLabel, type GameMeta } from '../games/registry'
 import { SITE } from '../site'
@@ -6,7 +6,8 @@ import { formatCount, SHOW_FROM, useRecentPlays } from '../shell/live'
 import { DEMOS } from '../shell/demos'
 import { SiteFooter } from '../shell/SiteFooter'
 import { getStats, todaysDaily, todaysDailyText } from '../shell/stats'
-import { Countdown, GameCard, TopBar } from '../ui'
+import { load, save } from '../shell/storage'
+import { Countdown, FilterChips, GameCard, ProgressRing, TopBar } from '../ui'
 import '../shell/styles'
 
 /** What the card's colour band shows: the player's own result if they have one, else an example. */
@@ -28,12 +29,13 @@ function status(g: GameMeta): { text?: string; done?: boolean } {
   return {}
 }
 
-function Card({ g }: { g: GameMeta }) {
+function Card({ g, i }: { g: GameMeta; i: number }) {
   const st = status(g)
   const sc = score(g)
   const Demo = DEMOS[g.slug]
   return (
-    <li>
+    // --i staggers the cards rising in.
+    <li style={{ '--i': i } as CSSProperties}>
       <GameCard
         title={g.title}
         tagline={g.tagline}
@@ -64,11 +66,22 @@ function usePlayOnScreen() {
   }, [])
 }
 
+type Filter = 'all' | 'daily' | 'any' | 'friends'
+const FILTERS: Filter[] = ['all', 'daily', 'any', 'friends']
+
 function Home() {
   usePlayOnScreen()
+  // The chosen filter is remembered in this browser.
+  const [filter, setFilterState] = useState<Filter>(() => {
+    const f = load<string>('home-filter', 'all')
+    return (FILTERS as string[]).includes(f) ? (f as Filter) : 'all'
+  })
+  const setFilter = (f: Filter) => { setFilterState(f); save('home-filter', f) }
   const solo = (g: GameMeta) => !g.players || g.players === 1
   const daily = GAMES.filter((g) => g.daily && solo(g))
+  const anyTime = GAMES.filter((g) => !g.daily && solo(g))
   const friends = GAMES.filter((g) => !solo(g))
+  const shows = (f: Filter) => filter === 'all' || filter === f
   const played = daily.filter((g) => todaysDaily(g.slug) !== undefined)
   // Unplayed daily games first, in their usual order; played ones after.
   const ordered = [...daily.filter((g) => !played.includes(g)), ...played]
@@ -83,33 +96,52 @@ function Home() {
       <header className="today">
         <h1 className="site-title">{SITE.name}</h1>
         <div className="today-line">
-          <p className="body-strong">{today}</p>
-          <p className="body muted">
-            {left === 0
-              ? `You've played all ${daily.length} daily games today.`
-              : played.length === 0
-                ? `${daily.length} daily games are waiting.`
-                : `${left} of ${daily.length} daily games left today.`}
-          </p>
-          <Countdown label="New daily games in" />
-          {total >= SHOW_FROM && <p className="small muted live-count">{formatCount(total)} games finished here in the last 24 hours</p>}
+          <ProgressRing color="ticket" value={played.length} max={daily.length} label={`${played.length} of ${daily.length} daily games played today`} />
+          <div className="today-text">
+            <p className="body-strong">{today}</p>
+            <p className="body muted">
+              {left === 0
+                ? `You've played all ${daily.length} daily games today.`
+                : played.length === 0
+                  ? `${daily.length} daily games are waiting.`
+                  : `${left} of ${daily.length} daily games left today.`}
+            </p>
+            <Countdown label="New daily games in" />
+            {total >= SHOW_FROM && <p className="small muted live-count">{formatCount(total)} games finished here in the last 24 hours</p>}
+          </div>
         </div>
       </header>
 
-      <section aria-labelledby="daily-title">
-        <h2 id="daily-title" className="section-title card-title">Today’s puzzles</h2>
-        <ul className="cards cards--daily">{ordered.map((g) => <Card key={g.slug} g={g} />)}</ul>
-      </section>
+      <FilterChips
+        label="Show games"
+        value={filter}
+        onChange={setFilter}
+        options={[
+          { value: 'all', label: 'All', count: GAMES.length },
+          { value: 'daily', label: 'Daily', count: daily.length },
+          { value: 'any', label: 'Any time', count: anyTime.length },
+          { value: 'friends', label: 'With friends', count: friends.length },
+        ]}
+      />
 
-      <section aria-labelledby="any-title">
-        <h2 id="any-title" className="section-title card-title">Play any time</h2>
-        <ul className="cards">{GAMES.filter((g) => !g.daily && solo(g)).map((g) => <Card key={g.slug} g={g} />)}</ul>
-      </section>
+      {shows('daily') && (
+        <section aria-labelledby="daily-title">
+          <h2 id="daily-title" className="section-title card-title">Today’s puzzles</h2>
+          <ul className="cards cards--daily">{ordered.map((g, i) => <Card key={g.slug} g={g} i={i} />)}</ul>
+        </section>
+      )}
 
-      {friends.length > 0 && (
+      {shows('any') && (
+        <section aria-labelledby="any-title">
+          <h2 id="any-title" className="section-title card-title">Play any time</h2>
+          <ul className="cards">{anyTime.map((g, i) => <Card key={g.slug} g={g} i={i} />)}</ul>
+        </section>
+      )}
+
+      {shows('friends') && friends.length > 0 && (
         <section aria-labelledby="friends-title">
           <h2 id="friends-title" className="section-title card-title">Play with friends</h2>
-          <ul className="cards">{friends.map((g) => <Card key={g.slug} g={g} />)}</ul>
+          <ul className="cards">{friends.map((g, i) => <Card key={g.slug} g={g} i={i} />)}</ul>
         </section>
       )}
       <SiteFooter />

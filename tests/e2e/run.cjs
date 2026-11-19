@@ -77,6 +77,18 @@ async function waitForServer() {
       }
       await ctx.close()
     }
+    // Page scripts (tests/e2e/pages), e.g. the home page's filters and progress ring.
+    for (const f of fs.readdirSync(path.join(__dirname, 'pages')).filter((f) => f.endsWith('.cjs'))) {
+      const name = f.replace(/\.cjs$/, '')
+      if (only.length && !only.includes(name)) continue
+      const ctx = await browser.newContext({ viewport: { width: 412, height: 915 }, isMobile: true, hasTouch: true })
+      const page = await ctx.newPage()
+      const errors = []
+      page.on('pageerror', (e) => errors.push(e.message))
+      try { await require(path.join(__dirname, 'pages', f))({ page, B, browser }) } catch (e) { errors.push(String(e.message || e).split('\n')[0]) }
+      if (errors.length) failures.push(`page ${name}: ${errors.join('; ')}`)
+      await ctx.close()
+    }
     const scripts = fs.readdirSync(path.join(__dirname, 'games')).filter((f) => f.endsWith('.cjs'))
     for (const f of scripts) {
       const slug = f.replace(/\.cjs$/, '')
