@@ -76,3 +76,65 @@ export function recipeFor(seed: string): Drops {
     if (familyOf(c) === family || attempt > 400) return d
   }
 }
+
+/** Colours per day, easiest first. */
+export const ROUNDS = 5
+/** Spare drops on top of the five exact recipes: room to correct a mistake or two, not to flail. */
+export const SLACK = 10
+
+/**
+ * The day's five colours, easiest first: a tint (one paint and white), two paints, two paints
+ * and white, a dark shade (with black), then a muted mix of all three. Each is a real recipe, so
+ * every colour can be matched exactly; the five look clearly different. Try k gets its own five.
+ */
+export type Tier = 'tint' | 'two' | 'two-white' | 'dark' | 'muted'
+export const TIERS: Tier[] = ['tint', 'two', 'two-white', 'dark', 'muted']
+
+function tierRecipe(tier: Tier, r: () => number): Drops {
+  const d = empty()
+  const primaries = [0, 1, 2].sort(() => r() - 0.5)
+  const n = (lo: number, hi: number) => lo + Math.floor(r() * (hi - lo + 1))
+  if (tier === 'tint') { d[primaries[0]] = n(1, 2); d[3] = n(2, 4) }
+  if (tier === 'two') { d[primaries[0]] = n(1, 4); d[primaries[1]] = n(1, 3) }
+  if (tier === 'two-white') { d[primaries[0]] = n(1, 3); d[primaries[1]] = n(1, 3); d[3] = n(1, 3) }
+  if (tier === 'dark') { d[primaries[0]] = n(2, 4); d[primaries[1]] = n(1, 2); d[4] = 1 }
+  if (tier === 'muted') { d[0] = n(1, 3); d[1] = n(1, 3); d[2] = n(1, 3); d[3] = n(0, 2) }
+  return d
+}
+
+function okFor(tier: Tier, d: Drops): boolean {
+  const n = total(d)
+  if (n < 3 || n > 8) return false
+  const c = mixColor(d)!
+  const [, a, b] = rgbToLab(c)
+  const chroma = Math.hypot(a, b)
+  // Dark and muted colours may be quieter, but never mud or near black.
+  if (tier === 'dark') return Math.max(...c) >= 55 && chroma >= 16
+  if (tier === 'muted') return Math.max(...c) >= 70 && chroma >= 14
+  return Math.max(...c) >= 70 && chroma >= 24
+}
+
+export function trySeed(seed: string, k: number) {
+  return k === 0 ? seed : `${seed}:try${k}`
+}
+
+export function dayFor(seed: string, tryIndex = 0): { targets: Drops[]; budget: number } {
+  const r = seededRandom(`paint-mix:v2:${trySeed(seed, tryIndex)}`)
+  const targets: Drops[] = []
+  for (const tier of TIERS) {
+    for (let attempt = 0; ; attempt++) {
+      const d = tierRecipe(tier, r)
+      if (!okFor(tier, d)) continue
+      const c = mixColor(d)!
+      // Clearly different from the colours already chosen today.
+      if (attempt < 200 && targets.some((t) => deltaE2000(rgbToLab(mixColor(t)!), rgbToLab(c)) < 12)) continue
+      targets.push(d)
+      break
+    }
+  }
+  return { targets, budget: targets.reduce((s, t) => s + total(t), 0) + SLACK }
+}
+
+/** A finished day: each colour's score; the day's score is their average, and exact matches earn a star. */
+export const dayScore = (scores: number[]) => Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
+export const stars = (scores: number[]) => scores.filter((s) => s === 100).length

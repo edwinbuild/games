@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { rgbToLab } from '../color-recall/color'
-import { empty, FAMILIES, familyOf, MAX_DROPS, matchScore, mixColor, PAINTS, recipeFor, total } from './mix'
+import { dayFor, dayScore, empty, FAMILIES, ROUNDS, SLACK, stars, TIERS, familyOf, MAX_DROPS, matchScore, mixColor, PAINTS, recipeFor, total } from './mix'
 
 const drops = (o: Record<string, number>) => { const d = empty(); for (const [k, v] of Object.entries(o)) d[PAINTS.findIndex((p) => p.id === k)] = v; return d }
 
@@ -54,3 +54,39 @@ describe('Paint Mix', () => {
     }
   })
 })
+
+describe('Paint Mix: five colours a day', () => {
+  it('gives five recipes, easy to hard, within the bowl, the same for everyone, new for each try', () => {
+    for (let n = 0; n < 120; n++) {
+      const seed = `2027-04-${n}`
+      const day = dayFor(seed)
+      expect(day).toEqual(dayFor(seed))
+      expect(day.targets).toHaveLength(ROUNDS)
+      expect(dayFor(seed, 1)).not.toEqual(day)
+      const used = (d: number[]) => d.filter((x) => x > 0).length
+      // tint: one paint and white; two: two paints; two-white: three; dark: has black; muted: all three primaries
+      expect(used(day.targets[0])).toBe(2)
+      expect(day.targets[0][3]).toBeGreaterThan(0)
+      expect(used(day.targets[1])).toBe(2)
+      expect(day.targets[1][3] + day.targets[1][4]).toBe(0)
+      expect(day.targets[3][4]).toBe(1)
+      expect(day.targets[4].slice(0, 3).every((x) => x > 0)).toBe(true)
+      for (const t of day.targets) {
+        expect(total(t)).toBeGreaterThanOrEqual(3)
+        expect(total(t)).toBeLessThanOrEqual(MAX_DROPS)
+      }
+      // The budget covers every exact recipe with ten drops to spare.
+      expect(day.budget).toBe(day.targets.reduce((s, t) => s + total(t), 0) + SLACK)
+    }
+    expect(TIERS).toHaveLength(ROUNDS)
+  })
+  it('scores the day as the average, with a star per exact match', () => {
+    expect(dayScore([100, 90, 80, 70, 60])).toBe(80)
+    expect(stars([100, 99, 100, 40, 100])).toBe(3)
+  })
+  it('the same ratio in more drops still matches exactly (a correction can work)', () => {
+    const d = drops({ yellow: 2, blue: 1 })
+    expect(mixColor(drops({ yellow: 4, blue: 2 }))).toEqual(mixColor(d))
+  })
+})
+

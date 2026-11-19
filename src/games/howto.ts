@@ -119,8 +119,8 @@ export const HOW_TO: Record<string, string[]> = {
     'Size, position and the direction you draw in don’t matter, only the shape. There are three shapes a day, the same for everyone, and your result is the average match. Try as many times as you like; your best try counts. This game needs a touch screen, mouse or pen. Each try gets its own three shapes, the same for everyone.',
   ],
   'paint-mix': [
-    'Each day there is one colour to match, the same for everyone. Tap a pot to add a drop of red, yellow, blue, white or black to the bowl and watch it swirl in. Paint mixes like real paint: yellow and blue make green, red and yellow make orange, white makes it lighter.',
-    'Only the mix counts, not how many drops you use (up to twelve). Undo takes the last drop out. Lock in to see how close you got, measured by how different the colours look to the human eye. Every colour of the day can be matched exactly. Try as many times as you like; your best try counts. On a keyboard, 1 to 5 add paint and Backspace undoes.',
+    'Five colours a day, easiest first: a tint, two paints, two paints with white, a dark shade, and a soft mix of all three. Tap a pot to add a drop of red, yellow, blue, white or black and watch it swirl in. Paint mixes like real paint: yellow and blue make green, white lightens, black darkens.',
+    'Paint can’t come back out, and you share one tube of paint across all five colours, so plan before you pour: to fix too much yellow you have to add more of everything else. Your score for each colour shows only after you lock it in, judged by how different the colours look to the human eye; matching the exact mix earns a star. Every colour can be matched exactly. Each try gets five new colours and your best day counts. On a keyboard, 1 to 5 add paint.',
   ],
   'orbit-drop': [
     'The ball circles a planet. Tap anywhere on the space (or press Space) to let go: it flies straight off in the direction it is moving at that moment. If its path crosses the next planet’s dashed ring, it is caught and starts circling that planet instead.',

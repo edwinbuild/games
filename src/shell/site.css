@@ -671,7 +671,6 @@ button { font: inherit; }
 .pm-pot-count { position: absolute; top: -8px; right: -6px; min-width: 22px; height: 22px; padding: 0 5px; border-radius: 11px; background: var(--ink); color: var(--canvas); font: 800 12px/22px var(--font-mono); animation: pm-dot 220ms cubic-bezier(.2,.9,.3,1.5); }
 .pm-pot .qg-kbd { position: absolute; bottom: 4px; right: 4px; }
 
-.pm-tools { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
 @media (prefers-reduced-motion: reduce) { .pm-verdict, .pm-trail span, .pm-pot-count { animation: none; } .pm-pot { transition: none; } }
 
 /* Orbit Drop: a tall window onto space; tap anywhere to let go. */
@@ -720,3 +719,13 @@ button { font: inherit; }
   .od-stage { max-width: min(480px, calc((100dvh - 280px) * 0.68)); }
   .tu-board { max-width: min(440px, calc((100dvh - 300px) * 0.615)); }
 }
+
+/* Paint Mix: today's paint as a tube that runs down, and the day's five colours on the result. */
+.pm-tube { position: relative; height: 28px; margin-bottom: var(--space-3); border: var(--border-edge) solid var(--edge); border-radius: var(--radius-pill); background: var(--surface-sunken); overflow: hidden; }
+.pm-tube-fill { position: absolute; inset: 0 auto 0 0; background: var(--game); transition: width 260ms cubic-bezier(.2,.8,.2,1); }
+.pm-tube-text { position: relative; display: block; text-align: center; font: 700 13px/24px var(--font-body); color: var(--ink); }
+.pm-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-2); }
+.pm-strip-pair { display: grid; justify-items: center; gap: 4px; }
+.pm-chip { display: block; width: 100%; max-width: 64px; aspect-ratio: 1; border-radius: var(--radius-sm); border: var(--border-edge) solid var(--edge); }
+.pm-strip-pair .pm-chip + .pm-chip { margin-top: -10px; border-radius: 50%; width: 70%; }
+@media (prefers-reduced-motion: reduce) { .pm-tube-fill { transition: none; } }

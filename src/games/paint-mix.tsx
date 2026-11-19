@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { getGame } from './registry'
-import { css, empty, MAX_DROPS, matchScore, mixColor, paintColor, PAINTS, recipeFor, total, type Drops, type Rgb } from './paint-mix/mix'
+import { css, dayFor, dayScore, MAX_DROPS, matchScore, mixColor, paintColor, PAINTS, ROUNDS, stars, empty, type Drops, type Rgb } from './paint-mix/mix'
 import { readChallenge } from '../shell/challenge'
 import { dailyDayFor, dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
@@ -11,140 +11,156 @@ import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { AttemptTiles, Burst, Button, Stage, type Attempt } from '../ui'
 
 const game = getGame('paint-mix')
-/** A finished try: its score and the drops it used (to show your mix again). */
-type Try = { score: number; drops: Drops }
-/** The order drops went in, as paint indexes (for Undo and the drop trail). */
-type Run = number[]
+/** A finished day: the try it was (each try has its own five colours), each colour's score and your mixes. */
+type Try = { k: number; scores: number[]; mixes: Rgb[] }
+/** The day in progress: which colour, the drops in the bowl (paint indexes, in order), scores so far, paint used. */
+type Run = { round: number; bowl: number[]; scores: number[]; mixes: Rgb[]; spent: number }
+const fresh0 = (): Run => ({ round: 0, bowl: [], scores: [], mixes: [], spent: 0 })
 const grade = (s: number): Attempt => (s >= 90 ? 'hit' : s >= 75 ? 'near' : 'miss')
-const square = (s: number) => ({ hit: '🟩', near: '🟨', miss: '🟥', empty: '⬜' })[grade(s)]
-const dropsOf = (run: Run): Drops => run.reduce((d, i) => { d[i]++; return d }, empty())
+const square = (s: number) => (s === 100 ? '⭐' : ({ hit: '🟩', near: '🟨', miss: '🟥', empty: '⬜' })[grade(s)])
+const dropsOf = (bowl: number[]): Drops => bowl.reduce((d, i) => { d[i]++; return d }, empty())
 const reduced = () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches
+const verdict = (s: number) => (s === 100 ? 'Exact! ⭐' : s >= 95 ? 'Spot on' : s >= 85 ? 'Very close' : s >= 70 ? 'Close' : 'Not quite')
 
 export default function PaintMix() {
   const { day, oneOff } = dailyDayFor(readChallenge(game.slug)?.s)
   const seed = dateKey(day)
-  const target = mixColor(recipeFor(seed))!
-  const [tries, setTries] = useState<Try[]>(() => (oneOff ? [] : loadToday(game.slug, [] as Try[])))
-  // The mix in progress survives a refresh.
-  const [run, setRun] = useRunState<Run>(`${game.slug}:${seed}:${oneOff ? 'once' : tries.length}`, [])
-  const [locked, setLocked] = useState<Try | null>(null)
-  const [done, setDone] = useState(tries.length > 0 && run.length === 0)
+  // Days saved by the first version (one colour) aren't comparable: only five-colour days count.
+  const [tries, setTries] = useState<Try[]>(() => (oneOff ? [] : loadToday<unknown[]>(game.slug, []).filter((t): t is Try => !!t && Array.isArray((t as Try).scores))))
+  const k = oneOff ? 0 : tries.length
+  const today = dayFor(seed, k)
+  // The day in progress survives a refresh, mid-colour or on a colour's reveal.
+  const [run, setRun] = useRunState<Run>(`${game.slug}:v2:${seed}:${oneOff ? 'once' : k}`, fresh0)
+  const [done, setDone] = useState(tries.length > 0 && run.scores.length === 0 && run.bowl.length === 0)
   const [fresh, setFresh] = useState(false)
-  const drops = dropsOf(run)
+  const revealing = run.scores.length > run.round
+  const target = mixColor(today.targets[Math.min(run.round, ROUNDS - 1)])!
+  const drops = dropsOf(run.bowl)
   const mine = mixColor(drops)
+  const left = today.budget - run.spent - (revealing ? 0 : run.bowl.length)
 
   function add(i: number) {
-    if (locked || done || run.length >= MAX_DROPS) { if (run.length >= MAX_DROPS) feel.bad(); return }
-    setRun([...run, i])
-    feel.pop(Math.min(run.length, 9))
+    if (done || revealing) return
+    if (left <= 0 || run.bowl.length >= MAX_DROPS) { feel.bad(); return }
+    setRun({ ...run, bowl: [...run.bowl, i] })
+    feel.pop(Math.min(run.bowl.length, 9))
     feel.light()
   }
-  function undo() { if (!locked && run.length) { setRun(run.slice(0, -1)); feel.tap() } }
-  function clear() { if (!locked && run.length) { setRun([]); feel.tap() } }
 
   function lockIn() {
-    if (!mine || locked) return
-    const score = matchScore(target, mine)
-    const t: Try = { score, drops }
-    const all = [...tries, t]
-    // Saved now, so a refresh on the comparison can't lose the try.
-    if (!oneOff) {
-      saveToday(game.slug, all)
-      const best = Math.max(...all.map((x) => x.score))
-      recordDaily(game.slug, best, new Date(), `${best}%`)
+    if (revealing || done) return
+    // Out of paint with an empty bowl: the colour scores nothing.
+    const score = mine ? matchScore(target, mine) : 0
+    const scores = [...run.scores, score]
+    const mixes = [...run.mixes, mine ?? ([0, 0, 0] as Rgb)]
+    const next: Run = { ...run, scores, mixes, spent: run.spent + run.bowl.length }
+    setRun(next)
+    if (score === 100) { feel.chime(5); feel.success() } else if (score >= 85) { feel.good() } else { feel.thud() }
+    // The fifth colour finishes the day: saved now, so a refresh on the reveal can't lose it.
+    if (scores.length === ROUNDS) {
+      const all = [...tries, { k, scores, mixes }]
+      if (!oneOff) {
+        saveToday(game.slug, all)
+        const best = Math.max(...all.map((t) => dayScore(t.scores)))
+        recordDaily(game.slug, best, new Date(), `${best}%`)
+      }
+      setFresh(true)
     }
-    if (score >= 95) { feel.chime(5); feel.success() } else if (score >= 75) { feel.good() } else { feel.thud() }
-    setLocked(t)
-    setFresh(true)
   }
-  function seeResult() {
-    if (!locked) return
-    setTries([...tries, locked])
-    setLocked(null)
+  function next() {
+    if (!revealing) return
+    if (run.scores.length < ROUNDS) { setRun({ ...run, round: run.round + 1, bowl: [] }); return }
+    setTries([...tries, { k, scores: run.scores, mixes: run.mixes }])
     setDone(true)
   }
   function again() {
-    setRun([])
+    setRun(fresh0())
     setDone(false)
   }
 
-  // Keyboard: 1–5 add a drop of that paint, Backspace takes the last one out.
+  // Keyboard: 1–5 add a drop of that paint. There is no undo: paint can't come back out.
   useEffect(() => {
-    if (done || locked) return
+    if (done || revealing) return
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey || (e.target as HTMLElement | null)?.closest('input, textarea')) return
       const n = Number(e.key)
       if (n >= 1 && n <= PAINTS.length) { e.preventDefault(); add(n - 1) }
-      else if (e.key === 'Backspace') { e.preventDefault(); undo() }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   })
 
   if (done && tries.length) {
-    const best = tries.reduce((a, b) => (b.score > a.score ? b : a))
+    const best = tries.reduce((a, b) => (dayScore(b.scores) > dayScore(a.scores) ? b : a))
+    const score = dayScore(best.scores)
+    const bestTargets = dayFor(seed, best.k).targets
     const n = count(tries.length, 'try', 'tries')
     const stats = getStats(game.slug)
-    const last = tries[tries.length - 1]
+    const st = stars(best.scores)
     return (
       <>
         <Stage>
-          <div className="stack" style={{ justifyItems: 'center' }}>
-            <div className="pm-pair">
-              <Swatch color={target} label="Today’s colour" />
-              <Swatch color={mixColor(best.drops)!} label="Your best mix" />
-            </div>
-            {fresh && last !== best && <p className="body-strong" style={{ margin: 0 }}>Last try: {last.score}% match</p>}
-            <AttemptTiles attempts={tries.slice(-8).map((t) => grade(t.score))} />
+          <div className="pm-strip" aria-label="Your best day: each colour and your mix">
+            {bestTargets.map((t, i) => (
+              <div key={i} className="pm-strip-pair">
+                <span className="pm-chip" style={{ background: css(mixColor(t)!) }} />
+                <span className="pm-chip" style={{ background: css(best.mixes[i]) }} />
+                <span className="small">{best.scores[i] === 100 ? '⭐' : `${best.scores[i]}%`}</span>
+              </div>
+            ))}
           </div>
         </Stage>
         <ResultCard
           game={game}
-          headline={`${best.score}% match`}
-          detail={<>{count(total(best.drops), 'drop')} of paint · best of {n}{!oneOff && stats.streak > 1 ? ` · ${stats.streak} day streak` : ''}</>}
-          shareText={`🎨 Paint Mix ${puzzleLabel(day)}\n${square(best.score)} ${best.score}% match\nBest of ${n}`}
-          finishData={{ score: best.score, tries: tries.length }}
+          headline={`${score}% match`}
+          detail={<>Five colours{st ? ` · ${st} exact ⭐` : ''} · best of {n}{!oneOff && stats.streak > 1 ? ` · ${stats.streak} day streak` : ''}</>}
+          shareText={`🎨 Paint Mix ${puzzleLabel(day)}\n${best.scores.map(square).join('')} ${score}% match\nBest of ${n}`}
+          finishData={{ score, stars: st, tries: tries.length }}
           trackFinish={fresh}
-          challenge={{ seed, score: best.score, text: `${best.score}%`, lowerIsBetter: false }}
+          challenge={{ seed, score, text: `${score}%`, lowerIsBetter: false }}
           onReplay={again}
-          replayLabel="Try again"
+          replayLabel="Try again (five new colours)"
         />
       </>
     )
   }
 
+  const lastScore = run.scores[run.scores.length - 1]
   return (
     <>
       <div className="between" style={{ marginBottom: 'var(--space-3)' }}>
-        <span className="small muted">{tries.length ? `Try ${tries.length + 1}` : 'Match today’s colour'}</span>
-        <span className="small muted" aria-live="polite">{count(run.length, 'drop')} · up to {MAX_DROPS}</span>
+        <span className="small muted">Colour {run.round + 1} of {ROUNDS}{tries.length && !oneOff ? ` · try ${tries.length + 1}` : ''}</span>
+        <AttemptTiles attempts={Array.from({ length: ROUNDS }, (_, i) => (i < run.scores.length ? grade(run.scores[i]) : 'empty'))} />
+      </div>
+      <div className="pm-tube" role="img" aria-label={`${count(left, 'drop')} of paint left for today`}>
+        <span className="pm-tube-fill" style={{ width: `${(left / today.budget) * 100}%` }} />
+        <span className="pm-tube-text">{count(left, 'drop')} of paint left today</span>
       </div>
       <Stage className="pm-stage" style={{ position: 'relative' }}>
         <div className="pm-pair">
-          <Swatch color={target} label="Today’s colour" />
+          <Swatch color={target} label={`Colour ${run.round + 1}`} />
           <div className="pm-swatch">
-            <Bowl run={run} color={mine} />
-            <span className="small muted">Your mix</span>
+            <Bowl run={run.bowl} color={mine} />
+            <span className="small muted">Your mix · {count(run.bowl.length, 'drop')}</span>
           </div>
         </div>
-        {locked ? (
-          // Below the two colours, so they stay side by side to compare.
+        {revealing ? (
           <div className="pm-verdict" aria-live="polite">
-            <span className="score">{locked.score}%</span>
-            <span className="body-strong">{locked.score >= 95 ? 'Spot on!' : locked.score >= 85 ? 'Very close' : locked.score >= 70 ? 'Close' : 'Not quite'}</span>
-            {locked.score >= 95 && <Burst y="0%" color={game.color} />}
+            <span className="score">{lastScore}%</span>
+            <span className="body-strong">{verdict(lastScore)}</span>
+            {lastScore === 100 && <Burst y="0%" color={game.color} />}
           </div>
         ) : (
           <div className="pm-trail" aria-hidden="true">
-            {run.map((i, k) => <span key={k} style={{ background: css(paintColor(PAINTS[i])) }} />)}
+            {run.bowl.map((i, j) => <span key={j} style={{ background: css(paintColor(PAINTS[i])) }} />)}
           </div>
         )}
       </Stage>
-      {!locked ? (
+      {!revealing ? (
         <div className="stack" style={{ marginTop: 'var(--space-3)' }}>
           <div className="pm-pots" role="group" aria-label="Add a drop of paint">
             {PAINTS.map((p, i) => (
-              <button key={p.id} type="button" className="pm-pot" onClick={() => add(i)} disabled={run.length >= MAX_DROPS} aria-label={`Add a drop of ${p.name.toLowerCase()} (${drops[i]} in)`}>
+              <button key={p.id} type="button" className="pm-pot" onClick={() => add(i)} disabled={left <= 0 || run.bowl.length >= MAX_DROPS} aria-label={`Add a drop of ${p.name.toLowerCase()} (${drops[i]} in)`}>
                 <span className="pm-pot-paint" style={{ background: css(paintColor(p)) }} />
                 <span className="pm-pot-name">{p.name}</span>
                 {drops[i] > 0 && <span className="pm-pot-count" aria-hidden="true">{drops[i]}</span>}
@@ -152,16 +168,16 @@ export default function PaintMix() {
               </button>
             ))}
           </div>
-          <div className="pm-tools">
-            <Button variant="ghost" onClick={undo} disabled={!run.length}>Undo</Button>
-            <Button variant="ghost" onClick={clear} disabled={!run.length}>Empty the bowl</Button>
-          </div>
-          <Button size="lg" block color={game.color} onClick={lockIn} disabled={!run.length} data-primary="click" hint="Enter">Lock in my mix</Button>
-          <p className="small muted center" style={{ margin: 0 }}>Paint mixes like real paint: yellow and blue make green, white lightens. Only the mix counts, not how many drops.</p>
+          <Button size="lg" block color={game.color} onClick={lockIn} disabled={!run.bowl.length && left > 0} data-primary="click" hint="Enter">
+            {!run.bowl.length && left <= 0 ? 'Out of paint: move on' : `Lock in colour ${run.round + 1}`}
+          </Button>
+          <p className="small muted center" style={{ margin: 0 }}>Paint can’t come back out, so add carefully. Yellow and blue make green; white lightens, black darkens. Only the mix counts, and your score shows after you lock in.</p>
         </div>
       ) : (
         <div className="stack" style={{ marginTop: 'var(--space-3)' }}>
-          <Button size="lg" block color={game.color} onClick={seeResult} data-primary="click" hint="Space">See my result</Button>
+          <Button size="lg" block color={game.color} onClick={next} data-primary="click" hint="Space">
+            {run.scores.length < ROUNDS ? `Next colour (${run.scores.length + 1} of ${ROUNDS})` : 'See my result'}
+          </Button>
         </div>
       )}
     </>
@@ -181,7 +197,7 @@ function Swatch({ color, label }: { color: Rgb; label: string }) {
  * The bowl: the mix colour, and each new drop falling in and swirling round into it while
  * the colour shifts from the old mix to the new one.
  */
-function Bowl({ run, color }: { run: Run; color: Rgb | null }) {
+function Bowl({ run, color }: { run: number[]; color: Rgb | null }) {
   const canvas = useRef<HTMLCanvasElement>(null)
   const shown = useRef<Rgb | null>(color)
   const anim = useRef<{ from: Rgb | null; to: Rgb | null; drop: Rgb | null; start: number; spin: number } | null>(null)
