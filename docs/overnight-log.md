@@ -97,3 +97,10 @@ One line per game: date, game, commit, what was tested, what is left.
   - Online: when the host leaves the lobby, the next player becomes host (real Realtime).
   - Unit tests for stats: no-score days, streaks over month and year ends, match counts; `count()` plurals.
   - The full e2e suite now takes over 10 minutes; one run had a Chain Pop tap land during the new replay scroll, so that script waits for it to settle.
+- 2026-11-19 · Part 4 · UI and animation:
+  - Home: filter chips (All, Daily, Any time, With friends) remembered in this browser, with the chosen chip scrolled into view on narrow phones; a progress ring for today's daily games, drawn in on load; cards rise in with a short stagger; a small lift on hover with a mouse. e2e for the filters and ring (`tests/e2e/pages/home.cjs`).
+  - Game pages: the game slides up into place once on first load; a shimmering skeleton replaces "Loading…"; step counters (Level, Moves, Steps, Turns, Mirrors, Left) pop when they change, running timers don't.
+  - Result ticket: the puzzle stamp lands on the stub after the print, and the headline settles with a tick when its count-up stops.
+  - Long results on cards shrink instead of running into the card animation (This or That now reads "4 pts off").
+  - Consistency sweep of all 31 games at 360×740 in light and dark, plus a tap-target scan: Light Path's target cells were drawn at 21px because the cell shared a class with its dot (fixed); the sound toggle and brand link get 44px tap areas. Everything new respects reduced motion.
+  - Design system republished (version 20): GetReady, FilterChips, ProgressRing, Score `bump`.

@@ -5,3 +5,4 @@ A scoreboard number in `mono` with tabular figures, and an optional `eyebrow` la
 **Consumer provides** the value already formatted in the game's units.
 
 - `tone="accent"` with `accentColor` is only for a number on a `Stage` filled with a darker colour where it reaches 3:1. Game colours on `surface` or `canvas` don't, so keep numbers in `ink` there.
+- `bump` pops the value when it changes (never on first show). Use it for counters that step (Level, Moves, Steps, Turns, Left), never for a running timer, which changes every frame.

@@ -1,0 +1,13 @@
+<!-- @dsCard group="Navigation" height=120 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>preview</title><style>body{margin:0;padding:16px;background:var(--canvas);color:var(--ink);font-family:var(--font-body)}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var Q = window.QuickGames, h = React.createElement;
+  function Demo() { var s = React.useState('all'); return h(Q.FilterChips, { label: 'Show games', value: s[0], onChange: s[1], options: [{ value: 'all', label: 'All', count: 31 }, { value: 'daily', label: 'Daily', count: 19 }, { value: 'any', label: 'Any time', count: 6 }, { value: 'friends', label: 'With friends', count: 6 }] }) }
+  ReactDOM.createRoot(document.getElementById('root')).render(h(Demo));
+</script>
+</body>
+</html>

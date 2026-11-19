@@ -1,0 +1,15 @@
+<!-- @dsCard group="Feedback" height=120 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>preview</title><style>body{margin:0;padding:16px;background:var(--canvas);color:var(--ink);font-family:var(--font-body);display:flex;gap:16px;align-items:center}</style></head>
+<body>
+<div id="root" style="display:flex;gap:16px"></div>
+<script>
+  var Q = window.QuickGames, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(Q.ProgressRing, { value: 0, max: 19, label: '0 of 19 played', color: 'ticket' }),
+    h(Q.ProgressRing, { value: 7, max: 19, label: '7 of 19 played', color: 'ticket' }),
+    h(Q.ProgressRing, { value: 19, max: 19, label: 'All 19 played', color: 'ticket' })));
+</script>
+</body>
+</html>

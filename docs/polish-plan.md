@@ -72,7 +72,7 @@ An independent review of all 31 games lists every place the seven bug classes oc
 - **Online:** ready-after-refresh, host leaving, rematch after a refresh.
 - CI keeps running unit tests, types, build and budget; the e2e suite runs locally before every push, as now.
 
-## Part 4: UI and animation polish
+## Part 4: UI and animation polish (done)
 
 1. **Home:** filter chips (All, Daily, Any time, With friends) that remember the choice; today's progress as a small ring ("4 of 16 daily games played"); cards rise in with a short stagger on load; card press feels physical.
 2. **Game pages:** the stage slides in on load; a skeleton stage instead of "Loading…"; the shared 3-2-1 `GetReady` for timed starts; scores bump when they change (`Score` animates value changes).

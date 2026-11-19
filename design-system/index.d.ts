@@ -46,6 +46,8 @@ export interface ScoreProps {
   size?: 'xl' | 'md'
   tone?: 'default' | 'accent' | 'hidden'
   accentColor?: string
+  /** Pop the value when it changes: step counters only, never a running timer. */
+  bump?: boolean
 }
 export declare function Score(props: ScoreProps): JSX.Element
 
@@ -159,3 +161,9 @@ export declare function SplitBars(props: { items: { label: ReactNode; count: num
 
 /** The 3-2-1 before anything timed; scrolls its box fully on screen first, then calls onDone. */
 export declare function GetReady(props: { onDone: () => void; from?: number; step?: number }): JSX.Element
+
+/** A row of toggle chips, exactly one on (the home page filters). */
+export declare function FilterChips<T extends string>(props: { label: string; options: { value: T; label: string; count?: number }[]; value: T; onChange: (value: T) => void }): JSX.Element
+
+/** A ring filled to value/max with the count in the middle; drawn in on load. */
+export declare function ProgressRing(props: { value: number; max: number; label: string; color?: string; size?: number }): JSX.Element
