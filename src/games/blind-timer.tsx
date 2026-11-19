@@ -31,6 +31,8 @@ export default function BlindTimer() {
   const { day, oneOff } = dailyDayFor(readChallenge(game.slug)?.s)
   const [offs, setOffs] = useState<number[]>(() => (oneOff ? [] : loadToday(game.slug, [] as number[])))
   const [playing, setPlaying] = useState(offs.length === 0)
+  // Only a try finished on this visit counts as a new finish (not reopening today's result).
+  const [fresh, setFresh] = useState(false)
   const target = targetFor(day)
 
   function onStop(elapsed: number) {
@@ -42,6 +44,7 @@ export default function BlindTimer() {
       const best = Math.abs(bestOf(next))
       recordDaily(game.slug, best, new Date(), `${fmt(best)}s`, true)
     }
+    setFresh(true)
     setTimeout(() => setPlaying(false), 600)
   }
 
@@ -79,6 +82,7 @@ export default function BlindTimer() {
         detail={oneOff ? <>Your best of {tries} on the {puzzleLabel(day)} puzzle</> : <>Your best of {tries} today{stats.streak > 1 && <> · {stats.streak} day streak</>}</>}
         shareText={`⏱️ Blind Timer ${puzzleLabel(day)}\nTarget ${fmt(target)}s\n${recent.map(square).join('')}\n${offText(best)}, best of ${tries}`}
         finishData={{ off: Math.abs(best), tries: offs.length }}
+        trackFinish={fresh}
         challenge={{ seed: dateKey(day), score: Math.abs(best), text: `${fmt(Math.abs(best))}s`, lowerIsBetter: true }}
         onReplay={() => setPlaying(true)}
         replayLabel="Try again"

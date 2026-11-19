@@ -18,4 +18,16 @@ const SMALL_PHONE = { viewport: { width: 360, height: 740 }, isMobile: true, has
 /** The game's local stats. */
 const stats = (page, slug) => page.evaluate((slug) => JSON.parse(localStorage.getItem('qg:stats:' + slug) ?? 'null'), slug)
 
-module.exports = { assertFullyVisible, SMALL_PHONE, stats }
+/** How many finish events this page load has sent (ResultCard counts them on <html data-finishes>). */
+const finishes = (page) => page.evaluate(() => Number(document.documentElement.dataset.finishes ?? 0))
+
+/** Reloads a finished daily game and checks the result is shown again without sending another finish. */
+async function assertReopenQuiet(page) {
+  await page.reload()
+  await page.locator('.qg-ticket').waitFor()
+  await page.waitForTimeout(300)
+  const n = await finishes(page)
+  if (n) throw new Error(`reopening the result sent ${n} finish event(s)`)
+}
+
+module.exports = { assertFullyVisible, SMALL_PHONE, stats, finishes, assertReopenQuiet }

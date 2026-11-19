@@ -116,6 +116,8 @@ export default function PitchMatch() {
   const [state, setState] = useState<Today>(() => (oneOff ? { done: [], current: [] } : loadTodayState()))
   const [playing, setPlaying] = useState(state.done.length === 0 || state.current.length > 0)
   const { done, current } = state
+  // Only a try finished on this visit counts as a new finish (not reopening today's result).
+  const [fresh, setFresh] = useState(false)
   const round = current.length
   const stats = getStats(game.slug)
 
@@ -127,6 +129,7 @@ export default function PitchMatch() {
     if (cur.length >= ROUNDS) {
       const best = Math.max(...next.done.map(score))
       if (!oneOff) recordDaily(game.slug, best, new Date(), `${best}%`)
+      setFresh(true)
       setPlaying(false)
     }
   }
@@ -163,6 +166,7 @@ export default function PitchMatch() {
           detail={<>Your best of {tries} {oneOff ? `on the ${puzzleLabel(day)} tones` : 'today'}{done.length > 1 ? ` · last try ${score(done[done.length - 1])}%` : ''}{stats.streak > 1 ? ` · ${stats.streak} day streak` : ''}</>}
           shareText={`🎵 Pitch Match ${puzzleLabel(day)}\n${bestTry.map(square).join('')} ${best}% accurate\nBest of ${tries}`}
           finishData={{ accuracy: best, tries: done.length }}
+          trackFinish={fresh}
           challenge={{ seed: dateKey(day), score: best, text: `${best}%`, lowerIsBetter: false }}
           onReplay={() => setPlaying(true)}
           replayLabel="Try again"

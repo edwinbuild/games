@@ -1,3 +1,5 @@
+const { assertReopenQuiet, finishes } = require('../helpers.cjs')
+
 module.exports = async ({ page, B }) => {
   await page.goto(B + '/pitch-match/')
   for (let i = 0; i < 3; i++) {
@@ -6,4 +8,6 @@ module.exports = async ({ page, B }) => {
     await page.getByRole('button', { name: 'Lock in' }).click()
   }
   await page.locator('.qg-ticket').waitFor()
+  if ((await finishes(page)) !== 1) throw new Error('a finished try should send one finish')
+  await assertReopenQuiet(page)
 }

@@ -1,3 +1,5 @@
+const { assertReopenQuiet, finishes } = require('../helpers.cjs')
+
 module.exports = async ({ page, B }) => {
   await page.clock.install()
   await page.goto(B + '/blind-timer/')
@@ -10,4 +12,6 @@ module.exports = async ({ page, B }) => {
     await page.locator('.qg-ticket').waitFor()
   }
   if (!(await page.getByText(/best of 2 tries/).count())) throw new Error('tries not counted')
+  if ((await finishes(page)) !== 2) throw new Error('each finished try should send one finish')
+  await assertReopenQuiet(page)
 }

@@ -46,6 +46,9 @@ export function ResultCard(p: Props) {
     if ((p.trackFinish ?? true) && !tracked.current) {
       tracked.current = true
       track('finish', p.game.slug, p.finishData)
+      // Counted on the page so tests can check that reopening a result never sends another finish.
+      const root = document.documentElement.dataset
+      root.finishes = String(Number(root.finishes ?? 0) + 1)
       // Multiplayer games have no personal score to keep, but every finished match counts as played.
       if (p.game.players && p.game.players !== 1) countPlay(p.game.slug)
       feel.click()
