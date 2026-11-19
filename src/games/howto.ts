@@ -31,8 +31,8 @@ export const HOW_TO: Record<string, string[]> = {
     'Tapping before it turns green loses the round. If you both tap within 10 milliseconds it is a tie and the round is replayed. First to three rounds wins. On a computer, use the A and L keys.',
   ],
   'this-or-that': [
-    'Every day there is one two-way question, the same for everyone, like “Window seat or aisle seat?”. Pick your answer, then guess what share of today’s players picked the first option.',
-    'Lock in to see the real split so far. Your score is how close your guess was: within 3% is a great read of the crowd. One vote a day; the split keeps moving as more people play.',
+    'Every day there is one two-way question, the same for everyone, like “Window seat or aisle seat?”. Pick your answer, then guess what share of the other players today picked the first option.',
+    'Lock in to see the real split so far. Your score is how close your guess was to everyone else’s votes at that moment (your own vote doesn’t count): within 3 percentage points is a great read of the crowd. One vote a day; the split keeps moving as more people play.',
   ],
   'color-recall': [
     'A colour fills the screen for two seconds, then hides. Rebuild it with the hue, saturation and lightness sliders and press Lock in. After each colour you see yours next to the real one.',

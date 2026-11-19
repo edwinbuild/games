@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getGame } from './registry'
-import { guessScore, questionFor } from './this-or-that/pick'
+import { guessScore, othersOf, questionFor } from './this-or-that/pick'
 import { rpc } from '../shell/api'
 import { readChallenge } from '../shell/challenge'
 import { dailyDayFor, dateKey, puzzleLabel } from '../shell/daily'
@@ -14,7 +14,10 @@ const game = getGame('this-or-that')
 /** Below this many votes the split is shown with a note that it will still move. */
 const FEW_VOTES = 20
 
+/** The split when you locked in, your own vote included (the vote endpoint returns it that way). */
 type Saved = { choice: 0 | 1; guess: number; a: number; b: number }
+/** Distance between two percentages, in percentage points. */
+const pts = (off: number) => `${off} ${off === 1 ? 'point' : 'points'} off`
 type Split = { a: number; b: number }
 
 export default function ThisOrThat() {
@@ -59,8 +62,9 @@ export default function ThisOrThat() {
       const split = { a: Number(r[0]?.a ?? 0), b: Number(r[0]?.b ?? 0) }
       const s: Saved = { choice, guess, ...split }
       saveToday(game.slug, s)
-      const { off, score } = guessScore(guess, split.a, split.b)
-      recordDaily(game.slug, score, new Date(), `${off}% off`)
+      const others = othersOf(split, choice)
+      const { off, score } = guessScore(guess, others.a, others.b)
+      recordDaily(game.slug, score, new Date(), pts(off))
       if (off <= 10) feel.good()
       else feel.tap()
       setFresh(true)
@@ -89,7 +93,10 @@ export default function ThisOrThat() {
 
   if (saved) {
     const split = live ?? { a: saved.a, b: saved.b }
-    const { actualA, off } = guessScore(saved.guess, saved.a, saved.b)
+    // Scored against everyone else at the moment you locked in; the bar keeps moving as more people vote.
+    const others = othersOf(saved, saved.choice)
+    const { actualA, off } = guessScore(saved.guess, others.a, others.b)
+    const nobody = others.a + others.b === 0
     const total = split.a + split.b
     const stats = getStats(game.slug)
     return (
@@ -99,19 +106,19 @@ export default function ThisOrThat() {
             <p className="result" style={{ margin: 0 }}>{q.text}</p>
             <SplitBar a={split.a} b={split.b} labelA={q.a} labelB={q.b} guess={saved.guess} />
             <p className="small muted" style={{ margin: 0 }}>
-              {formatCount(total)} {total === 1 ? 'vote' : 'votes'} so far today
+              Live: {formatCount(total)} {total === 1 ? 'vote' : 'votes'} so far today, yours included
               {total < FEW_VOTES ? '. Early votes: the split will still move.' : ''}
             </p>
           </div>
         </Stage>
         <ResultCard
           game={game}
-          headline={off === 0 ? 'Read the crowd exactly' : `Within ${off}% of the crowd`}
-          detail={<>You picked {optionName(saved.choice).toLowerCase()} · you guessed {saved.guess}%, it was {actualA}%{stats.streak > 1 ? ` · ${stats.streak} day streak` : ''}</>}
-          shareText={`🔀 This or That ${puzzleLabel(day)}\n${q.text}\nI picked ${optionName(saved.choice).toLowerCase()}\nGuessed the crowd within ${off}%`}
+          headline={nobody ? 'First vote of the day' : off === 0 ? 'Read the crowd exactly' : `Within ${off} ${off === 1 ? 'point' : 'points'} of the crowd`}
+          detail={<>You picked {optionName(saved.choice).toLowerCase()} · you guessed {saved.guess}% {q.a.toLowerCase()}{nobody ? ', and nobody else had voted yet' : `; when you locked in, ${actualA}% of the other players had`}{stats.streak > 1 ? ` · ${stats.streak} day streak` : ''}</>}
+          shareText={`🔀 This or That ${puzzleLabel(day)}\n${q.text}\nI picked ${optionName(saved.choice).toLowerCase()}\n${off === 0 ? 'Read the crowd exactly' : `Guessed the crowd within ${off} ${off === 1 ? 'point' : 'points'}`}`}
           finishData={{ off }}
           trackFinish={fresh}
-          challenge={{ seed: dateKey(day), score: 100 - off, text: `${off}% off`, lowerIsBetter: false }}
+          challenge={{ seed: dateKey(day), score: 100 - off, text: pts(off), lowerIsBetter: false }}
         />
       </>
     )

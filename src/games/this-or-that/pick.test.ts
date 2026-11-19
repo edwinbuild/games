@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { guessScore, questionFor } from './pick'
+import { guessScore, othersOf, questionFor } from './pick'
 import { QUESTIONS } from './questions'
 
 describe('This or That', () => {
@@ -14,5 +14,14 @@ describe('This or That', () => {
   it('scores the guess by distance from the real split', () => {
     expect(guessScore(55, 62, 38)).toEqual({ actualA: 62, off: 7, score: 93 })
     expect(guessScore(50, 0, 0)).toEqual({ actualA: 50, off: 0, score: 100 })
+  })
+  it('leaves your own vote out of the split you guessed', () => {
+    // 3 votes for A including yours: the others split 2–2, so a 50% guess is exact.
+    const others = othersOf({ a: 3, b: 2 }, 0)
+    expect(others).toEqual({ a: 2, b: 2 })
+    expect(guessScore(50, others.a, others.b).off).toBe(0)
+    expect(othersOf({ a: 3, b: 2 }, 1)).toEqual({ a: 3, b: 1 })
+    // The very first voter: nobody else yet.
+    expect(othersOf({ a: 0, b: 1 }, 1)).toEqual({ a: 0, b: 0 })
   })
 })

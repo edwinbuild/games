@@ -108,7 +108,7 @@ export const GAMES: GameMeta[] = [
     tagline: 'One question a day. Pick a side, then guess how everyone else picked.',
     daily: true,
     color: 'aqua',
-    sample: '4% off',
+    sample: '4 points off',
   },
   {
     slug: 'color-recall',

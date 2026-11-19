@@ -9,9 +9,15 @@ module.exports = async ({ page, B }) => {
   await page.getByRole('button', { name: /Lock in/ }).click()
   await page.locator('.qg-ticket').waitFor()
   const h = await page.locator('.qg-ticket-headline').getAttribute('aria-label') ?? await page.locator('.qg-ticket-headline').textContent()
-  if (!/7%/.test(await page.locator('.qg-ticket').innerText())) throw new Error('score wrong: ' + h)
+  // 62–38 including your vote for the second option: the others split 62–37, so 63% picked the first; 55 is 8 points off.
+  await page.waitForTimeout(1200) // the headline counts up
+  const t = await page.locator('.qg-ticket').innerText()
+  if (!/Within 8 points of the crowd/.test(t) || !/63% of the other players/.test(t)) throw new Error('score wrong: ' + h + ' / ' + t)
   await page.reload()
   await page.locator('.qg-ticket').waitFor()
   if (votes !== 1) throw new Error('voted ' + votes + ' times')
   if (await page.locator('.tot-option').count()) throw new Error('could vote again after reload')
+  // The live split moved (63–38 now), but the score is the one from when you locked in.
+  if (!/Within 8 points/.test(await page.locator('.qg-ticket').innerText())) throw new Error('score changed on reload')
+  if (!/Live: 101 votes/.test(await page.locator('.qg-stage').innerText())) throw new Error('live count missing')
 }

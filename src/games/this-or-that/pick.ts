@@ -19,6 +19,11 @@ export function questionFor(d = new Date()): { id: number; text: string; a: stri
   return { id, text, a, b }
 }
 
+/** The split without your own vote: you guess what the other players picked, so your vote must not count. */
+export function othersOf(split: { a: number; b: number }, choice: 0 | 1): { a: number; b: number } {
+  return { a: Math.max(0, split.a - (choice === 0 ? 1 : 0)), b: Math.max(0, split.b - (choice === 1 ? 1 : 0)) }
+}
+
 /** Score for guessing the share that picked A: 100 minus the distance in percentage points. */
 export function guessScore(guessA: number, a: number, b: number): { actualA: number; off: number; score: number } {
   const total = a + b
