@@ -25,4 +25,23 @@ describe('Angle Eye', () => {
     expect(judge(c, { x: 50, y: 50 }).score).toBe(10)
     expect(judge(c, { x: 54, y: 50 }).score).toBe(8) // 20% of the radius off
   })
+  it('keeps everything it draws, and every answer, on the board', () => {
+    const inside = (p: { x: number; y: number }) => p.x >= 2 && p.x <= 98 && p.y >= 2 && p.y <= 98
+    for (let n = 0; n < 400; n++) {
+      for (const round of roundsFor(`seed${n}`)) {
+        if (round.kind === 'angle') {
+          // Any direction of a 30-long ray from the origin (the base, the handle, the answer).
+          for (let a = 0; a < 360; a += 15) {
+            const t = (a * Math.PI) / 180
+            expect(inside({ x: round.origin.x + Math.cos(t) * 30, y: round.origin.y - Math.sin(t) * 30 })).toBe(true)
+          }
+        } else if (round.kind === 'centre') {
+          expect(inside({ x: round.c.x - round.r, y: round.c.y - round.r }) && inside({ x: round.c.x + round.r, y: round.c.y + round.r })).toBe(true)
+        } else {
+          expect(inside(round.a) && inside(round.b)).toBe(true)
+        }
+        if (round.kind !== 'centre') expect(inside(judge(round, { x: 50, y: 50 }).answer)).toBe(true)
+      }
+    }
+  })
 })

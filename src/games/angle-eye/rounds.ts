@@ -19,7 +19,8 @@ export function roundsFor(seed: string): Round[] {
     ;[kinds[i], kinds[j]] = [kinds[j], kinds[i]]
   }
   return kinds.map((kind) => {
-    if (kind === 'angle') return { kind, origin: { x: 20 + r() * 20, y: 60 + r() * 15 }, base: -r() * 20, target: Math.round(15 + r() * 150) }
+    // The rays are 30 long and can point anywhere, so the origin stays 30 + a margin from every edge.
+    if (kind === 'angle') return { kind, origin: { x: 36 + r() * 28, y: 36 + r() * 28 }, base: -r() * 20, target: Math.round(15 + r() * 150) }
     if (kind === 'centre') return { kind, c: { x: 35 + r() * 30, y: 35 + r() * 30 }, r: 14 + r() * 16 }
     const len = kind === 'double' ? 22 + r() * 14 : 40 + r() * 40
     const ang = r() * Math.PI
