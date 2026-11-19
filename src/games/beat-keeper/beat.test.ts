@@ -23,9 +23,16 @@ describe('Beat Keeper', () => {
     expect(r.errors[3]).toBeNull()
     expect(r.mean).toBe(Math.round(periodMs(100) / 2 / SILENT))
   })
-  it('ignores taps during the lead-in and extra taps', () => {
-    const taps = [1000, 1600, ...beats(100, () => 10), ...beats(100, () => 200)]
+  it('ignores taps during the lead-in', () => {
+    const taps = [1000, 1600, ...beats(100, () => 10)]
     expect(score(taps, 1000, 100).mean).toBe(10)
+  })
+  it('makes extra taps cost as much as a missed beat, so drumming fast scores badly', () => {
+    const p = periodMs(100)
+    const one = score([...beats(100, () => 10), 1000 + (LEAD + 2) * p + 200], 1000, 100)
+    expect(one.mean).toBe(Math.round((10 * SILENT + p / 2) / SILENT))
+    const drum = Array.from({ length: Math.round((SILENT * p) / 66) }, (_, i) => 1000 + (LEAD - 0.4) * p + i * 66)
+    expect(score(drum, 1000, 100).mean).toBeGreaterThan(500)
   })
   it('gives everyone the same tempo, between 80 and 130 bpm', () => {
     expect(tempoFor('a')).toBe(tempoFor('a'))

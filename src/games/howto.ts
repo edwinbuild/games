@@ -96,7 +96,7 @@ export const HOW_TO: Record<string, string[]> = {
   ],
   'beat-keeper': [
     'Press Start and tap along with eight beats: you hear them (with sound on) and see the circle pulse. Then the beat goes silent and the circle fades. Keep tapping in time for eight more beats, on the screen or with Space.',
-    'Your score is how far your silent taps were from the real beats, on average, in milliseconds; a missed beat counts as half a beat out. The reveal shows each tap against its beat and whether you drifted fast or slow. Everyone gets the same tempo each day. Try as many times as you like; your best counts.',
+    'Your score is how far your silent taps were from the real beats, on average, in milliseconds; a missed beat counts as half a beat out, and so does every extra tap. The reveal shows each tap against its beat and whether you drifted fast or slow. Everyone gets the same tempo each day. Try as many times as you like; your best counts.',
   ],
   'pipe-turn': [
     'Water comes from the tap on the left. Tap a pipe to turn it a quarter turn; water flows through every pipe that connects back to the tap, so you can see how far it gets. Connect it all the way to the plant on the right.',

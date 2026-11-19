@@ -14,7 +14,7 @@ export const periodMs = (bpm: number) => 60000 / bpm
 export type Result = {
   /** Each silent beat's error in ms (tap minus beat); a missed beat is null. */
   errors: (number | null)[]
-  /** Mean absolute error, a missed beat counting as half a beat. */
+  /** Mean absolute error, a missed beat (or an extra tap) counting as half a beat. */
   mean: number
   /** Whether the taps drifted ahead (fast) or behind (slow) over the run, or held steady. */
   drift: 'steady' | 'fast' | 'slow'
@@ -35,7 +35,10 @@ export function score(taps: number[], start: number, bpm: number): Result {
     used.add(best)
     return Math.round(taps[best] - beat)
   })
-  const mean = Math.round(errors.reduce<number>((s, e) => s + (e == null ? p / 2 : Math.abs(e)), 0) / SILENT)
+  // Extra taps during the silent beats cost as much as a missed beat, so drumming fast doesn't pay.
+  const from = start + (LEAD - 0.5) * p, to = start + (LEAD + SILENT - 0.5) * p
+  const extras = taps.filter((t) => t >= from && t < to).length - used.size
+  const mean = Math.round((errors.reduce<number>((s, e) => s + (e == null ? p / 2 : Math.abs(e)), 0) + Math.max(0, extras) * (p / 2)) / SILENT)
   // Drift: the trend of the errors across the run (least-squares slope), as ms over the whole run.
   const pts = errors.flatMap((e, k) => (e == null ? [] : [[k, e]]))
   let drift: Result['drift'] = 'steady'
