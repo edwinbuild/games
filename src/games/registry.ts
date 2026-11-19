@@ -259,6 +259,20 @@ export const GAMES: GameMeta[] = [
     color: 'chili',
     sample: '23 blocks',
   },
+  {
+    slug: 'pour-line',
+    title: 'Pour Line',
+    emoji: '🥛',
+    instructions: 'Press and hold to pour, let go to stop. Fill the glass exactly to the line.',
+    tagline: 'Hold to pour, let go at the line. The drink keeps falling after you let go. One glass a day.',
+    howTo: [
+      'Press and hold anywhere on the glass to pour from the tap; let go to stop. The stream already in the air still lands after you let go, so stop a moment early. Pour past the rim and the try is spilled.',
+      'Every day has one glass, the same for everyone: its shape, the height of the line and how fast the tap runs. Narrow parts of a glass fill faster. Your score is how far the settled drink is from the line, as a share of the glass height. Try as many times as you like; your closest pour counts. On a computer, hold Space.',
+    ],
+    daily: true,
+    color: 'honey',
+    sample: '0.6% off',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

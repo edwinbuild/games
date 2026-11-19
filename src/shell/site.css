@@ -261,7 +261,7 @@ button { font: inherit; }
 .st-kbd { position: absolute; left: 50%; top: 96px; transform: translateX(-50%); }
 
 /* Card demos: a 140×72 scene on the card band. Paused until the card is on screen. */
-.demo { position: relative; display: block; width: 140px; height: 72px; transform: scale(1.3); transform-origin: 100% 100%; margin-top: 22px; --line: var(--on-fill); --paper: #fff; }
+.demo { position: relative; display: block; width: 140px; height: 72px; transform: scale(1.3); transform-origin: 100% 100%; margin-top: 22px; --line: var(--on-fill); --paper: var(--highlight); }
 .demo * { animation-play-state: paused; }
 .qg-card[data-playing] .demo * { animation-play-state: running; }
 .demo-block { position: absolute; height: 14px; background: var(--paper); border: 2px solid var(--line); border-radius: 3px; box-sizing: border-box; }
@@ -349,3 +349,14 @@ button { font: inherit; }
 .demo-sr-board > span::after { content: ""; position: absolute; inset: 4px; border-radius: 50%; border: 1.5px solid var(--line); }
 .demo-sr-board > span.is-odd::after { border-radius: 1px; background: var(--line); }
 .qg-best-anchor { position: relative; display: inline-block; }
+
+/* Pour Line */
+.pl-stage { position: relative; width: 100%; max-width: 480px; margin-inline: auto; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; overflow: hidden; }
+.pl-canvas { display: block; width: 100%; height: min(62dvh, 520px); }
+.pl-kbd { position: absolute; left: 50%; top: 34%; transform: translateX(-50%); }
+.demo-pl-tap { position: absolute; left: 56px; top: 0; width: 28px; height: 10px; background: var(--paper); border: 2px solid var(--line); border-radius: 3px; box-sizing: border-box; }
+.demo-pl-stream { position: absolute; left: 67px; top: 10px; width: 6px; height: 54px; background: var(--paper); border: 1.5px solid var(--line); box-sizing: border-box; z-index: 1; }
+.demo-pl-glass { position: absolute; left: 40px; top: 18px; width: 60px; height: 52px; clip-path: polygon(0 0, 100% 0, 82% 100%, 18% 100%); background: var(--line); }
+.demo-pl-inner { position: absolute; inset: 0 3px 3px; clip-path: polygon(0 0, 100% 0, 82% 100%, 18% 100%); background: var(--qg-fill); overflow: hidden; }
+.demo-pl-liquid { position: absolute; left: 0; right: 0; bottom: 0; background: var(--paper); box-shadow: 0 -2px 0 var(--line); }
+.demo-pl-line { position: absolute; left: 0; right: 0; bottom: 62%; border-top: 2px dashed var(--line); }

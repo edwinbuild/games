@@ -329,6 +329,22 @@ function SpotRaceDemo() {
   )
 }
 
+
+function PourLineDemo() {
+  const d = 3.4
+  return (
+    <Scene still={2.6}>
+      <span className="demo-pl-tap" />
+      <A d={d} className="demo-pl-stream" k="0%,8%{clip-path:inset(0 0 100% 0)}14%,56%{clip-path:inset(0 0 0 0)}64%,100%{clip-path:inset(100% 0 0 0)}" />
+      <span className="demo-pl-glass"><span className="demo-pl-inner">
+        <A d={d} className="demo-pl-liquid" ease="cubic-bezier(.3,0,.4,1)" k="0%,12%{height:0}64%{height:63%}70%{height:61%}76%,94%{height:62%}100%{height:0}" />
+        <span className="demo-pl-line" />
+      </span></span>
+      <A d={d} k={show([[72, 96]])} className="demo-small" style={{ right: 0, top: 4 }}>0.4% off</A>
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -346,4 +362,5 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'flip-grid': FlipGridDemo,
   'spot-race': SpotRaceDemo,
   'stack-tower': StackTowerDemo,
+  'pour-line': PourLineDemo,
 }
