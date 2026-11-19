@@ -601,6 +601,23 @@ function HigherLowerDemo() {
   )
 }
 
+
+// A cat's face drawn stroke by stroke: head, ears, eyes, whiskers.
+const QD_STROKES = ['M34 40 a20 18 0 1 0 40 0 a20 18 0 1 0 -40 0', 'M38 30 L36 14 L48 24', 'M70 30 L72 14 L60 24', 'M46 38 h2 M60 38 h2', 'M54 46 l-3 3 h6 z', 'M40 48 h-14 M40 52 l-13 4 M68 48 h14 M68 52 l13 4']
+function QuickDrawDemo() {
+  const d = 4
+  return (
+    <Scene still={3.4}>
+      <svg className="demo-qd" viewBox="0 0 140 72" aria-hidden="true">
+        {QD_STROKES.map((p, i) => <path key={i} d={p} pathLength={100} style={{ animationDelay: `${i * 0.3}s` }} />)}
+      </svg>
+      <A d={d} k={show([[70, 96]])} className="demo-box demo-qd-bubble" style={{ left: 94, top: 22 }}>
+        <span className="demo-text" style={{ fontSize: 10 }}>Cat ✓</span>
+      </A>
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -632,4 +649,5 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'steady-line': SteadyLineDemo,
   'shape-recall': ShapeRecallDemo,
   'higher-lower': HigherLowerDemo,
+  'quick-draw': QuickDrawDemo,
 }

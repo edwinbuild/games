@@ -334,6 +334,17 @@ export const GAMES: GameMeta[] = [
     sample: '1st of 4',
     players: 'online-2-8',
   },
+  {
+    slug: 'quick-draw',
+    title: 'Quick Draw Guess',
+    emoji: '✏️',
+    instructions: 'Take turns drawing a word while everyone else guesses, each on their own phone.',
+    tagline: 'Draw it, guess it. Two to eight friends take turns drawing a word against the clock.',
+    daily: false,
+    color: 'melon',
+    sample: '2nd of 5',
+    players: 'online-2-8',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

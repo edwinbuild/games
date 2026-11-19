@@ -122,4 +122,8 @@ export const HOW_TO: Record<string, string[]> = {
     'Create a room and send the link (or the five-letter code); two to eight players can join. When everyone is ready, the host starts the quiz. Each question shows one country’s population or land area; say whether a second country’s number is higher or lower. You have ten seconds.',
     'The fastest right answer gets 3 points, the next 2, and every other right answer 1. Each phone times its own answer, so a slow connection doesn’t cost you. Ten questions, then the final scores. The numbers are the World Bank’s: population for 2023 and land area for 2022.',
   ],
+  'quick-draw': [
+    'Create a room and send the link (or the five-letter code); two to eight players can join. Everyone takes one turn to draw. The drawer sees a word and has 45 seconds to draw it; everyone else sees the drawing appear live and types guesses.',
+    'The first right guess scores 2 points, and the drawer gets 1 for a drawing someone guessed. Plurals and capitals don’t matter, and a guess one letter off shows “close!” only to you. Guesses are shown only to your room and are filtered for rude words.',
+  ],
 }

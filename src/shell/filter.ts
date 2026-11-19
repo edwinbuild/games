@@ -11,10 +11,19 @@ export function squash(text: string): string {
   return text.toLowerCase().replace(/[@4310!$57+]/g, (c) => SWAPS[c] ?? c).replace(/[^a-z]/g, '')
 }
 
-/** Whether the text contains a blocked word, even with spaces, dots or letter swaps in it. */
+const hit = (t: string) => BLOCKED.some((w) => t === w || t === w + 's' || t === w + 'es' || (w.length >= 5 && t.includes(w)))
+
+/**
+ * Whether the text contains a blocked word: matched word by word (so innocent words that merely
+ * contain one, like "grapes", pass), with letter swaps undone, and spelled-out letters
+ * ("s h i t") joined back together.
+ */
 export function isBlocked(text: string): boolean {
-  const s = squash(text)
-  return BLOCKED.some((w) => s.includes(w))
+  const tokens = text.split(/\s+/).filter(Boolean)
+  if (tokens.some((t) => hit(squash(t)))) return true
+  // Letters spread out with spaces: join runs of single characters and check those too.
+  const runs = text.split(/\s{2,}/).map((part) => part.split(/\s+/)).filter((r) => r.length > 1 && r.every((c) => c.length === 1))
+  return runs.some((r) => hit(squash(r.join(''))))
 }
 
 /** Text safe to show to other players: trimmed to `max` characters, or "•••" if blocked. */

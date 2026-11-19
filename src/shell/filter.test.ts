@@ -8,9 +8,10 @@ describe('word filter', () => {
     expect(isBlocked('sh1t')).toBe(true)
     expect(isBlocked('$h!t')).toBe(true)
     expect(isBlocked('f.u.c.k')).toBe(true)
+    expect(isBlocked('you SHITS')).toBe(true)
   })
   it('lets ordinary guesses through', () => {
-    for (const w of ['cat', 'bicycle', 'sunflower', 'Pass the salt', 'snowman', 'cocktail', 'scrape']) expect(isBlocked(w), w).toBe(w === 'cocktail' || w === 'scrape')
+    for (const w of ['cat', 'bicycle', 'sunflower', 'Pass the salt', 'snowman', 'cocktail', 'scrape', 'grapes', 'Dickens', 'peacock']) expect(isBlocked(w), w).toBe(false)
   })
   it('trims and masks', () => {
     expect(clean('  a very long guess that goes on and on  ')).toBe('a very long guess that g')
