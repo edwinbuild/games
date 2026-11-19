@@ -345,6 +345,34 @@ function PourLineDemo() {
   )
 }
 
+
+function ChainPopDemo() {
+  const d = 3.6
+  // [x, y, size, pops at %] — popping spreads out from the tapped bubble; two are never reached.
+  const bubbles: [number, number, number, number | null][] = [
+    [56, 40, 9, 16], [76, 30, 7, 24], [40, 26, 7, 27], [84, 50, 8, 32], [64, 60, 6, 35],
+    [100, 36, 9, 40], [30, 46, 6, 38], [118, 54, 7, 47], [116, 18, 6, null], [18, 20, 5, null],
+  ]
+  const popped = bubbles.filter((b) => b[3] != null).length
+  return (
+    <Scene still={1.75}>
+      {bubbles.map(([x, y, r, p], i) => (
+        <span key={i}>
+          {p != null && <A d={d} className="demo-cp-ring" style={{ left: x - r, top: y - r, width: r * 2, height: r * 2 }} ease="ease-out"
+            k={`0%,${p}%{transform:scale(1);opacity:0}${p + 1}%{opacity:.9}${p + 16}%{transform:scale(2.8);opacity:0}100%{opacity:0}`} />}
+          {p != null
+            ? <A d={d} className="demo-cp-bubble" style={{ left: x - r, top: y - r, width: r * 2, height: r * 2 }} k={`0%,${p}%{transform:scale(1);opacity:1}${p + 4}%{transform:scale(1.5);opacity:0}95%{transform:scale(.3);opacity:0}100%{transform:scale(1);opacity:1}`} />
+            : <span className="demo-cp-bubble" style={{ left: x - r, top: y - r, width: r * 2, height: r * 2 }} />}
+        </span>
+      ))}
+      <Tap d={d} at={15} x={56} y={40} />
+      <span className="demo-box" style={{ left: 0, top: 58, width: 40, height: 14, borderRadius: 7 }}>
+        <Frames d={d} style={{ fontSize: 10 }} frames={[['0', 0, 16], ['3', 16, 27], ['6', 27, 38], [`${popped}`, 38, 100]]} />
+      </span>
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -363,4 +391,5 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'spot-race': SpotRaceDemo,
   'stack-tower': StackTowerDemo,
   'pour-line': PourLineDemo,
+  'chain-pop': ChainPopDemo,
 }

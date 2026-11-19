@@ -360,3 +360,10 @@ button { font: inherit; }
 .demo-pl-inner { position: absolute; inset: 0 3px 3px; clip-path: polygon(0 0, 100% 0, 82% 100%, 18% 100%); background: var(--qg-fill); overflow: hidden; }
 .demo-pl-liquid { position: absolute; left: 0; right: 0; bottom: 0; background: var(--paper); box-shadow: 0 -2px 0 var(--line); }
 .demo-pl-line { position: absolute; left: 0; right: 0; bottom: 62%; border-top: 2px dashed var(--line); }
+
+/* Chain Pop */
+.cp-stage { position: relative; width: 100%; max-width: 440px; margin-inline: auto; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; overflow: hidden; }
+.cp-canvas { display: block; width: 100%; aspect-ratio: 3 / 4; }
+.cp-kbd { position: absolute; right: var(--space-2); bottom: var(--space-2); }
+.demo-cp-bubble { position: absolute; border-radius: 50%; background: var(--paper); border: 2px solid var(--line); box-sizing: border-box; }
+.demo-cp-ring { position: absolute; border-radius: 50%; border: 2px solid var(--line); box-sizing: border-box; opacity: 0; }

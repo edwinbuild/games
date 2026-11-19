@@ -273,6 +273,20 @@ export const GAMES: GameMeta[] = [
     color: 'honey',
     sample: '0.6% off',
   },
+  {
+    slug: 'chain-pop',
+    title: 'Chain Pop',
+    emoji: '🫧',
+    instructions: 'One tap. The bubble you tap pops and sets off its neighbours. Pop as many as you can.',
+    tagline: 'One tap sets off a chain of popping bubbles. Same board for everyone, every day.',
+    howTo: [
+      'Tap one bubble. It pops and sends out a ring; any bubble the ring reaches pops too and sends out its own ring. Big bubbles send bigger rings. Then sit back and watch the chain run.',
+      'Every day has one board of 60 bubbles, the same for everyone. Your score is how many popped from your one tap. Try as many times as you like; your longest chain counts. On a computer, choose a bubble with the arrow keys and press Space.',
+    ],
+    daily: true,
+    color: 'lilac',
+    sample: '41 of 60',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {
