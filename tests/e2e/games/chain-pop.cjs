@@ -5,7 +5,8 @@ module.exports = async ({ page, B }) => {
   await stage.waitFor()
   await page.waitForTimeout(300)
   const lastTap = async () => +(await page.locator('.qg-stage p').first().innerText()).match(/Last tap: (\d+)/)[1]
-  const again = async () => { await page.getByRole('button', { name: 'Try again' }).click(); await stage.waitFor(); await page.waitForTimeout(300) }
+  // Try again scrolls the game back into view (smoothly): let it settle before tapping.
+  const again = async () => { await page.getByRole('button', { name: 'Try again' }).click(); await stage.waitFor(); await page.waitForTimeout(900) }
 
   await page.locator('body').click({ position: { x: 2, y: 2 } })
   await page.keyboard.press('Space')

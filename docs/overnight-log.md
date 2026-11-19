@@ -90,3 +90,10 @@ One line per game: date, game, commit, what was tested, what is left.
   - Angle Eye: angle rounds stay on the board (test over 400 seeds).
   - Steady Line: letting go says "You let go at X%".
   - Tidy Up: a drop near the edge can't set a home outside the board. Shared `count()` fixes "1 rounds", "1 mirrors", "1 blocks", "1 pts".
+- 2026-11-19 · Part 3 · tests that catch these for every game:
+  - `tests/e2e/run.cjs` now checks after every game script: something was recorded in local stats, no console errors, no sideways overflow, and for the 16 daily games, reopening shows today's result without sending another finish (a fresh tab in the same profile).
+  - Small phone (360×740): Memory Path, Blind Timer and Beat Keeper are fully on screen when they start, including after Try again. This found a real bug: after Try again on a phone the page stayed scrolled to where the ticket was, leaving the stage 69% visible. The result ticket now brings the game back under the top bar on replay.
+  - Refresh mid-try resumes in Color Recall and Shape Recall (as Angle Eye, Count Flash, Fair Slice and Pitch Match already do), with e2e.
+  - Online: when the host leaves the lobby, the next player becomes host (real Realtime).
+  - Unit tests for stats: no-score days, streaks over month and year ends, match counts; `count()` plurals.
+  - The full e2e suite now takes over 10 minutes; one run had a Chain Pop tap land during the new replay scroll, so that script waits for it to settle.

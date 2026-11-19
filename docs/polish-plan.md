@@ -63,7 +63,7 @@ An independent review of all 31 games lists every place the seven bug classes oc
 - [x] Tidy Up: a wrong-slot drop can send an item back to a spot outside the board.
 - [x] Plurals: "1 rounds", "1 mirrors", "1 blocks" in stored text.
 
-## Part 3: tests that catch these for every game
+## Part 3: tests that catch these for every game (done)
 
 - **Shared e2e checks run after every game script** (in `tests/e2e/run.cjs`): the game recorded something in local stats; no console errors; no horizontal overflow; for daily games, a refresh after finishing shows the result again.
 - **Timed-reveal visibility check** at 360×740 for every game that shows something for a limited time (Count Flash, Color Recall, Shape Recall, Memory Path, Blind Timer, Beat Keeper): the stage is fully on screen when the reveal starts.
