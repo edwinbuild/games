@@ -150,3 +150,9 @@ export declare function ScoreStrip(props: { players: { name?: string; score: Rea
 
 /** A one-shot ring of dots for a payoff moment (new best, perfect move). Hidden with reduced motion. */
 export declare function Burst(props: { x?: string; y?: string; color?: string; count?: number }): JSX.Element
+
+/** A small bar chart of how a crowd answered, with markers (your answer, your guess, the average). */
+export declare function Histogram(props: { bins: number[]; marks?: { at: number; label: string; tone?: 'me' | 'guess' | 'crowd' }[]; min?: ReactNode; max?: ReactNode; summary: string; color?: string }): JSX.Element
+
+/** Shares of a few choices, one bar each, the player's pick marked. */
+export declare function SplitBars(props: { items: { label: ReactNode; count: number; mine?: boolean }[]; color?: string }): JSX.Element

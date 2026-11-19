@@ -118,6 +118,10 @@ Multiplayer games use the same shell plus shared multiplayer parts, so players l
 - Same-phone games use `SplitStage`; each player is a `PlayerChip` identity (P1 Coral circle, P2 Aqua square, P3 Lime triangle, P4 Orchid diamond; online rooms of up to eight add Sky star, Sand hexagon, Peach plus and Periwinkle pentagon).
 - The result ticket of a multiplayer game names the winner and the score line (for example "Blue wins 3–2"); its share text never needs the other player's name.
 
+## Crowd results
+
+Crowd games show how everyone answered with `Histogram` (number questions) and `SplitBars` (a few choices). Only real numbers from the database, and only once 20 or more people have answered; before that, say how many answers there are so far. No made-up or estimated crowds, ever.
+
 ## Challenges
 
 Every result ticket's share link is a challenge: it carries the puzzle and the scores so far, so a friend who opens it plays exactly the same puzzle.
