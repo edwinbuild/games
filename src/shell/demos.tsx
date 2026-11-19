@@ -394,6 +394,29 @@ function FairSliceDemo() {
   )
 }
 
+
+function TidyUpDemo() {
+  const d = 3.8
+  // Three things glide from the mess into their outlines, one after another; then the lid shuts.
+  const things: [string, number, number, number, number, number][] = [
+    // class, slot x, from dx, from dy, arrives at %, turn
+    ['demo-tu-coin', 50, -36, 26, 24, 0],
+    ['demo-tu-bar', 78, 22, 30, 44, 90],
+    ['demo-tu-tri', 106, -8, 30, 64, 0],
+  ]
+  return (
+    <Scene still={3.3}>
+      <span className="demo-tu-tray" />
+      {things.map(([cls, x, , , , ]) => <span key={cls + 's'} className={`${cls} demo-tu-slot`} style={{ left: x - 10, top: 16 }} />)}
+      {things.map(([cls, x, dx, dy, at, turn]) => (
+        <A key={cls} d={d} className={cls} ease="cubic-bezier(.3,1.4,.5,1)" style={{ left: x - 10, top: 16 }}
+          k={`0%,${at - 16}%{transform:translate(${dx}px,${dy}px) rotate(${turn}deg)}${at - 4}%{transform:translate(0,0) rotate(0deg)}${at}%{transform:scale(1.15)}${at + 4}%,100%{transform:none}`} />
+      ))}
+      <A d={d} className="demo-tu-lid" ease="cubic-bezier(.5,0,.3,1.25)" k="0%,74%{transform:scaleY(0)}84%,96%{transform:scaleY(1)}100%{transform:scaleY(0)}" />
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -414,4 +437,5 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'pour-line': PourLineDemo,
   'chain-pop': ChainPopDemo,
   'fair-slice': FairSliceDemo,
+  'tidy-up': TidyUpDemo,
 }

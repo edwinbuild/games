@@ -301,6 +301,20 @@ export const GAMES: GameMeta[] = [
     color: 'apricot',
     sample: '1.4% off',
   },
+  {
+    slug: 'tidy-up',
+    title: 'Tidy Up',
+    emoji: '🧺',
+    instructions: 'Drag each thing into its outline in the organiser, the right way round. Tap a thing to turn it.',
+    tagline: 'Put twelve little things away, each in its own outline. Click, click, click, done.',
+    howTo: [
+      'The organiser has an outline for each thing in the mess below. Drag a thing onto its outline and it clicks into place, as long as it is the right way round: tap a thing to turn it a quarter turn. Coins and buttons fit any way round.',
+      'The clock starts at your first touch. Dropping a thing into someone else’s outline sends it back and adds 2 seconds. Send the link to a friend and they tidy the exact same mess. On a computer, Tab to a thing, move it with the arrow keys, turn it with R and drop it with Enter.',
+    ],
+    daily: false,
+    color: 'seafoam',
+    sample: '38.2s',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

@@ -376,3 +376,41 @@ button { font: inherit; }
 .demo-fs-half svg { display: block; width: 64px; height: 68px; }
 .demo-fs-half polygon { fill: var(--paper); stroke: var(--line); stroke-width: 2; stroke-linejoin: round; }
 .demo-fs-knife { position: absolute; left: 69px; top: -4px; width: 3px; height: 78px; background: var(--line); border-radius: 2px; }
+
+/* Tidy Up */
+.tu-board { position: relative; width: 100%; max-width: 400px; margin-inline: auto; aspect-ratio: 320 / 520; touch-action: none; user-select: none; -webkit-user-select: none; }
+.tu-tray { position: absolute; border-radius: var(--radius-md); background: var(--surface-sunken); border: var(--border-edge) solid var(--edge); overflow: hidden; }
+.tu-lid { position: absolute; inset: 0; background: var(--game); border-bottom: var(--border-edge) solid var(--edge); transform: scaleY(0); transform-origin: 50% 0; transition: transform 520ms cubic-bezier(.5, 0, .3, 1.25) 250ms; z-index: 2; }
+.tu-lid.is-closed { transform: scaleY(1); }
+.tu-slot { position: absolute; fill: none; stroke: var(--ink-muted); stroke-width: 1.6; stroke-dasharray: 3 3; transition: rotate 0s; }
+.tu-slot.is-filled { opacity: 0; }
+.tu-mess-label { position: absolute; left: 0; right: 0; text-align: center; }
+.tu-item { position: absolute; padding: 0; margin: 0; border: 0; background: none; cursor: grab; touch-action: none; transition: left 240ms cubic-bezier(.3, 1.4, .5, 1), top 240ms cubic-bezier(.3, 1.4, .5, 1), rotate 180ms ease-out; -webkit-tap-highlight-color: transparent; border-radius: var(--radius-sm); }
+.tu-item:active { cursor: grabbing; }
+.tu-item svg { display: block; width: 100%; height: 100%; overflow: visible; fill: var(--qg-fill); stroke: var(--on-fill); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; filter: drop-shadow(0 2px 0 rgb(0 0 0 / .25)); }
+.tu-item svg .ti-line, .tu-slot .ti-line { fill: none; }
+.tu-item svg .ti-dot { fill: var(--on-fill); stroke: none; }
+.tu-item svg .ti-hole { fill: var(--surface-sunken); }
+.tu-item svg .ti-wire-o { fill: none; stroke-width: 6; }
+.tu-item svg .ti-wire { fill: none; stroke: var(--qg-fill); stroke-width: 3; }
+.tu-slot .ti-wire-o { fill: none; }
+.tu-slot .ti-wire { display: none; }
+.tu-item:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.tu-item.is-placed { cursor: default; z-index: 1 !important; }
+.tu-item.is-placed svg { filter: none; }
+.tu-item.is-snap svg { animation: tu-snap 300ms cubic-bezier(.3, 1.6, .5, 1); }
+.tu-item.is-nope svg { animation: tu-nope 320ms ease-in-out; }
+.tu-item.is-wrong svg { animation: tu-nope 320ms ease-in-out; }
+@keyframes tu-snap { 0% { transform: scale(1.15) } 60% { transform: scale(.94) } 100% { transform: none } }
+@keyframes tu-nope { 0%, 100% { transform: none } 25% { transform: translateX(-5px) } 75% { transform: translateX(5px) } }
+@media (prefers-reduced-motion: reduce) { .tu-item { transition: none; } .tu-item svg { animation: none !important; } .tu-lid { transition: none; } }
+.demo-tu-tray { position: absolute; left: 32px; top: 8px; width: 92px; height: 36px; border-radius: 6px; background: var(--paper); border: 2px solid var(--line); box-sizing: border-box; }
+.demo-tu-lid { position: absolute; left: 32px; top: 8px; width: 92px; height: 36px; border-radius: 6px; background: var(--line); transform-origin: 50% 0; }
+.demo-tu-coin, .demo-tu-bar, .demo-tu-tri { position: absolute; width: 20px; height: 20px; box-sizing: border-box; border: 2px solid var(--line); background: var(--qg-fill); }
+.demo-tu-coin { border-radius: 50%; }
+.demo-tu-bar { width: 20px; height: 12px; margin-top: 4px; border-radius: 3px; }
+.demo-tu-tri { border: 0; background: var(--line); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.demo-tu-tri::after { content: ""; position: absolute; inset: 3px 3px 2px; background: var(--qg-fill); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.demo-tu-slot { background: transparent; border: 1.5px dashed var(--line); opacity: 0.6; }
+.demo-tu-tri.demo-tu-slot { background: transparent; opacity: 0.35; }
+.demo-tu-tri.demo-tu-slot::after { background: var(--paper); }
