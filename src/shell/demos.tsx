@@ -675,6 +675,25 @@ function WordLadderDemo() {
   )
 }
 
+/** Garden Path: a line winds through a 4×3 garden from the seedling to the flower. */
+const GP_ROUTE = [[0, 0], [1, 0], [2, 0], [3, 0], [3, 1], [2, 1], [1, 1], [0, 1], [0, 2], [1, 2], [2, 2], [3, 2]]
+function GardenPathDemo() {
+  const d = 4.4
+  const pts = GP_ROUTE.map(([x, y]) => `${30 + x * 26},${10 + y * 26}`).join(' ')
+  return (
+    <Scene still={4}>
+      <svg className="demo-gp" viewBox="0 0 140 72" aria-hidden="true">
+        {GP_ROUTE.map(([x, y]) => <rect key={`${x}${y}`} x={17 + x * 26} y={-3 + y * 26} width={26} height={26} className="demo-gp-cell" />)}
+        {/* A turn stone where the route turns (top right). */}
+        <circle cx={30 + 78} cy={10} r={4} className="demo-gp-stone" />
+        <polyline points={pts} pathLength={100} className="demo-gp-line" />
+      </svg>
+      <span className="demo-small" style={{ left: 24, top: 3 }}>🌱</span>
+      <A d={d} className="demo-small" style={{ left: 102, top: 55 }} k={show([[80, 100]])}>🌼</A>
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -708,6 +727,7 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'balance-beam': BalanceBeamDemo,
   'untangle-lights': UntangleDemo,
   'word-ladder': WordLadderDemo,
+  'garden-path': GardenPathDemo,
   'higher-lower': HigherLowerDemo,
   'quick-draw': QuickDrawDemo,
 }

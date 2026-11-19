@@ -403,6 +403,17 @@ export const GAMES: GameMeta[] = [
     skill: 'words',
   },
   {
+    slug: 'garden-path',
+    title: 'Garden Path',
+    emoji: '🌱',
+    instructions: 'Draw one path through every square, from the seedling to the flower.',
+    tagline: 'One path through every square of the garden. The stones say where it turns. One answer a day.',
+    daily: true,
+    color: 'fern',
+    sample: '1:24',
+    skill: 'logic',
+  },
+  {
     slug: 'higher-lower',
     title: 'Higher Lower Online',
     emoji: '🌍',
