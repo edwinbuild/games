@@ -3,7 +3,7 @@
 const fs = require('node:fs'), path = require('node:path'), zlib = require('node:zlib')
 const dist = path.resolve(__dirname, '../dist')
 const gz = (f) => zlib.gzipSync(fs.readFileSync(path.join(dist, f))).length
-const ONLINE = /^(reaction-online|spot-race)$/
+const ONLINE = /^(reaction-online|spot-race|higher-lower|quick-draw)$/
 let fail = false
 const pages = ['', ...fs.readdirSync(dist).filter((d) => fs.existsSync(path.join(dist, d, 'index.html')))]
 for (const p of pages) {

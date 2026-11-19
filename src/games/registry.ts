@@ -323,6 +323,17 @@ export const GAMES: GameMeta[] = [
     color: 'mauve',
     sample: '84%',
   },
+  {
+    slug: 'higher-lower',
+    title: 'Higher Lower Online',
+    emoji: '🌍',
+    instructions: 'Same questions for everyone in the room: is the second country’s number higher or lower? Fastest right answer scores most.',
+    tagline: 'Up to eight friends, ten country questions: higher or lower? Real numbers, fastest right answer wins.',
+    daily: false,
+    color: 'jade',
+    sample: '1st of 4',
+    players: 'online-2-8',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

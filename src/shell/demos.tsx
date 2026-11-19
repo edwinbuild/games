@@ -580,6 +580,27 @@ function ShapeRecallDemo() {
   )
 }
 
+
+function HigherLowerDemo() {
+  const d = 3.6
+  return (
+    <Scene still={2.8}>
+      <span className="demo-box demo-hl-card" style={{ left: 8, top: 10 }}><span className="demo-hl-bar" style={{ height: 22 }} /></span>
+      <span className="demo-box demo-hl-card" style={{ left: 52, top: 10 }}>
+        <A d={d} k={show([[0, 46], [96, 100]])} className="demo-text" style={{ fontSize: 18 }}>?</A>
+        <A d={d} k={show([[46, 96]])} className="demo-hl-bar" style={{ height: 34 }} />
+      </span>
+      <A d={d} k="0%,18%{transform:scale(1)}22%{transform:scale(.9)}28%,100%{transform:scale(1)}" className="demo-box demo-hl-btn" style={{ left: 98, top: 12 }}>
+        <span className="demo-text" style={{ fontSize: 12 }}>▲</span>
+      </A>
+      <Tap d={d} at={20} x={113} y={24} />
+      <A d={d} k={show([[52, 92]])} className="demo-chip" style={{ left: 96, top: 44, background: 'var(--coral)', width: 36 }}>
+        <span className="demo-text" style={{ fontSize: 9 }}>+3</span>
+      </A>
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -610,4 +631,5 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'pendulum-stop': PendulumStopDemo,
   'steady-line': SteadyLineDemo,
   'shape-recall': ShapeRecallDemo,
+  'higher-lower': HigherLowerDemo,
 }

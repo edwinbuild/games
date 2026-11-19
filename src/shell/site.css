@@ -544,3 +544,20 @@ button { font: inherit; }
 .demo-sr-fill { stroke: var(--paper); stroke-width: 5; }
 .demo-sr-ink { stroke: var(--line); stroke-width: 2.5; stroke-dasharray: 100; stroke-dashoffset: 100; animation: demo-sr-ink 4s ease-in-out infinite; }
 @keyframes demo-sr-ink { 0%, 38% { stroke-dashoffset: 100 } 64%, 100% { stroke-dashoffset: 0 } }
+
+/* Higher Lower Online */
+.hl-cards { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
+.hl-card { display: grid; gap: var(--space-1); align-content: center; justify-items: center; text-align: center; min-height: 110px; padding: var(--space-3) var(--space-2); border: var(--border-edge) solid var(--edge); border-radius: var(--radius-md); background: var(--surface-sunken); }
+.hl-card.is-revealed { background: var(--game); color: var(--on-fill); animation: hl-flip 420ms cubic-bezier(.3,1.4,.5,1); }
+@keyframes hl-flip { 0% { transform: rotateY(90deg) } 100% { transform: none } }
+.hl-name { font: 700 18px/22px var(--font-display); overflow-wrap: anywhere; }
+.hl-val { font: 700 15px/20px var(--font-mono); }
+.hl-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
+.hl-q { position: relative; }
+.hl-timer { display: block; height: 6px; border-radius: 3px; background: var(--ink); opacity: .55; transition: width 100ms linear; }
+.hl-verdict.is-right { color: var(--success); }
+@media (prefers-reduced-motion: reduce) { .hl-card.is-revealed { animation: none; } .hl-timer { transition: none; } }
+.demo-hl-card { width: 38px; height: 52px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 4px; }
+.demo-hl-bar { display: block; width: 14px; background: var(--line); border-radius: 2px; }
+.demo-hl-card .demo-hl-bar[style*="34"] { position: absolute; bottom: 4px; left: 10px; }
+.demo-hl-btn { width: 30px; height: 26px; }

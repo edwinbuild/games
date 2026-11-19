@@ -118,4 +118,8 @@ export const HOW_TO: Record<string, string[]> = {
     'Each shape (a zigzag, a curve, a loop) shows for two seconds, then hides. Draw it from memory in one stroke with your finger or the mouse. Your drawing is laid over the real shape, with how closely they match.',
     'Size, position and the direction you draw in don’t matter, only the shape. There are three shapes a day, the same for everyone, and your result is the average match. Try as many times as you like; your best try counts. This game needs a touch screen, mouse or pen.',
   ],
+  'higher-lower': [
+    'Create a room and send the link (or the five-letter code); two to eight players can join. When everyone is ready, the host starts the quiz. Each question shows one country’s population or land area; say whether a second country’s number is higher or lower. You have ten seconds.',
+    'The fastest right answer gets 3 points, the next 2, and every other right answer 1. Each phone times its own answer, so a slow connection doesn’t cost you. Ten questions, then the final scores. The numbers are the World Bank’s: population for 2023 and land area for 2022.',
+  ],
 }
