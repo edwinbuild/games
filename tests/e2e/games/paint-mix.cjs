@@ -38,10 +38,10 @@ module.exports = async ({ page, B }) => {
   if (!(await page.getByText('1 drop · up to 12').count())) throw new Error('keyboard drop + undo not counted')
   await page.getByRole('button', { name: 'Empty the bowl' }).click()
   if (!(await page.getByText('0 drops · up to 12').count())) throw new Error('empty did not empty')
-  let first = true
+  let firstDrop = true
   for (let i = 0; i < 5; i++) for (let k = 0; k < recipe[i]; k++) {
     await pots.nth(i).click()
-    if (first) { first = false; await page.reload(); await pots.first().waitFor() }
+    if (firstDrop) { firstDrop = false; await page.reload(); await pots.first().waitFor() }
   }
   const n = recipe.reduce((a, b) => a + b, 0)
   if (!(await page.getByText(`${n} drop${n === 1 ? '' : 's'} · up to 12`).count())) throw new Error('drops lost on refresh')

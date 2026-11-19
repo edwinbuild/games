@@ -618,6 +618,68 @@ function QuickDrawDemo() {
   )
 }
 
+function PaintMixDemo() {
+  const d = 4.4
+  // Two yellow drops fall into a blue bowl; it swirls to green and matches the target.
+  const drop = (at: number) => `0%,${at - 9}%{opacity:0;transform:translateY(-22px)}${at - 8}%{opacity:1;transform:translateY(-22px)}${at}%{opacity:1;transform:translateY(14px) scale(.8)}${at + 1}%,100%{opacity:0;transform:translateY(14px)}`
+  return (
+    <Scene still={4.2}>
+      <span className="demo-pm-disc" style={{ left: 6, top: 18, background: '#8fbf68' }} />
+      <A d={d} className="demo-pm-disc" style={{ left: 80, top: 18 }} ease="ease-in-out" k="0%,26%{background:#4f86d6}40%,58%{background:#6fa59e}72%,100%{background:#8fbf68}" />
+      <A d={d} className="demo-pm-swirl" style={{ left: 80, top: 18 }} ease="ease-out" k="0%,24%{opacity:0;transform:rotate(0)}28%{opacity:.9}42%{opacity:0;transform:rotate(300deg)}54%{opacity:0;transform:rotate(0)}58%{opacity:.9}72%,100%{opacity:0;transform:rotate(300deg)}" />
+      <A d={d} className="demo-pm-drop" style={{ left: 97, top: 6 }} ease="ease-in" k={drop(26)} />
+      <A d={d} className="demo-pm-drop" style={{ left: 97, top: 6 }} ease="ease-in" k={drop(56)} />
+      <A d={d} className="demo-small" style={{ left: 106, top: 50 }} k={show([[76, 100]])}>✓</A>
+    </Scene>
+  )
+}
+
+/** Orbit Drop: the ball circles one planet, lets go, flies straight and is caught by the next. */
+const OD_PATH = (() => {
+  const A = { x: 34, y: 46, R: 22 }, Bp = { x: 108, y: 22, R: 17 }
+  const stops: string[] = []
+  const at = (pct: number, x: number, y: number) => stops.push(`${pct.toFixed(1)}%{transform:translate(${x.toFixed(1)}px,${y.toFixed(1)}px)}`)
+  // Around A (anticlockwise on screen) from the bottom, 1.25 turns, ending where the tangent aims at B.
+  const end = -Math.PI * 0.62
+  const start = end + Math.PI * 2.5
+  for (let i = 0; i <= 20; i++) { const a = start + ((end - start) * i) / 20; at((i / 20) * 46, A.x + Math.cos(a) * A.R, A.y + Math.sin(a) * A.R) }
+  // Straight flight to B's ring, then around B.
+  const sx = A.x + Math.cos(end) * A.R, sy = A.y + Math.sin(end) * A.R
+  const entry = Math.atan2(sy - Bp.y, sx - Bp.x) + 0.9
+  at(58, Bp.x + Math.cos(entry) * Bp.R, Bp.y + Math.sin(entry) * Bp.R)
+  for (let i = 1; i <= 10; i++) { const a = entry - (i / 10) * Math.PI * 1.4; at(58 + i * 4.2, Bp.x + Math.cos(a) * Bp.R, Bp.y + Math.sin(a) * Bp.R) }
+  return stops.join('')
+})()
+function OrbitDropDemo() {
+  const d = 4.2
+  return (
+    <Scene still={2.15}>
+      <span className="demo-od-ring" style={{ left: 12, top: 24, width: 44, height: 44 }} />
+      <span className="demo-od-planet" style={{ left: 24, top: 36, width: 20, height: 20 }} />
+      <span className="demo-od-ring demo-od-ring--next" style={{ left: 91, top: 5, width: 34, height: 34 }} />
+      <span className="demo-od-planet demo-od-planet--next" style={{ left: 100, top: 14, width: 16, height: 16 }} />
+      <A d={d} className="demo-od-flash" style={{ left: 91, top: 5, width: 34, height: 34 }} ease="ease-out" k="0%,57%{opacity:0;transform:scale(1)}58%{opacity:1;transform:scale(1)}70%,100%{opacity:0;transform:scale(1.6)}" />
+      <A d={d} className="demo-od-ball" k={OD_PATH} />
+    </Scene>
+  )
+}
+
+/** Balance Beam: a tipped beam; a weight drops on the light side and it wobbles level. */
+function BalanceBeamDemo() {
+  const d = 4
+  return (
+    <Scene still={3.6}>
+      <span className="demo-bb-pivot" />
+      <A d={d} className="demo-bb-beam" ease="linear" k="0%,30%{transform:rotate(-12deg)}38%{transform:rotate(5deg)}46%{transform:rotate(-2.5deg)}54%{transform:rotate(1deg)}62%,100%{transform:rotate(0deg)}">
+        {/* 3 at 26px from the pivot balances 2 at 39px: the card shows real balance. */}
+        <span className="demo-bb-w demo-bb-w--fixed" style={{ left: 25, width: 18, height: 18 }}>3</span>
+        <A d={d} className="demo-bb-w" style={{ left: 92, width: 15, height: 14 }} ease="ease-in" k="0%,14%{opacity:0;transform:translateY(-26px)}16%{opacity:1;transform:translateY(-26px)}30%,100%{opacity:1;transform:translateY(0)}">2</A>
+      </A>
+      <A d={d} className="demo-small" style={{ left: 52, top: 0 }} k={show([[62, 100]])}>Level</A>
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -648,6 +710,9 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'pendulum-stop': PendulumStopDemo,
   'steady-line': SteadyLineDemo,
   'shape-recall': ShapeRecallDemo,
+  'paint-mix': PaintMixDemo,
+  'orbit-drop': OrbitDropDemo,
+  'balance-beam': BalanceBeamDemo,
   'higher-lower': HigherLowerDemo,
   'quick-draw': QuickDrawDemo,
 }

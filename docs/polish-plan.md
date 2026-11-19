@@ -81,7 +81,7 @@ An independent review of all 31 games lists every place the seven bug classes oc
 5. **Performance:** budget stays green; no layout work in animation loops.
 6. Design system updated and republished for every changed or new component.
 
-## Part 5: new games (each meets the satisfying bar)
+## Part 5: new games (each meets the satisfying bar) (done)
 
 1. **Paint Mix** (daily): mix three paints with sliders or taps to match a target colour; the paint swirls together as you add it; scored by perceived colour difference.
 2. **Orbit Drop** (any time): a ball circles a planet; tap to let go and fly to the next target planet; one-tap timing with satisfying arcs; run ends on a miss.

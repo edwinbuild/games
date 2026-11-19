@@ -118,6 +118,18 @@ export const HOW_TO: Record<string, string[]> = {
     'Each shape (a zigzag, a curve, a loop) shows for two seconds, then hides. Draw it from memory in one stroke with your finger or the mouse. Your drawing is laid over the real shape, with how closely they match.',
     'Size, position and the direction you draw in don’t matter, only the shape. There are three shapes a day, the same for everyone, and your result is the average match. Try as many times as you like; your best try counts. This game needs a touch screen, mouse or pen. Each try gets its own three shapes, the same for everyone.',
   ],
+  'paint-mix': [
+    'Each day there is one colour to match, the same for everyone. Tap a pot to add a drop of red, yellow, blue, white or black to the bowl and watch it swirl in. Paint mixes like real paint: yellow and blue make green, red and yellow make orange, white makes it lighter.',
+    'Only the mix counts, not how many drops you use (up to twelve). Undo takes the last drop out. Lock in to see how close you got, measured by how different the colours look to the human eye. Every colour of the day can be matched exactly. Try as many times as you like; your best try counts. On a keyboard, 1 to 5 add paint and Backspace undoes.',
+  ],
+  'orbit-drop': [
+    'The ball circles a planet. Tap anywhere on the space (or press Space) to let go: it flies straight off in the direction it is moving at that moment. If its path crosses the next planet’s dashed ring, it is caught and starts circling that planet instead.',
+    'Each planet is a little further away, spins a little faster and has a slightly smaller ring to catch. One miss and the ball drifts off into space; your score is how many planets you reached. Every run is new; a challenge link gives your friends the same run.',
+  ],
+  'balance-beam': [
+    'A seesaw sits on its pivot with a few dark weights already fixed to it, so it tips. Choose a weight of 1, 2 or 3 from the tray and tap a free peg to put it there; tap it again to take it off. The beam tips and wobbles as you go.',
+    'Each weight turns the beam by its size times its distance from the middle, so a 2 four pegs out balances a 4 two pegs out. Get it level with as few of your weights as you can: par is the fewest possible. One beam a day, the same for everyone; try as many times as you like and your best counts.',
+  ],
   'higher-lower': [
     'Create a room and send the link (or the five-letter code); two to eight players can join. When everyone is ready, the host starts the quiz. Each question shows one country’s population or land area; say whether a second country’s number is higher or lower. You have ten seconds.',
     'The fastest right answer gets 3 points, the next 2, and every other right answer 1. Each phone times its own answer, so a slow connection doesn’t cost you. Ten questions, then the final scores. The numbers are the World Bank’s: population for 2023 and land area for 2022.',
