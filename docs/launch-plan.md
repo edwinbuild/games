@@ -62,7 +62,7 @@ If a decision is overridden, the affected part changes and the rest carries on.
 
 Each change: unit tests for the rules, an updated e2e script, how-to text, card demo if the look changed, re-rate.
 
-## Part C: daily and friends leaderboards
+## Part C: daily leaderboards (done, without accounts)
 
 1. **Database**: a `scores` table in the private `app` schema: game, day, score, the user id (signed in) or a random device id (guest), created_at. One row per player per game per day (best kept). RLS on, no direct access; functions granted to anon only, as now:
    - `submit_score(game, day, score, device)`: plausibility checks per game (within the game's possible range, e.g. no 0 ms reaction), one update per minute per player.
