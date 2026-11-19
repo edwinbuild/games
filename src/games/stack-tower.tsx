@@ -6,6 +6,7 @@ import { dailyDayFor, dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
+import { count } from '../shell/plural'
 import { Stage } from '../ui'
 
 const game = getGame('stack-tower')
@@ -186,7 +187,7 @@ export default function StackTower() {
     if (!oneOff) {
       saveToday(game.slug, all)
       const best = all.reduce((a, b) => (b.h > a.h ? b : a))
-      recordDaily(game.slug, best.h, new Date(), `${best.h} blocks`)
+      recordDaily(game.slug, best.h, new Date(), `${count(best.h, 'block')}`)
     }
     setFresh(true)
     setTimeout(() => setPhase('done'), 1100)

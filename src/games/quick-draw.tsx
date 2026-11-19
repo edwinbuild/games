@@ -9,6 +9,7 @@ import { drawStroke, pointsFrom, simplify, type P } from '../shell/ink'
 import { goToRoom, roomFromUrl, RoomLanding, RoomNotice } from '../shell/online'
 import { ResultCard } from '../shell/ResultCard'
 import { useRoom, useStepOutIfStale } from '../shell/room'
+import { count } from '../shell/plural'
 import { Burst, Button, Lobby, PlayerChip, PLAYERS, RoomCode, ScoreStrip, Stage, TextField } from '../ui'
 
 const game = getGame('quick-draw')
@@ -294,7 +295,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
           detail={`${myPts} points · 2 for guessing first, 1 for drawing something guessed`}
           shareText={`✏️ Quick Draw\n${place} · ${myPts} points`}
           finishData={{ score: myPts, place: myPlace, players: order.length }}
-          challenge={{ seed: code, score: myPts, text: `${myPts} pts`, lowerIsBetter: false }}
+          challenge={{ seed: code, score: myPts, text: `${count(myPts, 'pt')}`, lowerIsBetter: false }}
           plainLink
           onReplay={room.members.length >= 2 ? rematch : onLeave}
           replayLabel={room.members.length >= 2 ? 'Rematch' : 'Back to rooms'}

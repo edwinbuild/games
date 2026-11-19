@@ -79,4 +79,9 @@ export function boardFor(seed: string): { slots: Slot[]; items: Item[] } {
 }
 
 /** Final time: seconds taken plus the penalty for wrong-slot drops, to 0.1 s. */
+/** Keeps an item's centre on the board, `size` being the item's width. */
+export function onBoard(x: number, y: number, size: number): { x: number; y: number } {
+  return { x: Math.max(size / 2, Math.min(W - size / 2, x)), y: Math.max(size / 2, Math.min(H - size / 2, y)) }
+}
+
 export const finalTime = (seconds: number, wrong: number) => Math.round((seconds + wrong * PENALTY) * 10) / 10

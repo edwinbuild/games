@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { boardFor, finalTime, judge, KINDS, MESS, sameWay, SNAP, type Slot } from './rules'
+import { boardFor, finalTime, H, judge, KINDS, MESS, onBoard, sameWay, SNAP, W, type Slot } from './rules'
 
 describe('Tidy Up', () => {
   it('knows which turns look the same', () => {
@@ -37,5 +37,10 @@ describe('Tidy Up', () => {
   it('adds 2 seconds per wrong-slot drop', () => {
     expect(finalTime(31.23, 0)).toBe(31.2)
     expect(finalTime(31.23, 2)).toBe(35.2)
+  })
+  it('keeps a dropped item on the board', () => {
+    expect(onBoard(-40, 900, 58)).toEqual({ x: 29, y: H - 29 })
+    expect(onBoard(W + 5, -5, 58)).toEqual({ x: W - 29, y: 29 })
+    expect(onBoard(100, 200, 58)).toEqual({ x: 100, y: 200 })
   })
 })

@@ -6,6 +6,7 @@ import { dailyDayFor, dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
+import { count } from '../shell/plural'
 import { Button, Score, Stage } from '../ui'
 
 const game = getGame('flip-grid')
@@ -33,7 +34,7 @@ export default function FlipGrid() {
     if (!oneOff) {
       saveToday(game.slug, all)
       const best = Math.min(...all)
-      recordDaily(game.slug, -best, new Date(), `${best} moves`)
+      recordDaily(game.slug, -best, new Date(), `${count(best, 'move')}`)
     }
     feel.chime(4)
     feel.success()
@@ -104,12 +105,12 @@ export default function FlipGrid() {
         </Stage>
         <ResultCard
           game={game}
-          headline={`${best} moves`}
+          headline={`${count(best, 'move')}`}
           detail={<>Par {par}, {vsPar} · best of {n}{!oneOff && stats.streak > 1 ? ` · ${stats.streak} day streak` : ''}</>}
-          shareText={`🔲 Flip Grid ${puzzleLabel(day)}\nSolved in ${best} moves (par ${par})\nBest of ${n}`}
+          shareText={`🔲 Flip Grid ${puzzleLabel(day)}\nSolved in ${count(best, 'move')} (par ${par})\nBest of ${n}`}
           finishData={{ score: best, tries: tries.length }}
           trackFinish={fresh}
-          challenge={{ seed, score: best, text: `${best} moves`, lowerIsBetter: true }}
+          challenge={{ seed, score: best, text: `${count(best, 'move')}`, lowerIsBetter: true }}
           onReplay={again}
           replayLabel="Try again"
         />
@@ -146,7 +147,7 @@ export default function FlipGrid() {
           <Button variant="secondary" onClick={() => setTaps([])} disabled={!taps.length}>Start over</Button>
         </div>
         <p className="small muted" style={{ margin: 0, textAlign: 'center' }}>
-          {best !== null ? `Today's best: ${best} moves. ` : ''}Tapping a tile flips it and the tiles above, below and beside it.
+          {best !== null ? `Today's best: ${count(best, 'move')}. ` : ''}Tapping a tile flips it and the tiles above, below and beside it.
         </p>
       </div>
     </Stage>

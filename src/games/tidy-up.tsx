@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react'
 import { getGame } from './registry'
-import { boardFor, CELL, COLS, finalTime, H, judge, MESS, NAMES, ORG, ROWS, W, type Item } from './tidy-up/rules'
+import { boardFor, CELL, COLS, finalTime, H, judge, MESS, NAMES, onBoard, ORG, ROWS, W, type Item } from './tidy-up/rules'
 import { FILL, SHAPE } from './tidy-up/icons'
 import { newSeed, readChallenge } from '../shell/challenge'
 import { feel } from '../shell/feel'
@@ -56,9 +56,11 @@ export default function TidyUp() {
       update(it.id, { x: it.home.x, y: it.home.y, mood: 'wrong' })
     } else if (j.result === 'wrong-way') {
       feel.tap()
-      update(it.id, { x, y: y + 34, mood: 'nope' })
+      update(it.id, { ...onBoard(x, y + 34, SIZE), mood: 'nope' })
     } else {
-      update(it.id, { x: Math.max(SIZE / 2, Math.min(W - SIZE / 2, x)), y: Math.max(SIZE / 2, Math.min(H - SIZE / 2, y)), home: { x, y }, mood: undefined })
+      // Where it was let go (kept on the board) is where a later wrong-slot drop sends it back to.
+      const p = onBoard(x, y, SIZE)
+      update(it.id, { ...p, home: p, mood: undefined })
     }
   }
 
@@ -111,7 +113,7 @@ export default function TidyUp() {
       e.preventDefault()
       start()
       const [dx, dy] = moves[e.key]
-      update(it.id, { x: Math.max(SIZE / 2, Math.min(W - SIZE / 2, it.x + dx)), y: Math.max(SIZE / 2, Math.min(H - SIZE / 2, it.y + dy)), mood: undefined })
+      update(it.id, { ...onBoard(it.x + dx, it.y + dy, SIZE), mood: undefined })
     } else if (e.key === 'r' || e.key === 'R') {
       e.preventDefault()
       rotate(it)

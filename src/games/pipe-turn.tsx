@@ -6,6 +6,7 @@ import { dailyDayFor, dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
+import { count } from '../shell/plural'
 import { Burst, Button, Score, Stage } from '../ui'
 
 const game = getGame('pipe-turn')
@@ -47,7 +48,7 @@ export default function PipeTurn() {
     if (!oneOff) {
       saveToday(game.slug, all)
       const best = Math.min(...all)
-      recordDaily(game.slug, -best, new Date(), `${best} turns`)
+      recordDaily(game.slug, -best, new Date(), `${count(best, 'turn')}`)
     }
     setFresh(true)
     const t = setTimeout(() => setPhase('done'), 1600)
@@ -92,12 +93,12 @@ export default function PipeTurn() {
     return (
       <ResultCard
         game={game}
-        headline={`${best} turns`}
+        headline={`${count(best, 'turn')}`}
         detail={<>Par {board.par}, {vs} · best of {n}{!oneOff && stats.streak > 1 ? ` · ${stats.streak} day streak` : ''}</>}
-        shareText={`🚰 Pipe Turn ${puzzleLabel(day)}\nWatered the plant in ${best} turns (par ${board.par})\nBest of ${n}`}
+        shareText={`🚰 Pipe Turn ${puzzleLabel(day)}\nWatered the plant in ${count(best, 'turn')} (par ${board.par})\nBest of ${n}`}
         finishData={{ score: best, tries: tries.length }}
         trackFinish={fresh}
-        challenge={{ seed, score: best, text: `${best} turns`, lowerIsBetter: true }}
+        challenge={{ seed, score: best, text: `${count(best, 'turn')}`, lowerIsBetter: true }}
         onReplay={again}
         replayLabel="Try again"
       />

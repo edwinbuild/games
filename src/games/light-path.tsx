@@ -6,6 +6,7 @@ import { dailyDayFor, dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
+import { count } from '../shell/plural'
 import { Burst, Button, Score, Stage } from '../ui'
 
 const game = getGame('light-path')
@@ -40,7 +41,7 @@ export default function LightPath() {
     if (!oneOff) {
       saveToday(game.slug, all)
       const best = all.reduce((a, b) => (better(b, a) ? b : a))
-      recordDaily(game.slug, -(best.mirrors * 1000 + best.moves), new Date(), `${best.mirrors} mirrors`)
+      recordDaily(game.slug, -(best.mirrors * 1000 + best.moves), new Date(), `${count(best.mirrors, 'mirror')}`)
     }
     setFresh(true)
     const t = setTimeout(() => setPhase('done'), 1700)
@@ -90,12 +91,12 @@ export default function LightPath() {
     return (
       <ResultCard
         game={game}
-        headline={`${best.mirrors} mirror${best.mirrors === 1 ? '' : 's'}, ${best.moves} moves`}
+        headline={`${count(best.mirrors, 'mirror')}, ${count(best.moves, 'move')}`}
         detail={<>Par {board.par} mirrors{best.mirrors === board.par ? ' · on par' : ''} · best of {n}{!oneOff && stats.streak > 1 ? ` · ${stats.streak} day streak` : ''}</>}
-        shareText={`🔦 Light Path ${puzzleLabel(day)}\nLit every target with ${best.mirrors} mirrors (par ${board.par}) in ${best.moves} moves\nBest of ${n}`}
+        shareText={`🔦 Light Path ${puzzleLabel(day)}\nLit every target with ${count(best.mirrors, 'mirror')} (par ${board.par}) in ${count(best.moves, 'move')}\nBest of ${n}`}
         finishData={{ mirrors: best.mirrors, moves: best.moves, tries: tries.length }}
         trackFinish={fresh}
-        challenge={{ seed, score: best.mirrors * 1000 + best.moves, text: `${best.mirrors} mirrors, ${best.moves} moves`, lowerIsBetter: true }}
+        challenge={{ seed, score: best.mirrors * 1000 + best.moves, text: `${count(best.mirrors, 'mirror')}, ${count(best.moves, 'move')}`, lowerIsBetter: true }}
         onReplay={again}
         replayLabel="Try again"
       />

@@ -7,6 +7,7 @@ import { feel } from '../shell/feel'
 import { goToRoom, roomFromUrl, RoomLanding, RoomNotice } from '../shell/online'
 import { ResultCard } from '../shell/ResultCard'
 import { useRoom, useStepOutIfStale } from '../shell/room'
+import { count } from '../shell/plural'
 import { Burst, Button, Lobby, PlayerChip, PLAYERS, RoomCode, ScoreStrip, Stage, TextField } from '../ui'
 
 const game = getGame('higher-lower')
@@ -199,7 +200,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
           detail={`${myPts} points from ${ROUNDS} questions`}
           shareText={`🌍 Higher Lower\n${place} · ${myPts} points`}
           finishData={{ score: myPts, place: myPlace, players: order.length }}
-          challenge={{ seed: code, score: myPts, text: `${myPts} pts`, lowerIsBetter: false }}
+          challenge={{ seed: code, score: myPts, text: `${count(myPts, 'pt')}`, lowerIsBetter: false }}
           plainLink
           onReplay={room.members.length >= 2 ? rematch : onLeave}
           replayLabel={room.members.length >= 2 ? 'Rematch' : 'Back to rooms'}

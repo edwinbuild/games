@@ -5,6 +5,7 @@ import { newSeed, readChallenge } from '../shell/challenge'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, recordPlay } from '../shell/stats'
+import { count } from '../shell/plural'
 import { Burst, Stage } from '../ui'
 
 const game = getGame('pendulum-stop')
@@ -132,7 +133,7 @@ export default function PendulumStop() {
       setPhase('miss')
       live.current.phase = 'miss'
       feel.bad()
-      recordPlay(game.slug, L.round, undefined, `${L.round} rounds`)
+      recordPlay(game.slug, L.round, undefined, `${count(L.round, 'round')}`)
       setFresh(true)
       setTimeout(() => setPhase('done'), 1000)
     }
@@ -152,11 +153,11 @@ export default function PendulumStop() {
       <ResultCard
         game={game}
         headline={`${round} round${round === 1 ? '' : 's'}`}
-        detail={best != null && best > round ? `Your best: ${best} rounds` : 'Stopped in the zone that many times in a row'}
+        detail={best != null && best > round ? `Your best: ${count(best, 'round')}` : 'Stopped in the zone that many times in a row'}
         shareText={`🕰️ Pendulum Stop\nStopped it in the zone ${round} time${round === 1 ? '' : 's'} in a row`}
         finishData={{ score: round }}
         trackFinish={fresh}
-        challenge={{ seed, score: round, text: `${round} rounds`, lowerIsBetter: false }}
+        challenge={{ seed, score: round, text: `${count(round, 'round')}`, lowerIsBetter: false }}
         onReplay={again}
       />
     )
