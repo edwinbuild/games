@@ -50,6 +50,8 @@ export function puzzleFor(seed: string): { fixed: Weight[]; par: number } {
     const fixed = pegs.map((pos) => ({ pos, mass: 1 + Math.floor(r() * 4) }))
     if (torque(fixed) === 0) continue
     const s = solve(fixed, 3)
+    // Par 2 comes up far more often by chance; skip some of those so about a quarter of days are par 3.
+    if (s && s.count === 2 && r() < 0.4) continue
     if (s && s.count >= 2) return { fixed, par: s.count }
   }
 }

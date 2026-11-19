@@ -81,7 +81,8 @@ async function waitForServer() {
     const dist = path.join(root, 'dist')
     const pages = ['/', ...fs.readdirSync(dist).filter((d) => fs.existsSync(path.join(dist, d, 'index.html'))).map((d) => `/${d}/`)]
     const browser = await chromium.launch()
-    for (const width of WIDTHS) {
+    // Every page at each width; the widths run side by side.
+    await Promise.all(WIDTHS.map(async (width) => {
       const ctx = await browser.newContext({ viewport: { width, height: 900 }, isMobile: width < 900, hasTouch: width < 900 })
       const page = await ctx.newPage()
       for (const p of pages) {
@@ -97,7 +98,7 @@ async function waitForServer() {
         if (errors.length) failures.push(`${p} @${width}: ${errors.join('; ')}`)
       }
       await ctx.close()
-    }
+    }))
     // Page scripts (tests/e2e/pages), e.g. the home page's filters and progress ring.
     for (const f of fs.readdirSync(path.join(__dirname, 'pages')).filter((f) => f.endsWith('.cjs'))) {
       const name = f.replace(/\.cjs$/, '')
@@ -111,30 +112,38 @@ async function waitForServer() {
       await ctx.close()
     }
     const scripts = fs.readdirSync(path.join(__dirname, 'games')).filter((f) => f.endsWith('.cjs'))
-    for (const f of scripts) {
+    // Each script and colour scheme is a job in its own browser profile; a few run at once
+    // (E2E_WORKERS, default 3: more starts to squeeze the timing-sensitive games on small machines).
+    const jobs = scripts.flatMap((f) => {
       const slug = f.replace(/\.cjs$/, '')
-      if (only.length && !only.includes(slug)) continue
-      for (const scheme of ['light', 'dark']) {
-        const ctx = await browser.newContext({ viewport: { width: 412, height: 915 }, isMobile: true, hasTouch: true, colorScheme: scheme })
-        const page = await ctx.newPage()
-        const errors = []
-        page.on('pageerror', (e) => errors.push(e.message))
-        page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errors.push('console: ' + m.text().slice(0, 160)) })
-        // Note whether the script installs a fake clock (resuming one that was never installed breaks the page).
-        let clocked = false
-        const install = page.clock.install.bind(page.clock)
-        page.clock.install = (...a) => { clocked = true; return install(...a) }
-        try {
-          settle(page)
-          const outcome = await require(path.join(__dirname, 'games', f))({ page, B, browser: withSettle(browser), scheme })
-          if (outcome !== 'skip' && !errors.length) errors.push(...(await sharedChecks(page, slug, clocked)))
-        } catch (e) {
-          errors.push(String(e.message || e).split('\n')[0])
-        }
-        if (errors.length) failures.push(`${slug} (${scheme}): ${errors.join('; ')}`)
-        await ctx.close()
+      return only.length && !only.includes(slug) ? [] : ['light', 'dark'].map((scheme) => ({ f, slug, scheme }))
+    })
+    async function runJob({ f, slug, scheme }) {
+      const ctx = await browser.newContext({ viewport: { width: 412, height: 915 }, isMobile: true, hasTouch: true, colorScheme: scheme })
+      const page = await ctx.newPage()
+      const errors = []
+      page.on('pageerror', (e) => errors.push(e.message))
+      page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errors.push('console: ' + m.text().slice(0, 160)) })
+      // Note whether the script installs a fake clock (resuming one that was never installed breaks the page).
+      let clocked = false
+      const install = page.clock.install.bind(page.clock)
+      page.clock.install = (...a) => { clocked = true; return install(...a) }
+      const started = Date.now()
+      try {
+        settle(page)
+        const outcome = await require(path.join(__dirname, 'games', f))({ page, B, browser: withSettle(browser), scheme })
+        if (outcome !== 'skip' && !errors.length) errors.push(...(await sharedChecks(page, slug, clocked)))
+      } catch (e) {
+        errors.push(String(e.message || e).split('\n')[0])
       }
+      if (errors.length) failures.push(`${slug} (${scheme}): ${errors.join('; ')}`)
+      if (process.env.E2E_VERBOSE) console.log(`${errors.length ? 'FAIL' : 'ok  '} ${slug} (${scheme}) ${((Date.now() - started) / 1000).toFixed(1)}s`)
+      await ctx.close()
     }
+    const workers = Math.max(1, Number(process.env.E2E_WORKERS) || 3)
+    let next = 0
+    await Promise.all(Array.from({ length: workers }, async () => { while (next < jobs.length) await runJob(jobs[next++]) }))
+    failures.sort()
     await browser.close()
   } finally {
     server.kill()

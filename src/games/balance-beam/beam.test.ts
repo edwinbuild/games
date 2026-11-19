@@ -27,4 +27,10 @@ describe('Balance Beam', () => {
       for (const w of p.fixed) expect(PEGS).toContain(w.pos)
     }
   })
+  it('mixes easier and harder days: about a quarter need three weights', () => {
+    let three = 0
+    for (let i = 0; i < 365; i++) if (puzzleFor(`day${i}`).par === 3) three++
+    expect(three / 365).toBeGreaterThan(0.15)
+    expect(three / 365).toBeLessThan(0.4)
+  })
 })

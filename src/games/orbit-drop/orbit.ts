@@ -17,7 +17,7 @@ export function planetsFor(seed: string, n: number): Planet[] {
   const out: Planet[] = [{ x: 0, y: 0, r: 26, orbit: 58, w: 2.1, dir: 1, catchR: 58 + 22 }]
   for (let k = 1; k < n; k++) {
     const prev = out[k - 1]
-    const lvl = Math.min(k, 30)
+    const lvl = Math.min(k, 45) // it keeps getting harder up to planet 45, then holds
     const dist = 185 + lvl * 3 + r() * 40
     // Up the screen, leaning left or right, staying inside the play area.
     const ang = (r() - 0.5) * (Math.PI / 1.7)

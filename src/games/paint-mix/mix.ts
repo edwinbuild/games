@@ -44,24 +44,35 @@ export function matchScore(target: Rgb, mine: Rgb): number {
   return Math.max(0, Math.min(100, Math.round(100 - dE * 2)))
 }
 
+/** Colour families the daily targets rotate through, by Lab hue angle. */
+export const FAMILIES = ['pink', 'orange', 'yellow', 'green', 'blue', 'purple'] as const
+export type Family = (typeof FAMILIES)[number]
+export function familyOf(c: Rgb): Family {
+  const [, a, b] = rgbToLab(c)
+  const h = ((Math.atan2(b, a) * 180) / Math.PI + 360) % 360
+  return h < 30 || h >= 345 ? 'pink' : h < 70 ? 'orange' : h < 105 ? 'yellow' : h < 165 ? 'green' : h < 290 ? 'blue' : 'purple'
+}
+
 /**
- * The day's target: a real recipe of two or three paints (so a perfect match is always
- * possible), 3 to 8 drops in all, never just one paint, and never muddy.
+ * The day's target: a real recipe (so a perfect match is always possible) of 3 to 8 drops using
+ * at least two paints, colourful rather than muddy. Each day draws a colour family first, so
+ * the year isn't mostly orange: blues come from blue and white, purples from red, blue and white.
  */
 export function recipeFor(seed: string): Drops {
   const r = seededRandom(`paint-mix:${seed}`)
-  for (;;) {
+  const family = FAMILIES[Math.floor(r() * FAMILIES.length)]
+  for (let attempt = 0; ; attempt++) {
     const d = empty()
-    const colours = [0, 1, 2].sort(() => r() - 0.5).slice(0, r() < 0.75 ? 2 : 3)
+    const colours = [0, 1, 2].sort(() => r() - 0.5).slice(0, 1 + Math.floor(r() * 3))
     for (const i of colours) d[i] = 1 + Math.floor(r() * 3)
-    if (r() < 0.55) d[3] = 1 + Math.floor(r() * 3) // white
-    else if (r() < 0.25) d[4] = 1 // a touch of black
+    if (r() < 0.6) d[3] = 1 + Math.floor(r() * 3) // white
+    else if (r() < 0.2) d[4] = 1 // a touch of black
     const n = total(d)
-    if (n < 3 || n > 8) continue
+    if (n < 3 || n > 8 || d.filter((x) => x > 0).length < 2) continue
     // Colourful enough to be satisfying (three paints together easily turn to mud), and not near black.
     const c = mixColor(d)!
     const [, a, b] = rgbToLab(c)
     if (Math.max(...c) < 70 || Math.hypot(a, b) < 24) continue
-    return d
+    if (familyOf(c) === family || attempt > 400) return d
   }
 }

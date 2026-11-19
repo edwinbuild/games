@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { rgbToLab } from '../color-recall/color'
-import { empty, MAX_DROPS, matchScore, mixColor, PAINTS, recipeFor, total } from './mix'
+import { empty, FAMILIES, familyOf, MAX_DROPS, matchScore, mixColor, PAINTS, recipeFor, total } from './mix'
 
 const drops = (o: Record<string, number>) => { const d = empty(); for (const [k, v] of Object.entries(o)) d[PAINTS.findIndex((p) => p.id === k)] = v; return d }
 
@@ -31,13 +31,12 @@ describe('Paint Mix', () => {
     expect(near).toBeGreaterThan(70)
     expect(near).toBeLessThan(100)
   })
-  it('makes a fair daily recipe: 2–3 colours, 3–8 drops, the same for everyone, varied across days', () => {
+  it('makes a fair daily recipe: 2+ paints, 3–8 drops, colourful, the same for everyone', () => {
     const seen = new Set<string>()
     for (let n = 0; n < 200; n++) {
       const d = recipeFor(`2027-01-${n}`)
       expect(d).toEqual(recipeFor(`2027-01-${n}`))
-      const colours = d.slice(0, 3).filter((x) => x > 0).length
-      expect(colours).toBeGreaterThanOrEqual(2)
+      expect(d.filter((x) => x > 0).length).toBeGreaterThanOrEqual(2)
       expect(total(d)).toBeGreaterThanOrEqual(3)
       expect(total(d)).toBeLessThanOrEqual(Math.min(8, MAX_DROPS))
       const [, a, b] = rgbToLab(mixColor(d)!)
@@ -45,5 +44,13 @@ describe('Paint Mix', () => {
       seen.add(d.join())
     }
     expect(seen.size).toBeGreaterThan(60)
+  })
+  it('spreads the year across every colour family, none more than a third of days', () => {
+    const count = Object.fromEntries(FAMILIES.map((f) => [f, 0])) as Record<string, number>
+    for (let i = 0; i < 365; i++) count[familyOf(mixColor(recipeFor(`day${i}`))!)]++
+    for (const f of FAMILIES) {
+      expect(count[f]).toBeGreaterThan(20)
+      expect(count[f]).toBeLessThan(365 / 3)
+    }
   })
 })
