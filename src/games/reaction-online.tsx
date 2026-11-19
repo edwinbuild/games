@@ -5,7 +5,7 @@ import { myName, setMyName } from '../shell/challenge'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { goToRoom, roomFromUrl, RoomLanding, RoomNotice } from '../shell/online'
-import { useRoom, type Member } from '../shell/room'
+import { useRoom, useStepOutIfStale, type Member } from '../shell/room'
 import { Button, Lobby, PLAYERS, RoomCode, ScoreStrip, Stage, TextField } from '../ui'
 
 const game = getGame('reaction-online')
@@ -23,6 +23,10 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   const room = useRoom(game.slug, code, MAX)
   const [name, setName] = useState(myName)
   const [phase, setPhase] = useState<Phase>('lobby')
+  // A fresh page load that finds its room's match running (it refreshed mid-match) steps out so nobody waits.
+  // Players who have taken part in a match since loading are never stale, even if room updates arrive late.
+  const tookPart = useRef(false)
+  useStepOutIfStale(room, phase === 'lobby' && !tookPart.current)
   const [delays, setDelays] = useState<number[]>([])
   const [round, setRound] = useState(0)
   const [mine, setMine] = useState<Result[]>([])
@@ -55,6 +59,8 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   }, [room.members.length, phase])
 
   function beginMatch(d: number[]) {
+    tookPart.current = true
+    room.update({ ready: false }) // everyone starts the next lobby not ready
     setDelays(d)
     setMine([])
     setTheirs([])
@@ -149,7 +155,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
           finishData={{ won: won ? 1 : 0 }}
           challenge={{ seed: code, score: avg, text: `${avg} ms`, lowerIsBetter: true }}
           plainLink
-          onReplay={left ? onLeave : () => { setPhase('lobby'); room.update({ ready: true }) }}
+          onReplay={left ? onLeave : () => { setPhase('lobby'); room.update(room.host ? { ready: true, started: undefined } : { ready: true }) }}
           replayLabel={left ? 'Back to rooms' : 'Rematch'}
         />
       </>

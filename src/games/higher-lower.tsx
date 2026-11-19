@@ -6,7 +6,7 @@ import { myName, newSeed, setMyName } from '../shell/challenge'
 import { feel } from '../shell/feel'
 import { goToRoom, roomFromUrl, RoomLanding, RoomNotice } from '../shell/online'
 import { ResultCard } from '../shell/ResultCard'
-import { useRoom } from '../shell/room'
+import { useRoom, useStepOutIfStale } from '../shell/room'
 import { Burst, Button, Lobby, PlayerChip, PLAYERS, RoomCode, ScoreStrip, Stage, TextField } from '../ui'
 
 const game = getGame('higher-lower')
@@ -29,6 +29,10 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   const room = useRoom(game.slug, code, MAX)
   const [name, setName] = useState(myName)
   const [phase, setPhase] = useState<Phase>('lobby')
+  // A fresh page load that finds its room's match running (it refreshed mid-match) steps out so nobody waits.
+  // Players who have taken part in a match since loading are never stale, even if room updates arrive late.
+  const tookPart = useRef(false)
+  useStepOutIfStale(room, phase === 'lobby' && !tookPart.current)
   const [rounds, setRounds] = useState<Round[]>([])
   const [k, setK] = useState(0)
   const [lineup, setLineup] = useState<Seat[]>([])
@@ -56,6 +60,8 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   }
 
   function begin(seed: string, seats: Seat[]) {
+    tookPart.current = true
+    room.update({ ready: false }) // everyone starts the next lobby not ready
     setRounds(roundsFor(seed))
     setLineup(seats)
     setAnswers({})

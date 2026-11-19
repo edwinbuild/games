@@ -44,6 +44,8 @@ export function useRoom(game: string, code: string | null, max: number) {
   const self = useRef<Member>({ id: me, name: myName(), ready: readSession(readyKey) === '1', joinedAt: Date.now() })
   const handlers = useRef(new Map<string, Set<Handler>>())
   const tracked = useRef(false) // whether this player is in the room's presence
+  const steppedOut = useRef(false) // left a running match (e.g. after a refresh) and waits for the next
+  const [startedIds, setStartedIds] = useState<string[] | undefined>(undefined)
   const joined = useRef(false) // whether the channel has been subscribed
 
   useEffect(() => {
@@ -66,7 +68,13 @@ export function useRoom(game: string, code: string | null, max: number) {
       }
       // Turned away while a match runs; let back in once the room reopens (rematch lobby).
       const started = list.find((m) => m.started)?.started
+      setStartedIds(started)
       if (started && !started.includes(me)) return leave('started')
+      // Stepped out of a match in progress (back in the lobby after a refresh): stay out until it ends.
+      if (steppedOut.current) {
+        if (started) return leave('started')
+        steppedOut.current = false
+      }
       if (!list.some((m) => m.id === me)) {
         if (!tracked.current && joined.current) {
           if (list.length < max) {
@@ -110,10 +118,23 @@ export function useRoom(game: string, code: string | null, max: number) {
         handlers.current.set(event, set)
         return () => set.delete(h)
       },
+      /** Leave a match that is already running (this player refreshed and can't rejoin it); come back for the next. */
+      stepOut() {
+        steppedOut.current = true
+        setStatus('started')
+        if (tracked.current) {
+          tracked.current = false
+          void channel.current?.untrack()
+        }
+      },
       /** Update this player's presence (name, ready, started line-up). */
       update(patch: Partial<Member>) {
-        self.current = { ...self.current, ...patch }
+        const next = { ...self.current, ...patch }
         if (patch.ready !== undefined) writeSession(`qg:ready:${game}:${code}`, patch.ready ? '1' : null)
+        // Skip updates that change nothing: quick back-to-back presence updates can leave other phones
+        // with a stale view of the room.
+        if (JSON.stringify(next) === JSON.stringify(self.current)) return
+        self.current = next
         if (tracked.current) void channel.current?.track(self.current)
       },
     }),
@@ -121,5 +142,19 @@ export function useRoom(game: string, code: string | null, max: number) {
   )
 
   const host = members[0]?.id === me
-  return { me, members, status, host, ...api }
+  return { me, members, status, host, startedIds, ...api }
+}
+
+/**
+ * For online games: if this player is in the lobby while their own room's match is running (they
+ * refreshed mid-match), step out after a short grace period, so the others stop waiting for them.
+ * The grace period lets a normal start (presence and the start message arriving a moment apart) go through.
+ */
+export function useStepOutIfStale(room: ReturnType<typeof useRoom>, inLobby: boolean) {
+  const { startedIds, me, stepOut } = room
+  useEffect(() => {
+    if (!inLobby || !startedIds?.includes(me)) return
+    const t = setTimeout(stepOut, 2000)
+    return () => clearTimeout(t)
+  }, [inLobby, startedIds, me, stepOut])
 }

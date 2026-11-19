@@ -8,7 +8,7 @@ import { clean } from '../shell/filter'
 import { drawStroke, pointsFrom, simplify, type P } from '../shell/ink'
 import { goToRoom, roomFromUrl, RoomLanding, RoomNotice } from '../shell/online'
 import { ResultCard } from '../shell/ResultCard'
-import { useRoom } from '../shell/room'
+import { useRoom, useStepOutIfStale } from '../shell/room'
 import { Burst, Button, Lobby, PlayerChip, PLAYERS, RoomCode, ScoreStrip, Stage, TextField } from '../ui'
 
 const game = getGame('quick-draw')
@@ -33,6 +33,10 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   const room = useRoom(game.slug, code, MAX)
   const [name, setName] = useState(myName)
   const [phase, setPhase] = useState<Phase>('lobby')
+  // A fresh page load that finds its room's match running (it refreshed mid-match) steps out so nobody waits.
+  // Players who have taken part in a match since loading are never stale, even if room updates arrive late.
+  const tookPart = useRef(false)
+  useStepOutIfStale(room, phase === 'lobby' && !tookPart.current)
   const [seed, setSeed] = useState('')
   const [lineup, setLineup] = useState<Seat[]>([])
   const [k, setK] = useState(0)
@@ -96,6 +100,8 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   const drawerRef = useRef(drawer?.id); drawerRef.current = drawer?.id
 
   function begin(s: string, seats: Seat[]) {
+    tookPart.current = true
+    room.update({ ready: false }) // everyone starts the next lobby not ready
     setSeed(s)
     setLineup(seats)
     lineupRef.current = seats

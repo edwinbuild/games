@@ -28,12 +28,20 @@ module.exports = async ({ page, B, browser, scheme }) => {
     else await A.getByRole('button', { name: /▲ Higher/ }).click()
     await Bp.getByRole('button', { name: /▼ Lower/ }).click({ timeout: 20000 })
     if (k < 3) await C.getByRole('button', { name: /▲ Higher/ }).click({ timeout: 20000 })
-    if (k === 3) await C.context().close() // C leaves: the quiz goes on without waiting for them
+    if (k === 3) {
+      // Regression: C refreshes mid-quiz. They land back in the room, see the match is running, and the
+      // others carry on instead of waiting for C's answers forever.
+      await C.reload()
+      await C.getByText(/already started/).waitFor({ timeout: 20000 })
+    }
   }
   await A.locator('.qg-ticket').waitFor({ timeout: 30000 })
   await Bp.locator('.qg-ticket').waitFor({ timeout: 30000 })
   const ra = await A.locator('.sr-ranking').innerText(), rb = await Bp.locator('.sr-ranking').innerText()
-  if (!/left/.test(ra)) throw new Error('the player who left should show as left: ' + ra)
+  if (!/left/.test(ra)) throw new Error('the player who refreshed should show as left: ' + ra)
+  // Rematch: nobody is still marked ready from the last start, so the host can't start straight away.
+  await A.getByRole('button', { name: 'Rematch' }).click()
+  await A.getByText('Waiting for everyone to be ready').waitFor({ timeout: 20000 })
   // Same totals on both phones (names differ: "You" on each).
   const pts = (t) => [...t.matchAll(/(\d+) pts/g)].map((m) => +m[1]).sort((x, y) => x - y).join(',')
   if (pts(ra) !== pts(rb)) throw new Error(`phones disagree: ${pts(ra)} vs ${pts(rb)}`)
