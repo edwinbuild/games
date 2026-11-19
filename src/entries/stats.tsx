@@ -7,6 +7,7 @@ import { load, save } from '../shell/storage'
 import { Button, TextField, TopBar } from '../ui'
 import '../shell/styles'
 
+type ErrorRow = { day: string; page: string; message: string; count: number }
 type Row = { day: string; game: string; starts: number; finishes: number; shares: number; play_next: number }
 const DAYS = 14
 const title = (slug: string) => GAMES.find((g) => g.slug === slug)?.title ?? slug
@@ -22,6 +23,7 @@ function Stats() {
   const [input, setInput] = useState('')
   const [rows, setRows] = useState<Row[] | null>(null)
   const [error, setError] = useState('')
+  const [errors, setErrors] = useState<ErrorRow[]>([])
 
   useEffect(() => {
     if (!key) return
@@ -30,6 +32,7 @@ function Stats() {
         setRows(r.map((x) => ({ ...x, starts: +x.starts, finishes: +x.finishes, shares: +x.shares, play_next: +x.play_next })))
         setError('')
         save('statsKey', key)
+        rpc<ErrorRow[]>('error_stats', { p_key: key, p_days: 7 }).then((e) => setErrors(e.map((x) => ({ ...x, count: +x.count })))).catch(() => setErrors([]))
         if (location.hash) history.replaceState(null, '', location.pathname) // keep the key out of the address bar
       })
       .catch(() => {
@@ -111,6 +114,17 @@ function Stats() {
                 </tbody>
               </table>
             </div>
+            <h2 className="card-title">Browser errors, last 7 days</h2>
+            {errors.length === 0 ? <p className="body muted">None reported. 🎉</p> : (
+              <div className="table-wrap">
+                <table className="stats-table">
+                  <thead><tr><th>Day</th><th>Page</th><th>Message</th><th>Count</th></tr></thead>
+                  <tbody>
+                    {errors.map((e, i) => <tr key={i}><td>{e.day}</td><td>{e.page}</td><td>{e.message}</td><td>{e.count}</td></tr>)}
+                  </tbody>
+                </table>
+              </div>
+            )}
             <Button variant="ghost" onClick={() => { save('statsKey', ''); setKey(''); setRows(null) }}>Forget the key in this browser</Button>
           </>
         )}

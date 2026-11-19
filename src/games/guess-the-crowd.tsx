@@ -7,6 +7,7 @@ import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { Burst, Button, Histogram, Stage } from '../ui'
+import { boardKey } from '../shell/board'
 
 const game = getGame('guess-the-crowd')
 // The bonus round (and its question list) loads after the result, so the game itself stays small.
@@ -42,7 +43,7 @@ export default function GuessTheCrowd() {
     setBusy(true)
     setError('')
     try {
-      const r = await rpc<Crowd[]>('crowd_answer', { p_game: game.slug, p_day: dateKey(today), p_question: id, p_value: toShare(q, answer) })
+      const r = await rpc<Crowd[]>('crowd_answer', { p_game: game.slug, p_day: dateKey(today), p_question: id, p_value: toShare(q, answer), p_key: boardKey() })
       const s = { answer, guess }
       saveToday(game.slug, s)
       // Answering is today's play (streak), even before the crowd is big enough to score it.

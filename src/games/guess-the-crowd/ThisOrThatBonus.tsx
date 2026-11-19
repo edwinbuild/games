@@ -8,6 +8,7 @@ import { feel } from '../../shell/feel'
 import { formatCount } from '../../shell/live'
 import { loadToday, saveToday } from '../../shell/stats'
 import { Button, Score, Stage } from '../../ui'
+import { boardKey } from '../../shell/board'
 
 /** Kept under the old game's name, so a vote cast before the merge still counts as today's. */
 const KEY = 'this-or-that'
@@ -36,7 +37,7 @@ export function ThisOrThatBonus({ color }: { color: string }) {
     setBusy(true)
     setError('')
     try {
-      const r = await rpc<Split[]>('vote', { p_day: dateKey(day), p_question: q.id, p_choice: choice })
+      const r = await rpc<Split[]>('vote', { p_day: dateKey(day), p_question: q.id, p_choice: choice, p_key: boardKey() })
       const s: Saved = { choice, guess, a: Number(r[0]?.a ?? 0), b: Number(r[0]?.b ?? 0) }
       saveToday(KEY, s)
       setSaved(s)

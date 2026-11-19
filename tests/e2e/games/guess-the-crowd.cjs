@@ -24,6 +24,7 @@ module.exports = async ({ page, B }) => {
   await page.getByRole('button', { name: 'Lock in my guess' }).click()
   await page.locator('.qg-ticket').waitFor()
   if (sent.length !== 1 || Math.abs(sent[0].p_value - 0.7) > 0.05) throw new Error('answer not sent once as a share: ' + JSON.stringify(sent))
+  if (!/^[0-9a-f]{32}$/.test(sent[0].p_key)) throw new Error('answer sent without the device key')
   if ((await page.locator('.qg-hist-mark').count()) !== 3) throw new Error('chart marks missing')
   if (!/% off/.test(await page.locator('.qg-ticket').innerText())) throw new Error('no score')
 

@@ -4,6 +4,7 @@ import { SITE } from '../site'
 import { SiteFooter } from '../shell/SiteFooter'
 import { TopBar } from '../ui'
 import '../shell/styles'
+import '../shell/errors'
 
 // Static pages (About, 404): the text is in the HTML; this adds the top bar and the footer.
 createRoot(document.getElementById('root')!).render(

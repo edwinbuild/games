@@ -8,6 +8,7 @@ import { ResultCard } from '../shell/ResultCard'
 import { getStats, recordDaily } from '../shell/stats'
 import { load, save } from '../shell/storage'
 import { Burst, Button, Stage, SplitBars } from '../ui'
+import { boardKey } from '../shell/board'
 
 const game = getGame('odd-pick')
 /** Below this many picks, a split isn't shown: it wouldn't mean much. */
@@ -30,7 +31,7 @@ export default function OddPick() {
     setBusy(true)
     setError('')
     try {
-      await rpc('crowd_pick', { p_game: game.slug, p_day: dateKey(today), p_question: id, p_choice: choice })
+      await rpc('crowd_pick', { p_game: game.slug, p_day: dateKey(today), p_question: id, p_choice: choice, p_key: boardKey() })
       const s = { id, choice }
       save(`odd-pick:${dateKey(today)}`, s)
       recordDaily(game.slug, 0, new Date(), 'Picked')

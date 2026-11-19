@@ -19,6 +19,7 @@ module.exports = async ({ page, B }) => {
   await page.getByRole('button', { name: /^Lock in/ }).click()
   await page.locator('.qg-ticket').waitFor()
   if (picks.length !== 1 || picks[0].p_choice !== 3 || picks[0].p_game !== 'odd-pick') throw new Error('pick not sent once: ' + JSON.stringify(picks))
+  if (!/^[0-9a-f]{32}$/.test(picks[0].p_key)) throw new Error('pick sent without the device key')
   if (!/Locked in:/.test(await page.locator('.qg-ticket').innerText())) throw new Error('ticket wrong')
 
   // Coming back today: still locked, no second pick; with few picks yesterday, no split.

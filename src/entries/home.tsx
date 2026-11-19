@@ -10,6 +10,7 @@ import { getStats, todaysDaily, todaysDailyText } from '../shell/stats'
 import { load, save } from '../shell/storage'
 import { Countdown, FilterChips, GameCard, ProgressRing, TopBar } from '../ui'
 import '../shell/styles'
+import '../shell/errors'
 
 /** What the card's colour band shows: the player's own result if they have one, else an example. */
 function score(g: GameMeta): { sample: string; label: string } {

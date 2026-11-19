@@ -112,7 +112,8 @@ async function waitForServer() {
       const ctx = await browser.newContext({ viewport: { width: 412, height: 915 }, isMobile: true, hasTouch: true })
       const page = await ctx.newPage()
       const errors = []
-      page.on('pageerror', (e) => errors.push(e.message))
+      // Errors a script throws on purpose (the error-report test) say "e2e test error".
+      page.on('pageerror', (e) => { if (!/e2e test error/.test(e.message)) errors.push(e.message) })
       try { await require(path.join(__dirname, 'pages', f))({ page, B, browser }) } catch (e) { errors.push(String(e.message || e).split('\n')[0]) }
       if (errors.length) failures.push(`page ${name}: ${errors.join('; ')}`)
       await ctx.close()
