@@ -19,7 +19,7 @@ export const HOW_TO: Record<string, string[]> = {
     'One wrong tap ends the game. Your score is the longest path you repeated. Turn sound on to hear a note for each square.',
   ],
   'pitch-match': [
-    'Press Listen to hear the target tone. Move the slider, play your tone, and press Lock in when they sound the same. You need your phone\'s sound on.',
+    'Press Listen to hear the target tone. Move the slider, play your tone, and press Lock in when they sound the same. Sound on is best; with it off, watch the wave instead: it shows the target while it plays, then your tone, and the higher the tone, the more tightly packed the waves.',
     'There are three tones a day, the same for everyone. Being one semitone off (one piano key) scores 50%; matching exactly scores 100%. Try as many times as you like; your best try counts and the share says how many it took.',
   ],
   'tap-duel': [
@@ -35,8 +35,8 @@ export const HOW_TO: Record<string, string[]> = {
     'There are five fields a day, from about a dozen dots to three hundred, the same for everyone. Your result is your average error: how far your guesses were from the real counts, as a percentage (guessing 30 for 20 dots is 50% off). Try as many times as you like; your best try counts. Each try of the day gets its own five fields (the same for everyone), so the counts you see after one try never help the next.',
   ],
   'tug-of-taps': [
-    'Put the phone between you; each player gets one half of the screen. After a 3-2-1 countdown, tap your own half as fast as you can. Every tap pulls the rope one step toward you.',
-    'The first player to pull the rope 20 steps to their side wins. Taps before Go don’t count, and both players can tap at the same time. On a computer, use the A and L keys.',
+    'Put the phone between you; each player gets one half of the screen. After a 3-2-1 countdown, tap your half with two thumbs, left side then right side, as fast as you can. Every alternating tap pulls the rope one step toward you; tapping the same side twice does nothing.',
+    'The first player to pull the rope 20 steps to their side wins. Taps before Go don’t count, and both players can tap at the same time. On a computer, one player alternates A and S, the other K and L.',
   ],
   'angle-eye': [
     'Each round asks for one thing by eye: make an angle of a given size, mark the exact middle of a line, extend a line to twice its length, or mark the centre of a circle. Drag the handle (or use the arrow keys) and lock in.',

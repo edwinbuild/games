@@ -424,8 +424,8 @@ export function PlayerChip({ player, name, detail }: PlayerChipProps) {
 export type SplitStageProps = {
   /** One entry per player (2 or 3). The first half faces the far side of the phone when there are two. */
   halves: { content: ReactNode; color?: string; label: string }[]
-  /** Called on pointer down in a half (each finger counts separately). */
-  onPress: (half: number) => void
+  /** Called on pointer down in a half (each finger counts separately), with which side of that half was hit. */
+  onPress: (half: number, side: 'left' | 'right') => void
   className?: string
 }
 export function SplitStage({ halves, onPress, className }: SplitStageProps) {
@@ -441,7 +441,8 @@ export function SplitStage({ halves, onPress, className }: SplitStageProps) {
           style={fill(h.color ?? PLAYERS[i].color)}
           onPointerDown={(e) => {
             e.preventDefault()
-            onPress(i)
+            const r = e.currentTarget.getBoundingClientRect()
+            onPress(i, e.clientX < r.left + r.width / 2 ? 'left' : 'right')
           }}
         >
           {h.content}

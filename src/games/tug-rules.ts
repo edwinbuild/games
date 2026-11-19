@@ -11,3 +11,12 @@ export function tugWinner(pos: number): number | null {
   if (pos >= WIN_STEPS) return 1
   return null
 }
+
+export type Side = 'left' | 'right'
+/**
+ * Thumbs have to alternate: a tap pulls only if it is on the other side from that player's last
+ * tap (the first tap always counts). Mashing one spot does nothing.
+ */
+export function counts(last: Side | null, side: Side): boolean {
+  return last !== side
+}

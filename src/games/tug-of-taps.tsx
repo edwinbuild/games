@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { getGame } from './registry'
-import { pull, tugWinner, WIN_STEPS } from './tug-rules'
+import { counts, pull, tugWinner, WIN_STEPS, type Side } from './tug-rules'
 import { newSeed } from '../shell/challenge'
 import { feel } from '../shell/feel'
+import { count as plural } from '../shell/plural'
 import { ResultCard } from '../shell/ResultCard'
 import { Button, PLAYERS, SplitStage } from '../ui'
 
 const game = getGame('tug-of-taps')
-const KEYS = ['a', 'l']
+/** Two keys each, to alternate like two thumbs: A/S for one player, K/L for the other. */
+const KEYS = [['a', 's'], ['k', 'l']]
 type Phase = 'ready' | 'count' | 'pull' | 'done'
 
 export default function TugOfTaps() {
@@ -19,6 +21,9 @@ export default function TugOfTaps() {
   const goAt = useRef(0)
   const [ms, setMs] = useState(0)
   const posRef = useRef(0)
+  // Each player's last side, and which side they should tap next (for the hint).
+  const lastSide = useRef<(Side | null)[]>([null, null])
+  const [next, setNext] = useState<(Side | null)[]>([null, null])
   const phaseRef = useRef(phase)
   phaseRef.current = phase
   const timers = useRef<ReturnType<typeof setTimeout>[]>([])
@@ -27,6 +32,8 @@ export default function TugOfTaps() {
   function start() {
     document.querySelector('.qg-split')?.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
     posRef.current = 0
+    lastSide.current = [null, null]
+    setNext([null, null])
     setPos(0)
     setTaps([0, 0])
     setCount(3)
@@ -35,8 +42,11 @@ export default function TugOfTaps() {
     timers.current.push(setTimeout(() => { goAt.current = performance.now(); setPhase('pull'); feel.good() }, 2100))
   }
 
-  function press(player: number) {
+  function press(player: number, side: Side) {
     if (phaseRef.current !== 'pull') return // taps before Go don't count
+    if (!counts(lastSide.current[player], side)) { feel.light(); return } // same thumb again: no pull
+    lastSide.current[player] = side
+    setNext((n) => n.map((x, i) => (i === player ? (side === 'left' ? 'right' : 'left') : x)))
     posRef.current = pull(posRef.current, player)
     setPos(posRef.current)
     setTaps((t) => t.map((x, i) => (i === player ? x + 1 : x)))
@@ -50,8 +60,9 @@ export default function TugOfTaps() {
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      const i = KEYS.indexOf(e.key.toLowerCase())
-      if (i >= 0 && !e.repeat) press(i)
+      const k = e.key.toLowerCase()
+      const i = KEYS.findIndex((pair) => pair.includes(k))
+      if (i >= 0 && !e.repeat) press(i, KEYS[i][0] === k ? 'left' : 'right')
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -74,8 +85,12 @@ export default function TugOfTaps() {
           <span className="tug-marker" style={{ left: `${towardMe(i)}%` }} />
           <span className="tug-line tug-line--me" />
         </div>
-        <span className="small">{phase === 'ready' ? 'Tap as fast as you can after Go' : `${taps[i]} taps`}</span>
-        <kbd className="qg-kbd" aria-hidden="true">{KEYS[i].toUpperCase()}</kbd>
+        <span className="tug-pads" aria-hidden="true">
+          <span className="tug-pad" data-next={next[i] === 'left' || undefined}>L</span>
+          <span className="tug-pad" data-next={next[i] === 'right' || undefined}>R</span>
+        </span>
+        <span className="small">{phase === 'ready' ? 'After Go, tap left, right, left… with two thumbs' : plural(taps[i], 'pull')}</span>
+        <kbd className="qg-kbd" aria-hidden="true">{KEYS[i].join(' ').toUpperCase()}</kbd>
       </>
     ),
   })
