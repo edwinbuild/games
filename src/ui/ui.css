@@ -167,6 +167,10 @@
 .qg-chip[aria-pressed="true"] { background: var(--primary); color: var(--on-primary); }
 .qg-chip[aria-pressed="true"]::before { background: var(--on-primary); border-color: var(--on-primary); }
 .qg-chip:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+/* Bigger tap areas than they look: the sound toggle and the brand link reach 44px tall. */
+.qg-chip { position: relative; }
+.qg-chip::after { content: ""; position: absolute; inset: -5px -2px; }
+.qg-brand { padding-block: 9px; margin-block: -9px; }
 .qg-topbar-right { display: inline-flex; align-items: center; gap: var(--space-2); }
 
 /* Footer under every page. */

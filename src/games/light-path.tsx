@@ -127,7 +127,7 @@ export default function LightPath() {
                 key={i}
                 ref={(el) => { cellsRef.current[i] = el }}
                 type="button"
-                className={`lp-cell lp-${c === '/' ? 'm1' : c === '\\' ? 'm2' : c || 'empty'}${beam.lit.has(i) ? ' is-lit' : ''}`}
+                className={`lp-cell lp-${c === '/' ? 'm1' : c === '\\' ? 'm2' : c === 'target' ? 'goal' : c || 'empty'}${beam.lit.has(i) ? ' is-lit' : ''}`}
                 aria-label={`Row ${Math.floor(i / N) + 1}, column ${(i % N) + 1}: ${c === '' ? 'empty' : c === '/' || c === '\\' ? 'mirror' : c}${beam.lit.has(i) ? ', lit' : ''}`}
                 tabIndex={i === focus ? 0 : -1}
                 data-primary={i === focus ? 'click' : undefined}

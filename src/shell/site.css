@@ -515,7 +515,8 @@ button { font: inherit; }
 .lp-laser { background: var(--game); color: var(--on-fill); cursor: default; }
 .lp-target { width: 52%; aspect-ratio: 1; border-radius: 50%; border: 3px solid var(--ink); background: var(--surface-sunken); transition: background-color 200ms, transform 200ms; }
 .lp-cell.is-lit .lp-target { background: var(--game); transform: scale(1.15); box-shadow: 0 0 0 4px color-mix(in srgb, var(--game) 45%, transparent); }
-.lp-target { cursor: default; }
+/* A target's cell (lp-goal); lp-target is the dot inside it. */
+.lp-goal { cursor: default; }
 .lp-mirror { width: 80%; height: 5px; border-radius: 3px; background: var(--ink); }
 .lp-m1 .lp-mirror { rotate: -45deg; }
 .lp-m2 .lp-mirror { rotate: 45deg; }
