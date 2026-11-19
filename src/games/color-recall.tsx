@@ -6,7 +6,7 @@ import { dailyDayFor, dailyRandom, dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
-import { AttemptTiles, Button, Score, Stage, type Attempt } from '../ui'
+import { AttemptTiles, Button, Score, Stage, type Attempt, GetReady } from '../ui'
 
 const game = getGame('color-recall')
 const ROUNDS = 3
@@ -23,7 +23,7 @@ const square = (score: number) => ({ hit: '🟩', near: '🟨', miss: '🟥', em
 const average = (xs: number[]) => Math.round(xs.reduce((a, b) => a + b, 0) / xs.length)
 const randomStart = (): Hsl => ({ h: Math.round(Math.random() * 360), s: 50, l: 50 })
 
-type Phase = 'ready' | 'show' | 'match' | 'compare'
+type Phase = 'ready' | 'countdown' | 'show' | 'match' | 'compare'
 
 export default function ColorRecall() {
   const { day, oneOff } = dailyDayFor(readChallenge(game.slug)?.s)
@@ -42,7 +42,11 @@ export default function ColorRecall() {
   const done = phase === 'compare' && current.length === 0 && tries.length > 0
   const target = targets[Math.min(round, ROUNDS - 1)]
 
+  // Every colour starts with GetReady, which brings the stage on screen and counts 3-2-1.
   function show() {
+    setPhase('countdown')
+  }
+  function startShow() {
     setPhase('show')
     setGuess(randomStart())
     const start = performance.now()
@@ -145,6 +149,15 @@ export default function ColorRecall() {
           <p className="body" style={{ margin: 0 }}>Each colour shows for {SHOW_MS / 1000} seconds, then hides. Rebuild it with the three sliders.</p>
           <Button size="lg" block color={game.color} onClick={show} data-primary="click" hint="Space">Show the first colour</Button>
         </div>
+      </Stage>
+    )
+  }
+
+  if (phase === 'countdown') {
+    return (
+      <Stage className="cr-show">
+        <GetReady onDone={startShow} />
+        <span className="cr-show-label">Colour {round + 1} of {ROUNDS}</span>
       </Stage>
     )
   }

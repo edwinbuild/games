@@ -7,14 +7,14 @@ import { feel } from '../shell/feel'
 import { drawStroke, length, pointsFrom, type P } from '../shell/ink'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
-import { AttemptTiles, Burst, Button, Stage, type Attempt } from '../ui'
+import { AttemptTiles, Burst, Button, GetReady, Stage, type Attempt } from '../ui'
 
 const game = getGame('shape-recall')
 const ROUNDS = 3
 const SHOW_MS = 2000
 const grade = (s: number): Attempt => (s >= 85 ? 'hit' : s >= 65 ? 'near' : 'miss')
 const square = (s: number) => ({ hit: '🟩', near: '🟨', miss: '🟥', empty: '⬜' })[grade(s)]
-type Phase = 'ready' | 'show' | 'draw' | 'compare' | 'done'
+type Phase = 'ready' | 'countdown' | 'show' | 'draw' | 'compare' | 'done'
 type Colors = { fill: string; edge: string; ink: string; muted: string }
 
 export default function ShapeRecall() {
@@ -81,8 +81,12 @@ export default function ShapeRecall() {
   }
   useEffect(draw, [phase, round]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Every shape starts with GetReady, which brings the canvas on screen and counts 3-2-1.
   function show() {
     stroke.current = []
+    setPhase('countdown')
+  }
+  function startShow() {
     setPhase('show')
     const start = performance.now()
     setLeft(SHOW_MS)
@@ -175,6 +179,7 @@ export default function ShapeRecall() {
           onPointerUp={onUp}
           onPointerCancel={onUp}
         />
+        {phase === 'countdown' && <GetReady onDone={startShow} />}
         {phase === 'show' && <span className="sr2-timer" style={{ width: `${(left / SHOW_MS) * 100}%` }} aria-hidden="true" />}
         {phase === 'compare' && last >= 85 && <Burst y="12%" color={game.color} />}
         {phase === 'compare' && <span className="sr2-score" aria-live="polite">{last}%</span>}

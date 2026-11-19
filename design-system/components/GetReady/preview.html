@@ -1,0 +1,13 @@
+<!-- @dsCard group="Feedback" height=200 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>preview</title><style>body{margin:0;padding:16px;background:var(--canvas);color:var(--ink);font-family:var(--font-body)}.box{position:relative;height:160px;border:2px solid var(--edge);border-radius:16px;background:var(--surface-sunken);display:grid;place-items:center}.frozen .qg-getready-n{animation:none!important}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var Q = window.QuickGames, h = React.createElement;
+  function Demo() { var s = React.useState(0); var done = s[0] % 2 === 1; React.useEffect(function () { if (done) { var t = setTimeout(function () { s[1](s[0] + 1) }, 1200); return function () { clearTimeout(t) } } }, [s[0]]); return h('div', { className: 'box' }, done ? 'Go!' : h(Q.GetReady, { key: s[0], onDone: function () { s[1](s[0] + 1) } })) }
+  ReactDOM.createRoot(document.getElementById('root')).render(h(Demo));
+</script>
+</body>
+</html>

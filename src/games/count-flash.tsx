@@ -7,7 +7,7 @@ import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { useRunState } from '../shell/session'
-import { AttemptTiles, Button, Stage, type Attempt } from '../ui'
+import { AttemptTiles, Button, Stage, type Attempt, GetReady } from '../ui'
 
 const game = getGame('count-flash')
 const FLASH_MS = 800
@@ -17,7 +17,7 @@ const grade = (s: number): Attempt => (s >= 90 ? 'hit' : s >= 75 ? 'near' : 'mis
 const square = (s: number) => ({ hit: '🟩', near: '🟨', miss: '🟥', empty: '⬜' })[grade(s)]
 const average = (xs: number[]) => Math.round(xs.reduce((a, b) => a + b, 0) / xs.length)
 
-type Phase = 'ready' | 'flash' | 'guess' | 'reveal'
+type Phase = 'ready' | 'countdown' | 'flash' | 'guess' | 'reveal'
 
 function Field({ n, seed }: { n: number; seed: string }) {
   const dots = placeDots(n, seed)
@@ -49,10 +49,14 @@ export default function CountFlash() {
 
   const round = current.length
   const n = counts[Math.min(round, ROUNDS - 1)]
-  const done = tries.length > 0 && current.length === 0 && phase !== 'flash' && phase !== 'guess'
+  const done = tries.length > 0 && current.length === 0 && phase !== 'flash' && phase !== 'guess' && phase !== 'countdown'
 
+  // Every flash starts with GetReady, which scrolls the field on screen and counts 3-2-1.
   function flash() {
     setGuess('')
+    setPhase('countdown')
+  }
+  function startFlash() {
     setPhase('flash')
     timer.current = setTimeout(() => setPhase('guess'), FLASH_MS)
   }
@@ -126,6 +130,7 @@ export default function CountFlash() {
           <AttemptTiles attempts={tiles} />
         </div>
         <div className="cf-box">
+          {phase === 'countdown' && <GetReady onDone={startFlash} />}
           {phase === 'flash' && <Field n={n} seed={seed} />}
           {phase === 'reveal' && <Field n={counts[round - 1]} seed={seed} />}
           {phase === 'ready' && <p className="body cf-hint">The dots show for less than a second. Don’t count: estimate.</p>}

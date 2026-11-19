@@ -1,4 +1,4 @@
-import { useEffect, useState, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react'
 
 const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(' ')
 /** A colour for a component: a token name ("tangerine") or any CSS colour. */
@@ -619,5 +619,66 @@ export function SplitBars({ items, color }: SplitBarsProps) {
         )
       })}
     </ul>
+  )
+}
+
+/* ---------- GetReady ---------- */
+export type GetReadyProps = {
+  /** Called once the play area is on screen and the countdown has finished. */
+  onDone: () => void
+  /** Numbers to count down from (3 by default); 0 skips the numbers but still makes sure the stage is visible. */
+  from?: number
+  /** Milliseconds per number. */
+  step?: number
+}
+/**
+ * A short 3-2-1 before anything timed starts. It first scrolls its stage fully into view and waits for
+ * the scroll to settle, so a timed reveal never starts off-screen. Put it inside the stage.
+ */
+export function GetReady({ onDone, from = 3, step = 450 }: GetReadyProps) {
+  const ref = useRef<HTMLSpanElement>(null)
+  const [n, setN] = useState<number | null>(null)
+  const done = useRef(onDone)
+  done.current = onDone
+  useEffect(() => {
+    let cancelled = false
+    const timers: ReturnType<typeof setTimeout>[] = []
+    const stage = ref.current?.parentElement ?? null
+    const reduce = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
+    const count = (k: number) => {
+      if (cancelled) return
+      if (k <= 0) { bring(false); return done.current() }
+      setN(k)
+      timers.push(setTimeout(() => count(k - 1), step))
+    }
+    // Bring the box it sits in fully on screen (or its top, if it is taller than the screen).
+    const bring = (smooth: boolean) => {
+      if (!stage) return true
+      const r = stage.getBoundingClientRect()
+      const vh = window.innerHeight
+      if (r.top >= 0 && r.bottom <= vh) return true
+      const target = window.scrollY + r.top - (r.height <= vh ? (vh - r.height) / 2 : 0)
+      window.scrollTo({ top: Math.max(0, target), behavior: smooth && !reduce ? 'smooth' : 'auto' })
+      return false
+    }
+    bring(true)
+    let last = -1, still = 0, waited = 0
+    const settle = () => {
+      if (cancelled) return
+      const y = window.scrollY
+      still = y === last ? still + 1 : 0
+      last = y
+      waited += 1
+      if (still >= 3 || waited > 60) { bring(false); count(from) }
+      else timers.push(setTimeout(settle, 16))
+    }
+    settle()
+    return () => { cancelled = true; timers.forEach(clearTimeout) }
+  }, [from, step])
+  return (
+    <span ref={ref} className="qg-getready" aria-live="assertive">
+      {n != null && <span key={n} className="qg-getready-n">{n}</span>}
+      <span className="qg-visually-hidden">{n != null ? `Starting in ${n}` : 'Get ready'}</span>
+    </span>
   )
 }

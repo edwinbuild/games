@@ -156,3 +156,6 @@ export declare function Histogram(props: { bins: number[]; marks?: { at: number;
 
 /** Shares of a few choices, one bar each, the player's pick marked. */
 export declare function SplitBars(props: { items: { label: ReactNode; count: number; mine?: boolean }[]; color?: string }): JSX.Element
+
+/** The 3-2-1 before anything timed; scrolls its box fully on screen first, then calls onDone. */
+export declare function GetReady(props: { onDone: () => void; from?: number; step?: number }): JSX.Element

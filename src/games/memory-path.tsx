@@ -5,7 +5,7 @@ import { newSeed, readChallenge } from '../shell/challenge'
 import { seededRandom } from '../shell/daily'
 import { feel, tone } from '../shell/feel'
 import { getStats, recordPlay } from '../shell/stats'
-import { Button, Score, Stage } from '../ui'
+import { Button, Score, Stage, GetReady } from '../ui'
 
 const game = getGame('memory-path')
 const N = 4
@@ -24,7 +24,7 @@ function extend(path: number[], rng: () => number): number[] {
   return [...path, next]
 }
 
-type Phase = 'ready' | 'showing' | 'input' | 'done'
+type Phase = 'countdown' | 'ready' | 'showing' | 'input' | 'done'
 
 export default function MemoryPath() {
   // A challenge replays the same path; otherwise every game gets a new seed.
@@ -91,6 +91,7 @@ export default function MemoryPath() {
   const best = getStats(game.slug).best
   const status =
     phase === 'ready' ? 'Press Start, then watch the squares'
+    : phase === 'countdown' ? 'Get ready…'
     : phase === 'showing' ? `Watch: ${path.length} steps`
     : phase === 'input' ? `Your turn: ${pos} of ${path.length}`
     : `✕ Wrong square. The green outline was next.`
@@ -102,7 +103,8 @@ export default function MemoryPath() {
         <Score label="Steps" value={score} size="md" />
       </div>
       <Stage flush>
-        <div className="grid" style={{ gridTemplateColumns: `repeat(${N}, 1fr)` }}>
+        <div className="grid mp-grid" style={{ gridTemplateColumns: `repeat(${N}, 1fr)` }}>
+          {phase === 'countdown' && <GetReady onDone={() => play(path)} />}
           {Array.from({ length: N * N }, (_, i) => {
             const state = wrong === i ? 'wrong' : lit === i ? 'lit' : phase === 'done' && path[pos] === i ? 'answer' : undefined
             return (
@@ -121,7 +123,7 @@ export default function MemoryPath() {
       </Stage>
       {phase === 'ready' && (
         <div style={{ marginTop: 'var(--space-4)' }}>
-          <Button size="lg" block color={game.color} onClick={() => play(path)} data-primary="click" hint="Space">Start</Button>
+          <Button size="lg" block color={game.color} onClick={() => setPhase('countdown')} data-primary="click" hint="Space">Start</Button>
         </div>
       )}
       {phase === 'done' && (

@@ -26,6 +26,7 @@ module.exports = async ({ page, B }) => {
   await page.getByRole('button', { name: 'Try again' }).click()
   for (let k = 0; k < 3; k++) {
     await page.getByRole('button', { name: k === 0 ? 'Show the first shape' : /Next shape/ }).click()
+    await page.waitForSelector('.sr2-canvas[data-shape]', { timeout: 5000 })
     await page.waitForSelector('.sr2-canvas:not([data-shape])', { timeout: 4000 })
     await page.waitForTimeout(100)
     await drawIt([[40, 150], [260, 150]])

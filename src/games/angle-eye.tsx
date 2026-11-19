@@ -95,7 +95,7 @@ function Board({ round, point, judged, onMove }: { round: Round; point: P; judge
 export default function AngleEye() {
   const challenge = readChallenge(game.slug)
   // The run (seed and scores so far) survives a refresh, so a finished or half-played run is never lost.
-  const [run, setRun] = useRunState(game.slug, () => ({ seed: challenge?.s ?? newSeed(), scores: [] as number[] }))
+  const [run, setRun] = useRunState(`${game.slug}:${challenge?.s ?? 'own'}`, () => ({ seed: challenge?.s ?? newSeed(), scores: [] as number[] }))
   const seed = run.seed, scores = run.scores
   const setScores = (s: number[]) => setRun({ seed, scores: s })
   const rounds = roundsFor(seed)
