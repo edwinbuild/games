@@ -491,6 +491,27 @@ function BeatKeeperDemo() {
   )
 }
 
+
+function PipeTurnDemo() {
+  const d = 3.6
+  // Three pipes in a row; the middle one is turned the wrong way, a tap turns it, water runs through to the plant.
+  const pipe = (x: number, wetAt: number, turnIt = false) => (
+    <A key={x} d={d} className="demo-pt-cell" style={{ left: x }} k={turnIt ? '0%,22%{transform:rotate(90deg)}30%,100%{transform:rotate(0deg)}' : '0%,100%{transform:none}'}>
+      <A d={d} className="demo-pt-pipe" k={`0%,${wetAt}%{background:var(--paper)}${wetAt + 4}%,94%{background:var(--line)}100%{background:var(--paper)}`} />
+    </A>
+  )
+  return (
+    <Scene still={3}>
+      <span className="demo-pt-tap" />
+      {pipe(26, 0)}
+      {pipe(54, 36, true)}
+      {pipe(82, 46)}
+      <Tap d={d} at={22} x={68} y={40} />
+      <A d={d} className="demo-pt-plant" k="0%,56%{transform:scale(.7)}64%{transform:scale(1.3)}70%,94%{transform:scale(1)}100%{transform:scale(.7)}" />
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -516,4 +537,5 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'odd-pick': OddPickDemo,
   'guess-the-crowd': GuessTheCrowdDemo,
   'beat-keeper': BeatKeeperDemo,
+  'pipe-turn': PipeTurnDemo,
 }

@@ -371,6 +371,20 @@ export const GAMES: GameMeta[] = [
     color: 'iris',
     sample: '±23 ms',
   },
+  {
+    slug: 'pipe-turn',
+    title: 'Pipe Turn',
+    emoji: '🚰',
+    instructions: 'Tap pipes to turn them until water runs from the tap to the plant.',
+    tagline: 'Turn the pipes, water the plant. One puzzle a day, with a par to beat.',
+    howTo: [
+      'Water comes from the tap on the left. Tap a pipe to turn it a quarter turn; water flows through every pipe that connects back to the tap, so you can see how far it gets. Connect it all the way to the plant on the right.',
+      'Every day has one 6×6 board, the same for everyone. Par is the number of turns the puzzle was made with; beat it if you can. Try as many times as you like; your fewest turns counts. On a computer, move with the arrow keys and turn with Space.',
+    ],
+    daily: true,
+    color: 'glacier',
+    sample: '9 turns',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {
