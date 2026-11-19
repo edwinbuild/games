@@ -104,7 +104,7 @@ Built on Supabase Auth (already the database). Everything still works as a guest
 9. **Safety and privacy**: a 13+ notice at sign-in; a "report username" link (sends to an admin list, reviewed by Edwin); the privacy page explains exactly what's stored; nothing about a player is visible to non-friends except username, icon and leaderboard scores.
 10. **Design system**: `Avatar` (icon + colour, sizes), `ProfileChip`, `FriendRow`, `Sheet` (bottom sheet on phones, dialog on desktop), `SignInButton`, published with previews.
 
-## Part F: before going live (launch checklist; done except the items that need Edwin)
+## Part F: before going live (launch checklist; done and shipped; open items need Edwin: real-phone test, domain, git email)
 
 - [ ] Real-phone test by a person (Android and iPhone; the last round found 7 bugs the tests missed).
 - [x] Privacy page (done, without the account items; download and delete buttons): what's stored on the device and in the database (sign-in email, username, icon, friends, results, crowd answers), who can see what, no ads, no tracking cookies (only the sign-in session), how to download or delete everything.
