@@ -28,6 +28,9 @@ export default function DominoDrop() {
   const colors = useRef<Colors | null>(null)
   const reduced = useRef(false)
   const falls = useRef<Fall[]>([])
+  const pending = useRef<number[] | null>(null)
+  const doneTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  useEffect(() => () => clearTimeout(doneTimer.current), [])
   const pushAt = useRef(0)
   const ticked = useRef(0)
   const cam = useRef({ x: W / 2, y: H / 2, z: 1 })
@@ -174,6 +177,15 @@ export default function DominoDrop() {
     pushAt.current = performance.now()
     ticked.current = 0
     setPhase('run')
+    // The run is decided by the push: record it now, so a refresh while it falls can't lose it.
+    const list = [...tries, falls.current.length]
+    pending.current = list
+    if (!oneOff) {
+      saveToday(game.slug, list)
+      const best = Math.max(...list)
+      recordDaily(game.slug, best, new Date(), `${best} of ${TOTAL}`)
+    }
+    setFresh(true)
   }
   function show() {
     const n = falls.current.length
@@ -181,15 +193,9 @@ export default function DominoDrop() {
     setPhase('shown')
     live.current.phase = 'shown'
     if (n === TOTAL) { feel.chime(5); feel.chime(7); feel.success() } else feel.thud()
-    const list = [...tries, n]
-    setTries(list)
-    if (!oneOff) {
-      saveToday(game.slug, list)
-      const best = Math.max(...list)
-      recordDaily(game.slug, best, new Date(), `${best} of ${TOTAL}`)
-    }
-    setFresh(true)
-    setTimeout(() => setPhase('done'), n === TOTAL ? 1800 : 1300)
+    setTries(pending.current ?? [...tries, n])
+    pending.current = null
+    doneTimer.current = setTimeout(() => setPhase('done'), n === TOTAL ? 1800 : 1300)
   }
   function again() {
     falls.current = []
@@ -209,9 +215,11 @@ export default function DominoDrop() {
         e.preventDefault()
         const c = cursor ?? { x: board.dominoes[0].x, y: board.dominoes[0].y }
         setCursor({ x: Math.max(6, Math.min(W - 6, c.x + d[e.key][0])), y: Math.max(6, Math.min(H - 6, c.y + d[e.key][1])) })
-      } else if (e.key === 'Enter' && cursor) {
+      } else if (e.key === 'Enter') {
+        // Enter only ever places (Space pushes): without a cursor yet, it brings the cursor out.
         e.preventDefault()
-        placeOrTurn(cursor)
+        if (cursor) placeOrTurn(cursor)
+        else setCursor({ x: board.dominoes[0].x, y: board.dominoes[0].y })
       }
     }
     // Capture phase, so Enter places a spare before the page-wide shortcut could press Push.

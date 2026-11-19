@@ -33,6 +33,9 @@ export default function ChainPop() {
   const sounded = useRef(0)
   const phaseRef = useRef(phase)
   phaseRef.current = phase
+  const pending = useRef<number[] | null>(null)
+  const doneTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  useEffect(() => () => clearTimeout(doneTimer.current), [])
   const view = useRef({ cursor, keyboard })
   view.current = { cursor, keyboard }
 
@@ -176,6 +179,15 @@ export default function ChainPop() {
     sounded.current = 0
     setPhase('chain')
     phaseRef.current = 'chain'
+    // The chain is decided by the tap: record it now, so a refresh while it pops can't lose it.
+    const all = [...tries, pops.current.length]
+    pending.current = all
+    if (!oneOff) {
+      saveToday(game.slug, all)
+      const best = Math.max(...all)
+      recordDaily(game.slug, best, new Date(), `${best} of ${COUNT}`)
+    }
+    setFresh(true)
   }
   function show() {
     const n = pops.current.length
@@ -183,15 +195,9 @@ export default function ChainPop() {
     setPhase('shown')
     phaseRef.current = 'shown'
     if (n >= GREAT) { feel.chime(4); feel.success() } else feel.thud()
-    const all = [...tries, n]
-    setTries(all)
-    if (!oneOff) {
-      saveToday(game.slug, all)
-      const best = Math.max(...all)
-      recordDaily(game.slug, best, new Date(), `${best} of ${COUNT}`)
-    }
-    setFresh(true)
-    setTimeout(() => setPhase('done'), n >= GREAT ? 1700 : 1200)
+    setTries(pending.current ?? [...tries, n])
+    pending.current = null
+    doneTimer.current = setTimeout(() => setPhase('done'), n >= GREAT ? 1700 : 1200)
   }
   function again() {
     pops.current = []

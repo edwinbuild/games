@@ -30,4 +30,13 @@ module.exports = async ({ page, B }) => {
   const third = await lastTap()
   const t = await page.locator('.qg-ticket').innerText()
   if (!/best of 3 tries/i.test(t) || !t.includes(`${Math.max(first, third)} of 60`)) throw new Error('ticket wrong: ' + t)
+
+  // Refresh while the chain is still popping: the tap was recorded when it happened.
+  await again()
+  await page.locator('body').click({ position: { x: 2, y: 2 } })
+  await page.keyboard.press('Space')
+  await page.waitForTimeout(150)
+  await page.reload()
+  await page.locator('.qg-ticket').waitFor({ timeout: 10000 })
+  if (!/best of 4 tries/i.test(await page.locator('.qg-ticket').innerText())) throw new Error('the tap before the refresh was lost')
 }

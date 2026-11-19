@@ -22,6 +22,11 @@ module.exports = async ({ page, B }) => {
   await page.getByRole('button', { name: 'Try again' }).click()
   await cv.waitFor()
   await page.waitForTimeout(300)
+  // Enter with no cursor yet brings the cursor out; it never presses Push.
+  await page.locator('body').click({ position: { x: 2, y: 2 } })
+  await page.keyboard.press('Enter')
+  await page.waitForTimeout(300)
+  if (await page.locator('.qg-ticket').count() || !(await page.getByRole('button', { name: 'Push' }).isEnabled())) throw new Error('Enter pressed Push')
   const box = await cv.boundingBox()
   // Clicks relative to the board, so scrolling doesn't matter.
   const tapAt = ([x, y]) => cv.click({ position: { x: (x / 300) * box.width, y: (y / 420) * box.height } })
@@ -43,7 +48,11 @@ module.exports = async ({ page, B }) => {
   await page.keyboard.press('Enter')
   await page.getByText('Spares left: 0').waitFor()
   await page.keyboard.press('Space')
-  await page.locator('.qg-ticket').waitFor({ timeout: 30000 })
-  if ((await lastRun()) !== 40) throw new Error('all 40 should fall, got ' + (await lastRun()))
-  if (!/40 of 40 fell/.test(await page.locator('.qg-ticket').innerText())) throw new Error('ticket wrong')
+  // Refresh while they fall: the run was recorded at the push.
+  await page.waitForTimeout(400)
+  await page.reload()
+  await page.locator('.qg-ticket').waitFor({ timeout: 10000 })
+  await page.waitForTimeout(1200) // the headline counts up
+  const t = await page.locator('.qg-ticket').innerText()
+  if (!/40 of 40 fell/.test(t) || !/best of 2 tries/i.test(t)) throw new Error('ticket wrong: ' + t)
 }
