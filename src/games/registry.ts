@@ -313,6 +313,16 @@ export const GAMES: GameMeta[] = [
     color: 'sage',
     sample: '72%',
   },
+  {
+    slug: 'shape-recall',
+    title: 'Shape Recall',
+    emoji: '✍️',
+    instructions: 'A shape shows for two seconds. Draw it from memory in one stroke.',
+    tagline: 'See a squiggle for two seconds, then draw it from memory. Three new shapes every day.',
+    daily: true,
+    color: 'mauve',
+    sample: '84%',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

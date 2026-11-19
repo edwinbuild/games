@@ -114,4 +114,8 @@ export const HOW_TO: Record<string, string[]> = {
     'Put your finger (or the mouse) on Start and trace the channel all the way to the flag. Touch an edge or lift your finger and the try ends. The channel gets narrower as it goes.',
     'Every day has one path, the same for everyone. Your score is how far you got; if you make it all the way, your time counts instead, and faster is better. Try as many times as you like; your best try counts.',
   ],
+  'shape-recall': [
+    'Each shape (a zigzag, a curve, a loop) shows for two seconds, then hides. Draw it from memory in one stroke with your finger or the mouse. Your drawing is laid over the real shape, with how closely they match.',
+    'Size, position and the direction you draw in don’t matter, only the shape. There are three shapes a day, the same for everyone, and your result is the average match. Try as many times as you like; your best try counts. This game needs a touch screen, mouse or pen.',
+  ],
 }

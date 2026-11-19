@@ -563,6 +563,23 @@ function SteadyLineDemo() {
   )
 }
 
+
+const SR_SHAPE = 'M20 50 L44 16 L66 52 L92 14 L118 48'
+function ShapeRecallDemo() {
+  const d = 4
+  return (
+    <Scene still={3.5}>
+      <A d={d} k={show([[4, 34], [70, 96]])} className="demo-sr-shape">
+        <svg viewBox="0 0 140 72" aria-hidden="true"><path d={SR_SHAPE} className="demo-sr-edge" /><path d={SR_SHAPE} className="demo-sr-fill" /></svg>
+      </A>
+      <A d={d} className="demo-sr-shape" k={show([[36, 96]])}>
+        <svg viewBox="0 0 140 72" aria-hidden="true"><path d="M22 54 L45 20 L64 54 L90 18 L116 50" className="demo-sr-ink" pathLength={100} /></svg>
+      </A>
+      <A d={d} k={show([[72, 96]])} className="demo-small" style={{ right: 0, top: 0 }}>91%</A>
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -592,4 +609,5 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'light-path': LightPathDemo,
   'pendulum-stop': PendulumStopDemo,
   'steady-line': SteadyLineDemo,
+  'shape-recall': ShapeRecallDemo,
 }

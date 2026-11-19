@@ -529,3 +529,18 @@ button { font: inherit; }
 .demo-sl .demo-sl-floor { stroke: var(--paper); stroke-width: 11; }
 .demo-sl .demo-sl-trace { stroke: var(--line); stroke-width: 2.5; stroke-dasharray: 100; stroke-dashoffset: 100; animation: demo-sl-trace 3.6s ease-in-out infinite; }
 @keyframes demo-sl-trace { 0%, 8% { stroke-dashoffset: 100 } 80%, 94% { stroke-dashoffset: 0 } 100% { stroke-dashoffset: 100 } }
+
+/* Shape Recall */
+.sr2-stage { width: 100%; max-width: 420px; margin-inline: auto; overflow: hidden; }
+.sr2-canvas { display: block; width: 100%; aspect-ratio: 1; touch-action: none; user-select: none; -webkit-user-select: none; cursor: crosshair; }
+.sr2-timer { position: absolute; left: 0; top: 0; height: 6px; background: var(--ink); opacity: .6; }
+.sr2-score { position: absolute; right: var(--space-3); top: var(--space-2); font: 800 28px/1 var(--font-display); animation: sr2-pop 400ms cubic-bezier(.3,1.6,.5,1); }
+@keyframes sr2-pop { from { transform: scale(.4); opacity: 0 } to { transform: none; opacity: 1 } }
+@media (prefers-reduced-motion: reduce) { .sr2-score { animation: none; } }
+.demo-sr-shape { position: absolute; inset: 0; }
+.demo-sr-shape svg { width: 140px; height: 72px; overflow: visible; }
+.demo-sr-shape path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.demo-sr-edge { stroke: var(--line); stroke-width: 9; }
+.demo-sr-fill { stroke: var(--paper); stroke-width: 5; }
+.demo-sr-ink { stroke: var(--line); stroke-width: 2.5; stroke-dasharray: 100; stroke-dashoffset: 100; animation: demo-sr-ink 4s ease-in-out infinite; }
+@keyframes demo-sr-ink { 0%, 38% { stroke-dashoffset: 100 } 64%, 100% { stroke-dashoffset: 0 } }
