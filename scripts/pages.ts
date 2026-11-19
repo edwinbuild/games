@@ -155,7 +155,10 @@ const aboutPage = () =>
       <h2>Daily games</h2>
       <p>Daily games give everyone the same puzzle on the same date. A new one starts at midnight in your own time zone.</p>
       <h2>What we keep</h2>
-      <p>There are no accounts and no cookies. Your scores, best results and streaks are saved only in this browser on this device; clearing your browser data removes them. The site's host keeps standard server logs, as every website host does.</p>
+      <p>There are no accounts and no cookies. Your scores, best results and streaks are saved in this browser on this device; clearing your browser data removes them.</p>
+      <h2>Today's boards</h2>
+      <p>When you finish a daily game, your best result for the day goes to that day's board, so you can see your rank. It's stored with a random key made by your browser (only a scrambled form of it is kept, so it can't be traced back to you) and the name you chose for challenges, if any; names with rude words are left off. Nothing else about you is sent. Boards are per day; results come from players' browsers, so treat the very top with a pinch of salt.</p>
+      <p>The site also counts how many games are started and finished, and keeps the answers to the crowd games (never who gave them). The site's host keeps standard server logs, as every website host does.</p>
       <h2>Sound</h2>
       <p>Sound is off until you turn it on with the switch at the top of each game, and the setting is remembered. Pitch Match always plays its tones, because listening is the game.</p>`,
   })

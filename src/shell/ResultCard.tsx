@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
 import { LISTED, type GameMeta } from '../games/registry'
 import { SITE } from '../site'
 import { Burst, Button, ChallengeBoard, Countdown, PlayNext, ResultTicket, TextField } from '../ui'
 import { challengeUrl, displayName, mergeRow, myId, myName, readChallenge, setMyName } from './challenge'
-import { puzzleLabel } from './daily'
+import { BOARD_GAMES } from './board'
+import { dateKey, puzzleLabel } from './daily'
 import { countPlay, getStats, takeNewBest, todaysDailyText } from './stats'
 import { CountUp } from './CountUp'
 import { feel } from './feel'
@@ -31,6 +32,9 @@ type Props = {
   /** Online games: share a plain link to the game instead of a challenge (no board, no name field). */
   plainLink?: boolean
 }
+
+// Today's board loads on its own, after the ticket.
+const DailyBoard = lazy(() => import('./DailyBoard'))
 
 /** Pick one other game to suggest; rotates by day. */
 function nextGame(current: string) {
@@ -97,7 +101,7 @@ export function ResultCard(p: Props) {
       >
         {!p.plainLink && <TextField
           id="nickname"
-          label="Your name on challenges (optional)"
+          label="Your name on challenges and boards (optional)"
           value={name}
           placeholder="e.g. Sam (blank shows “A friend”)"
           maxLength={16}
@@ -134,6 +138,12 @@ export function ResultCard(p: Props) {
           </p>
         )}
       </ResultTicket>
+      {/* Daily games: today's board (not for another day's puzzle from a challenge link, nor a spilled day). */}
+      {p.game.daily && BOARD_GAMES.has(p.game.slug) && p.challenge.seed === dateKey() && p.challenge.text !== 'Spilled' && (
+        <Suspense fallback={null}>
+          <DailyBoard game={p.game.slug} day={p.challenge.seed} score={p.challenge.score} text={p.challenge.text} submit={p.trackFinish ?? true} />
+        </Suspense>
+      )}
     </ResultSlot>
   )
 }

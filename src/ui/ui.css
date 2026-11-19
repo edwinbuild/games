@@ -378,3 +378,16 @@
 .qg-filters--column .qg-filter { justify-content: space-between; width: 100%; box-shadow: none; border-width: 2px; border-color: transparent; background: transparent; padding: 0 var(--space-3); min-height: 36px; }
 .qg-filters--column .qg-filter:hover { background: var(--surface-sunken); }
 .qg-filters--column .qg-filter[aria-pressed="true"] { background: var(--ink); color: var(--canvas); border-color: var(--edge); }
+
+/* Today's board, under a daily result ticket. */
+.qg-board { display: grid; gap: var(--space-2); margin-top: var(--space-4); padding: var(--space-4); border: var(--border-edge) solid var(--edge); border-radius: var(--radius-lg); background: var(--surface); }
+.qg-board-line { margin: 0; font: 500 16px/24px var(--font-body); }
+.qg-board-line strong { font-family: var(--font-mono); }
+.qg-board-toggle { justify-self: start; padding-block: 8px; }
+.qg-board-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; max-height: 360px; overflow-y: auto; }
+.qg-board-list li { display: grid; grid-template-columns: 3em minmax(0, 1fr) auto; gap: var(--space-2); align-items: center; padding: 6px var(--space-2); border-radius: var(--radius-sm); font: 500 14px/20px var(--font-body); }
+.qg-board-list li:nth-child(odd) { background: var(--surface-sunken); }
+.qg-board-list li.is-me { background: var(--qg-fill, var(--ticket)); color: var(--on-fill); font-weight: 800; }
+.qg-board-rank { font-family: var(--font-mono); color: inherit; opacity: .8; }
+.qg-board-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qg-board-score { font-family: var(--font-mono); white-space: nowrap; }
