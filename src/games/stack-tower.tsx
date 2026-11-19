@@ -3,7 +3,7 @@ import { getGame } from './registry'
 import { dayFor, drop, H, slide, speedFor, W, type Block } from './stack-tower/tower'
 import { readChallenge } from '../shell/challenge'
 import { dailyDayFor, dateKey, puzzleLabel } from '../shell/daily'
-import { feel, tone } from '../shell/feel'
+import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { Stage } from '../ui'
@@ -162,8 +162,8 @@ export default function StackTower() {
       wd.perfect++
       wd.streak++
       wd.flashAt = performance.now()
-      tone(523.25 * 2 ** (Math.min(wd.streak - 1, 12) / 12), 160, { type: 'sine' })
-      feel.good()
+      feel.chime(wd.streak - 1)
+      feel.medium()
     } else {
       wd.streak = 0
       wd.falling.push({ ...res.cut, y: screenY(row), vy: 0, rot: 0 })

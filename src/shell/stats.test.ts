@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { getStats, loadToday, recordDaily, recordPlay, saveToday } from './stats'
+import { getStats, loadToday, recordDaily, recordPlay, saveToday, takeNewBest } from './stats'
 
 beforeEach(() => {
   const store = new Map<string, string>()
@@ -14,6 +14,28 @@ beforeEach(() => {
 })
 
 describe('stats', () => {
+  it('flags a new best once, never on the first result', () => {
+    recordPlay('nb', 5)
+    expect(takeNewBest('nb')).toBe(false)
+    recordPlay('nb', 7)
+    expect(takeNewBest('nb')).toBe(true)
+    expect(takeNewBest('nb')).toBe(false)
+    recordPlay('nb', 6)
+    expect(takeNewBest('nb')).toBe(false)
+  })
+
+  it('flags a daily best against earlier days, in either direction', () => {
+    recordDaily('nd', 80, new Date(2027, 0, 1))
+    expect(takeNewBest('nd')).toBe(false)
+    recordDaily('nd', 70, new Date(2027, 0, 2))
+    expect(takeNewBest('nd')).toBe(false)
+    recordDaily('nd', 90, new Date(2027, 0, 2))
+    expect(takeNewBest('nd')).toBe(true)
+    recordDaily('nl', 0.2, new Date(2027, 0, 1), undefined, true)
+    recordDaily('nl', 0.05, new Date(2027, 0, 2), undefined, true)
+    expect(takeNewBest('nl')).toBe(true)
+  })
+
   it('keeps the best score in the right direction', () => {
     recordPlay('t', 300, (a, b) => a < b)
     recordPlay('t', 250, (a, b) => a < b)

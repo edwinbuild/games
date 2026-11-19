@@ -128,7 +128,7 @@ export default function MemoryPath() {
         <ResultCard
           game={game}
           headline={score ? `${score}-step path` : 'No path this time'}
-          detail={best != null && best > score ? `Your best: ${best} steps` : best === score && score > 0 && getStats(game.slug).plays > 1 ? 'A new best' : undefined}
+          detail={best != null && best > score ? `Your best: ${best} steps` : undefined}
           shareText={score > 0 ? `🧠 Memory Path\nRepeated a ${score}-step path\n${'🟦'.repeat(Math.min(score, 20))}` : '🧠 Memory Path\nMissed the very first path'}
           finishData={{ steps: score }}
           challenge={{ seed, score, text: `${score} steps`, lowerIsBetter: false }}

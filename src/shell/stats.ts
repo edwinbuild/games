@@ -17,6 +17,13 @@ export type Stats = {
   dailyText?: Record<string, string>
 }
 
+// Games whose latest recorded result beat the player's earlier best (read once by the ticket).
+const newBests = new Set<string>()
+/** True once after a result that beat an earlier best (never on the very first result). */
+export function takeNewBest(game: string): boolean {
+  return newBests.delete(game)
+}
+
 const empty = (): Stats => ({ plays: 0, best: null, lastDaily: null, streak: 0, maxStreak: 0, daily: {} })
 
 export function getStats(game: string): Stats {
@@ -32,6 +39,7 @@ export function recordPlay(
 ): Stats {
   const s = getStats(game)
   s.plays += 1
+  if (s.best != null && better(score, s.best)) newBests.add(game)
   if (s.best == null || better(score, s.best)) {
     s.best = score
     if (text) s.bestText = text
@@ -41,9 +49,13 @@ export function recordPlay(
 }
 
 /** Record today's daily result and advance the streak (once per day). */
-export function recordDaily(game: string, score: number, now = new Date(), text?: string): Stats {
+export function recordDaily(game: string, score: number, now = new Date(), text?: string, lowerIsBetter = false): Stats {
   const s = getStats(game)
   const today = dateKey(now)
+  const beats = (a: number, b: number) => (lowerIsBetter ? a < b : a > b)
+  const earlier = Object.entries(s.daily).filter(([d]) => d !== today).map(([, v]) => v)
+  const before = earlier.length ? earlier.reduce((a, b) => (beats(a, b) ? a : b)) : null
+  if (before != null && beats(score, before) && (s.daily[today] == null || beats(score, s.daily[today]))) newBests.add(game)
   if (s.lastDaily !== today) {
     s.streak = s.lastDaily === previousDateKey(now) ? s.streak + 1 : 1
     s.maxStreak = Math.max(s.maxStreak, s.streak)

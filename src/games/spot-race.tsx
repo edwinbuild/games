@@ -38,6 +38,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   const [wrong, setWrong] = useState(0)
   const [setup, setSetup] = useState(() => levelSetup(1, Math.random))
   const [shake, setShake] = useState<number | null>(null)
+  const streak = useRef(0) // correct taps in a row, for the climbing pop
   const [now, setNow] = useState(0)
   const [gaveUpWaiting, setGaveUpWaiting] = useState(false)
   const rng = useRef(seededRandom(''))
@@ -84,6 +85,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
 
   function begin(seed: string, seats: Seat[]) {
     rng.current = seededRandom(seed)
+    streak.current = 0
     setSetup(levelSetup(1, rng.current))
     setLineup(seats)
     setOthers(Object.fromEntries(seats.map((s) => [s.id, { level: 0, at: 0 }])))
@@ -106,13 +108,14 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   function pick(i: number) {
     if (phase !== 'race') return
     if (i === setup.oddIndex) {
-      feel.good()
+      feel.pop(streak.current++)
       const t = Math.round(performance.now() - raceStart.current)
       setLevel(level + 1)
       setAt(t)
       setSetup(levelSetup(level + 2, rng.current))
       room.send('level', { level: level + 1, at: t })
     } else {
+      streak.current = 0
       feel.bad()
       setWrong((w) => w + 1)
       setShake(i)

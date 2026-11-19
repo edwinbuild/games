@@ -35,7 +35,8 @@ export default function FlipGrid() {
       const best = Math.min(...all)
       recordDaily(game.slug, -best, new Date(), `${best} moves`)
     }
-    feel.done()
+    feel.chime(4)
+    feel.success()
     setFresh(true)
     const t = setTimeout(() => setPlaying(false), 450)
     return () => clearTimeout(t)
@@ -43,7 +44,8 @@ export default function FlipGrid() {
 
   function tap(i: number) {
     if (solved(grid) && taps.length) return
-    feel.tap()
+    feel.click()
+    feel.light()
     setTaps((t) => [...t, i])
     setPop(i)
     setFocus(i)

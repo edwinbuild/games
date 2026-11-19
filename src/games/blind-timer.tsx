@@ -40,7 +40,7 @@ export default function BlindTimer() {
     if (!oneOff) {
       saveToday(game.slug, next)
       const best = Math.abs(bestOf(next))
-      recordDaily(game.slug, best, new Date(), `${fmt(best)}s`)
+      recordDaily(game.slug, best, new Date(), `${fmt(best)}s`, true)
     }
     setTimeout(() => setPlaying(false), 600)
   }

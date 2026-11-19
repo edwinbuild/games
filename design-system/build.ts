@@ -13,6 +13,24 @@ const t = JSON.parse(readFileSync(resolve(here, 'tokens.json'), 'utf8'))
 const themes: string[] = t.color.themes.map((x: { id: string }) => x.id)
 const first = themes[0]
 
+// Every game colour must keep `on-fill` text readable: at least 6.5:1 (new colours aim for 9:1).
+{
+  const lum = (hex: string) => {
+    const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((x) => (x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4))
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+  }
+  const onFill = t.color.tokens.find((x: Tok) => x.name === 'on-fill')
+  const ink = lum(typeof onFill.value === 'string' ? onFill.value : onFill.value.light)
+  for (const tok of t.color.tokens as Tok[]) {
+    if (!tok.usage?.startsWith('Game colour')) continue
+    for (const theme of themes) {
+      const v = typeof tok.value === 'string' ? tok.value : tok.value[theme]
+      const ratio = (lum(v) + 0.05) / (ink + 0.05)
+      if (ratio < 6.5) throw new Error(`${tok.name} (${theme}) gives on-fill only ${ratio.toFixed(1)}:1`)
+    }
+  }
+}
+
 const val = (v: string) => (/^\{.+\}$/.test(v) ? `var(--${v.slice(1, -1)})` : v)
 const per = (tok: Tok, theme: string) => (typeof tok.value === 'string' ? tok.value : tok.value[theme] ?? tok.value[first])
 const themed: Tok[] = [...t.color.tokens, ...(t.shadow?.tokens ?? [])]
@@ -87,7 +105,7 @@ cpSync(resolve(here, 'index.d.ts'), resolve(proj, 'components/index.d.ts'))
 // Bundle the React components as one classic script reading window.React.
 execSync('npx vite build --config design-system/vite.bundle.config.ts --logLevel warn', { cwd: root, stdio: 'inherit' })
 const built = readFileSync(resolve(out, 'bundle/bundle.js'), 'utf8')
-const names = ['Button', 'Pill', 'BrandMark', 'TopBar', 'Stage', 'Score', 'AttemptTiles', 'Countdown', 'ShareButtons', 'ResultTicket', 'PlayNext', 'GameCard', 'ToggleChip', 'Footer', 'ChallengeBanner', 'ChallengeBoard', 'TextField', 'Segmented', 'PlayerChip', 'SplitStage', 'RoomCode', 'Lobby', 'ScoreStrip']
+const names = ['Button', 'Pill', 'BrandMark', 'TopBar', 'Stage', 'Score', 'AttemptTiles', 'Countdown', 'ShareButtons', 'ResultTicket', 'PlayNext', 'GameCard', 'ToggleChip', 'Footer', 'ChallengeBanner', 'ChallengeBoard', 'TextField', 'Segmented', 'PlayerChip', 'SplitStage', 'RoomCode', 'Lobby', 'ScoreStrip', 'Burst']
 const header = `/* @ds-bundle: ${JSON.stringify({ format: 4, namespace: 'QuickGames', components: names.map((name) => ({ name })) })} */\n`
 if (/<\/script|<!--/i.test(built)) throw new Error('bundle contains </script or <!--')
 writeFileSync(resolve(proj, 'components/bundle.js'), header + built)

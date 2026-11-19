@@ -528,3 +528,27 @@ export function GameCard({ title, tagline, href, color, sample, sampleLabel, dai
     </a>
   )
 }
+
+/* ---------- Burst ---------- */
+export type BurstProps = {
+  /** Where the burst starts, inside the nearest positioned parent. Defaults to the centre. */
+  x?: string
+  y?: string
+  /** Dot colour: a game colour token. Half the dots use it, half use `on-fill`. */
+  color?: string
+  /** How many dots (12–20). */
+  count?: number
+}
+/** A small one-shot burst of dots for a payoff moment, such as a new best. Hidden with reduced motion. */
+export function Burst({ x = '50%', y = '50%', color, count = 16 }: BurstProps) {
+  const n = Math.max(12, Math.min(20, count))
+  return (
+    <span className="qg-burst" style={{ left: x, top: y, ...fill(color) }} aria-hidden="true">
+      {Array.from({ length: n }, (_, i) => {
+        const a = (i / n) * 2 * Math.PI + (i % 2 ? 0.2 : 0)
+        const r = 34 + (i % 3) * 14
+        return <span key={i} className={i % 2 ? 'qg-burst-dot qg-burst-dot--ink' : 'qg-burst-dot'} style={{ '--dx': `${Math.round(Math.cos(a) * r)}px`, '--dy': `${Math.round(Math.sin(a) * r)}px`, animationDelay: `${(i % 4) * 25}ms` } as CSSProperties} />
+      })}
+    </span>
+  )
+}

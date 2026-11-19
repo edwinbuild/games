@@ -147,3 +147,6 @@ export declare function Lobby(props: { players: LobbyPlayer[]; max: number }): J
 
 /** Every player's score in a row during play. */
 export declare function ScoreStrip(props: { players: { name?: string; score: ReactNode; me?: boolean; player?: number }[] }): JSX.Element
+
+/** A one-shot ring of dots for a payoff moment (new best, perfect move). Hidden with reduced motion. */
+export declare function Burst(props: { x?: string; y?: string; color?: string; count?: number }): JSX.Element

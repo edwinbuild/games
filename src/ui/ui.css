@@ -266,3 +266,10 @@
 .qg-lobby-state { font: 700 14px/20px var(--font-body); color: var(--ink-muted); }
 .qg-lobby-empty { color: var(--ink-muted); font: 500 14px/20px var(--font-body); border: var(--border-edge) dashed var(--line); background: transparent !important; }
 .qg-scorestrip { display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: center; }
+
+/* Burst: a one-shot ring of dots for a payoff moment. */
+.qg-burst { position: absolute; width: 0; height: 0; pointer-events: none; z-index: 2; }
+.qg-burst-dot { position: absolute; left: -4px; top: -4px; width: 8px; height: 8px; border-radius: 50%; background: var(--qg-fill, var(--primary)); border: 1.5px solid var(--on-fill); opacity: 0; animation: qg-burst 700ms cubic-bezier(.15,.7,.3,1) forwards; }
+.qg-burst-dot--ink { background: var(--on-fill); width: 6px; height: 6px; left: -3px; top: -3px; }
+@keyframes qg-burst { 0% { opacity: 1; transform: translate(0, 0) scale(0.4) } 60% { opacity: 1 } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1) } }
+@media (prefers-reduced-motion: reduce) { .qg-burst { display: none; } }

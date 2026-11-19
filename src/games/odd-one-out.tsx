@@ -23,6 +23,7 @@ export default function OddOneOut() {
   const [setup, setSetup] = useState(() => levelSetup(1, rng.current))
   const [left, setLeft] = useState(TIME)
   const [shake, setShake] = useState<number | null>(null)
+  const streak = useRef(0) // correct taps in a row, for the climbing pop
   const done = started && left <= 0
 
   useEffect(() => {
@@ -39,10 +40,11 @@ export default function OddOneOut() {
     if (done) return
     if (!started) setStarted(true)
     if (i === setup.oddIndex) {
-      feel.good()
+      feel.pop(streak.current++)
       setLevel(level + 1)
       setSetup(levelSetup(level + 1, rng.current))
     } else {
+      streak.current = 0
       feel.bad()
       setLeft((t) => Math.max(0, t - WRONG_PENALTY))
       setShake(i)
@@ -54,6 +56,7 @@ export default function OddOneOut() {
     const next = challenge ? seed : newSeed()
     setSeed(next)
     rng.current = seededRandom(next)
+    streak.current = 0
     setStarted(false)
     setLevel(1)
     setSetup(levelSetup(1, rng.current))
@@ -81,7 +84,7 @@ export default function OddOneOut() {
         <ResultCard
           game={game}
           headline={`${score} level${score === 1 ? '' : 's'} cleared`}
-          detail={best != null && best > score ? `Your best: level ${best}` : best === score && getStats(game.slug).plays > 1 ? 'A new best' : undefined}
+          detail={best != null && best > score ? `Your best: level ${best}` : undefined}
           shareText={`👀 Odd One Out\nCleared ${score} level${score === 1 ? '' : 's'} in 60s`}
           finishData={{ level: score }}
           challenge={{ seed, score, text: `Lv ${score}`, lowerIsBetter: false }}

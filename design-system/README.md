@@ -71,7 +71,7 @@ Pocket Fair is the working name: a fairground of small stalls you can play alone
 ## Sound and vibration
 
 - Sound is off until the player turns it on with the `ToggleChip` in the top bar; the setting is shared by every game. Pitch Match is the one exception, because listening is the game.
-- Every game uses the same four feedback sounds: tap, good move, mistake, and the result printing. Never play a sound that gives a timing advantage (Reaction Chain makes no sound when the panel turns green).
+- Every game uses the same feedback sounds from `feel`: tap, good move, mistake and the result printing (with a paper click). Satisfying games add `pop(n)` and `chime(n)`, whose pitch climbs with a chain or streak, `pour`, `click` for a piece snapping in, and `thud` for a landing. Vibration uses the named patterns `light`, `medium` and `success`. A new personal best shows a `Burst` on the ticket headline. Never play a sound that gives a timing advantage (Reaction Chain makes no sound when the panel turns green).
 - Vibration is a short tick on the same moments where the phone supports it, and is skipped with reduced motion.
 
 ## Motion

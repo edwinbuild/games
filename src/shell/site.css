@@ -348,3 +348,4 @@ button { font: inherit; }
 .demo-sr-board > span { width: 13px; height: 13px; border-radius: 3px; background: var(--paper); position: relative; }
 .demo-sr-board > span::after { content: ""; position: absolute; inset: 4px; border-radius: 50%; border: 1.5px solid var(--line); }
 .demo-sr-board > span.is-odd::after { border-radius: 1px; background: var(--line); }
+.qg-best-anchor { position: relative; display: inline-block; }

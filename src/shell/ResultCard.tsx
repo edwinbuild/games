@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { GAMES, type GameMeta } from '../games/registry'
 import { SITE } from '../site'
-import { Button, ChallengeBoard, Countdown, PlayNext, ResultTicket, TextField } from '../ui'
+import { Burst, Button, ChallengeBoard, Countdown, PlayNext, ResultTicket, TextField } from '../ui'
 import { challengeUrl, displayName, mergeRow, myId, myName, readChallenge, setMyName } from './challenge'
 import { puzzleLabel } from './daily'
-import { getStats, todaysDailyText } from './stats'
+import { getStats, takeNewBest, todaysDailyText } from './stats'
 import { CountUp } from './CountUp'
 import { feel } from './feel'
 import { ResultSlot } from './layout'
@@ -46,9 +46,24 @@ export function ResultCard(p: Props) {
     if ((p.trackFinish ?? true) && !tracked.current) {
       tracked.current = true
       track('finish', p.game.slug, p.finishData)
+      feel.click()
       feel.done()
     }
   }, [p.trackFinish, p.game.slug, p.finishData])
+
+  // A new personal best gets a burst on the headline. Games may record the result in their own
+  // effect, which runs after this one, so look a moment later.
+  const [newBest, setNewBest] = useState(false)
+  useEffect(() => {
+    if (!(p.trackFinish ?? true)) return
+    const t = setTimeout(() => {
+      if (takeNewBest(p.game.slug)) {
+        setNewBest(true)
+        feel.success()
+      }
+    }, 60)
+    return () => clearTimeout(t)
+  }, [p.trackFinish, p.game.slug])
 
   const origin = typeof location !== 'undefined' ? location.origin : SITE.url
   const [name, setName] = useState(myName)
@@ -68,8 +83,8 @@ export function ResultCard(p: Props) {
         game={p.game.title}
         stamp={p.game.daily ? puzzleLabel() : undefined}
         color={p.game.color}
-        headline={<CountUp text={p.headline} animate={p.trackFinish ?? true} />}
-        detail={p.detail}
+        headline={<span className="qg-best-anchor"><CountUp text={p.headline} animate={p.trackFinish ?? true} />{newBest && <Burst color={p.game.color} />}</span>}
+        detail={newBest ? (p.detail ? <>New personal best · {p.detail}</> : 'New personal best') : p.detail}
         shareText={p.plainLink ? p.shareText : `${p.shareText}\n${hasOthers ? 'Same puzzle. Your turn:' : 'Same puzzle. Beat me:'}`}
         url={url}
         board={hasOthers ? <ChallengeBoard rows={rows.map((r) => ({ name: displayName(r, me), score: r.t, me: r.i === me }))} /> : undefined}
