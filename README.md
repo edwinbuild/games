@@ -54,4 +54,4 @@ Every colour, font, size, radius and shadow is set in `design-system/tokens.json
 
 ## Browser tests
 
-`npm run build && npm run e2e` serves the build and checks every page at 360, 412, 820 and 1440px (no errors, no sideways scroll), then plays each game to its ticket in light and dark using `tests/e2e/games/<slug>.cjs`. Playwright comes from the machine (`NODE_PATH=$(npm root -g)` if it isn't found). `npm run budget` checks each page's JavaScript.
+`npm run build && npm run e2e` serves the build and checks every page at 360, 412, 820 and 1440px (no errors, no sideways scroll), then plays each game to its ticket in light and dark using `tests/e2e/games/<slug>.cjs`. Playwright comes from the machine (`NODE_PATH=$(npm root -g)` if it isn't found). `npm run budget` checks each page's JavaScript. Three game scripts run at once (`E2E_WORKERS=3` by default, `E2E_VERBOSE=1` prints each one's time), so the whole suite takes about 4 minutes; name games to run only those (`npm run e2e -- paint-mix orbit-drop`).
