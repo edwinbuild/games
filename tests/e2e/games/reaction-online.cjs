@@ -13,6 +13,10 @@ module.exports = async ({ page, B, browser, scheme }) => {
   await A.getByText('Waiting for both to be ready').waitFor({ timeout: 20000 })
   await A.getByRole('button', { name: 'Ready', exact: true }).click()
   await Bp.getByRole('button', { name: 'Ready', exact: true }).click()
+  // Regression: a refresh in the lobby keeps Ready (it used to fall back to Not ready).
+  await Bp.reload()
+  await Bp.getByRole('button', { name: 'Not ready', exact: true }).waitFor({ timeout: 20000 })
+  await A.getByRole('button', { name: 'Start the duel' }).waitFor({ timeout: 20000 })
   await A.getByRole('button', { name: 'Start the duel' }).click({ timeout: 15000 })
 
   // A third player arriving mid-match is turned away.

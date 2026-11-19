@@ -25,6 +25,9 @@ export function order(members: Member[]): Member[] {
   return [...members].sort((a, b) => a.joinedAt - b.joinedAt || a.id.localeCompare(b.id))
 }
 
+const readSession = (k: string) => { try { return sessionStorage.getItem(k) } catch { return null } }
+const writeSession = (k: string, v: string | null) => { try { if (v == null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v) } catch { /* storage off */ } }
+
 type Handler = (payload: Record<string, unknown>, from: string) => void
 
 /**
@@ -36,7 +39,9 @@ export function useRoom(game: string, code: string | null, max: number) {
   const [members, setMembers] = useState<Member[]>([])
   const [status, setStatus] = useState<RoomStatus>('connecting')
   const channel = useRef<RealtimeChannel | null>(null)
-  const self = useRef<Member>({ id: me, name: myName(), ready: false, joinedAt: Date.now() })
+  // Ready is remembered for this tab and room, so a refresh in the lobby keeps it.
+  const readyKey = `qg:ready:${game}:${code}`
+  const self = useRef<Member>({ id: me, name: myName(), ready: readSession(readyKey) === '1', joinedAt: Date.now() })
   const handlers = useRef(new Map<string, Set<Handler>>())
   const tracked = useRef(false) // whether this player is in the room's presence
   const joined = useRef(false) // whether the channel has been subscribed
@@ -108,10 +113,11 @@ export function useRoom(game: string, code: string | null, max: number) {
       /** Update this player's presence (name, ready, started line-up). */
       update(patch: Partial<Member>) {
         self.current = { ...self.current, ...patch }
+        if (patch.ready !== undefined) writeSession(`qg:ready:${game}:${code}`, patch.ready ? '1' : null)
         if (tracked.current) void channel.current?.track(self.current)
       },
     }),
-    [me],
+    [me, game, code],
   )
 
   const host = members[0]?.id === me
