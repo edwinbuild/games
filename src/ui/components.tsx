@@ -571,13 +571,23 @@ export type HistogramProps = {
 /** A small bar chart of how a crowd answered, with markers. */
 export function Histogram({ bins, marks = [], min, max, summary, color }: HistogramProps) {
   const top = Math.max(1, ...bins)
+  // Labels of markers that sit close together go on separate rows so they never overlap.
+  const rows = new Map<string, number>()
+  const placed: { at: number; row: number }[] = []
+  for (const m of [...marks].sort((a, b) => a.at - b.at)) {
+    let row = 0
+    while (placed.some((p) => p.row === row && Math.abs(p.at - m.at) < 0.22)) row++
+    placed.push({ at: m.at, row })
+    rows.set(m.label, row)
+  }
+  const rowCount = Math.max(1, ...[...rows.values()].map((r) => r + 1))
   return (
     <figure className="qg-hist" style={fill(color)}>
-      <div className="qg-hist-plot" role="img" aria-label={summary}>
+      <div className="qg-hist-plot" role="img" aria-label={summary} style={{ paddingTop: rowCount * 20 + 4 }}>
         {bins.map((b, i) => <span key={i} className="qg-hist-bar" style={{ height: `${(b / top) * 100}%` }} />)}
         {marks.map((m) => (
           <span key={m.label} className={cx('qg-hist-mark', m.tone && `qg-hist-mark--${m.tone}`)} style={{ left: `${Math.max(0, Math.min(1, m.at)) * 100}%` }}>
-            <span className="qg-hist-mark-label">{m.label}</span>
+            <span className="qg-hist-mark-label" style={{ top: (rows.get(m.label) ?? 0) * 20 }}>{m.label}</span>
           </span>
         ))}
       </div>

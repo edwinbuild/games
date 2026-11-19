@@ -456,6 +456,22 @@ function OddPickDemo() {
   )
 }
 
+
+function GuessTheCrowdDemo() {
+  const d = 3.6
+  const bins = [6, 12, 22, 34, 44, 40, 30, 20, 12, 6]
+  return (
+    <Scene still={3}>
+      {bins.map((h, i) => (
+        <A key={i} d={d} className="demo-gc-bar" style={{ left: 10 + i * 12 }} ease="cubic-bezier(.2,.8,.3,1)"
+          k={`0%,${8 + i * 3}%{height:0}${30 + i * 3}%,96%{height:${h}px}100%{height:0}`} />
+      ))}
+      <A d={d} className="demo-gc-mark" ease="cubic-bezier(.3,1.3,.5,1)" k="0%,55%{transform:translateX(100px);opacity:0}58%{opacity:1}78%,96%{transform:translateX(52px);opacity:1}100%{opacity:0}" />
+      <A d={d} k={show([[78, 96]])} className="demo-small" style={{ left: 46, top: 0 }}>Average</A>
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -479,4 +495,5 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'tidy-up': TidyUpDemo,
   'domino-drop': DominoDropDemo,
   'odd-pick': OddPickDemo,
+  'guess-the-crowd': GuessTheCrowdDemo,
 }

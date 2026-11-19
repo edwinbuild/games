@@ -343,6 +343,20 @@ export const GAMES: GameMeta[] = [
     color: 'citrus',
     sample: 'Rarest!',
   },
+  {
+    slug: 'guess-the-crowd',
+    title: 'Guess the Crowd',
+    emoji: '👥',
+    instructions: 'Answer today’s number question, then guess the average answer of everyone who plays.',
+    tagline: 'One number question a day. Give your answer, then guess what everyone else said.',
+    howTo: [
+      'Every day has one number question, the same for everyone, like “How many hours did you sleep last night?”. Slide to your own answer, then guess the average answer of everyone who plays today. One answer a day.',
+      'You then see how everyone answered so far, with your answer, your guess and the real average marked. Your score is how far your guess was from the average, as a share of the range; within 3% is a great read of the crowd. Until 20 people have answered there is nothing to compare with, so check back later. Only the answers are stored, never who gave them.',
+    ],
+    daily: true,
+    color: 'blush',
+    sample: '3.0% off',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {
