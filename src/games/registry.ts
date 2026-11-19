@@ -393,10 +393,10 @@ export const GAMES: GameMeta[] = [
     title: 'Balance Beam',
     emoji: '⚖️',
     instructions: 'Place weights on the pegs until the seesaw sits level. Use as few as you can.',
-    tagline: 'A tipped seesaw and a tray of weights. Level it with as few as you can. A new beam every day.',
+    tagline: 'Level a tipped seesaw with as few weights as you can. Later in the week a second beam hangs from it.',
     daily: true,
     color: 'olive',
-    sample: '2 weights',
+    sample: '3 weights',
     skill: 'logic',
   },
   {
