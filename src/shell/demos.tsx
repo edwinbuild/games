@@ -472,6 +472,25 @@ function GuessTheCrowdDemo() {
   )
 }
 
+
+function BeatKeeperDemo() {
+  const d = 4
+  const beats = [0, 1, 2, 3]
+  return (
+    <Scene still={3.4}>
+      {/* The beat: four pulses, then it goes quiet. */}
+      <A d={d} className="demo-bk-dot" k={`${beats.map((b) => `${b * 11}%{transform:scale(1.25)}${b * 11 + 4}%{transform:scale(.9)}`).join('')}46%,96%{transform:scale(.8);opacity:.35}100%{transform:scale(.9);opacity:1}`} />
+      {/* The silent beats as marks; taps land on them one by one. */}
+      {beats.map((b) => <span key={b} className="demo-bk-tick" style={{ left: 64 + b * 18 }} />)}
+      {beats.map((b) => (
+        <A key={b} d={d} className="demo-bk-tap" style={{ left: 64 + b * 18 + [2, -1, 3, 0][b] }} ease="ease-out"
+          k={`0%,${50 + b * 10}%{opacity:0;transform:translateY(-10px)}${53 + b * 10}%,96%{opacity:1;transform:none}100%{opacity:0}`} />
+      ))}
+      <A d={d} k={show([[90, 98]])} className="demo-small" style={{ left: 60, top: 6 }}>±8 ms</A>
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -496,4 +515,5 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'domino-drop': DominoDropDemo,
   'odd-pick': OddPickDemo,
   'guess-the-crowd': GuessTheCrowdDemo,
+  'beat-keeper': BeatKeeperDemo,
 }

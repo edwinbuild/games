@@ -357,6 +357,20 @@ export const GAMES: GameMeta[] = [
     color: 'blush',
     sample: '3.0% off',
   },
+  {
+    slug: 'beat-keeper',
+    title: 'Beat Keeper',
+    emoji: '🥁',
+    instructions: 'Tap along with the beat. When it goes silent, keep tapping in time.',
+    tagline: 'The beat plays, then stops. Can you keep perfect time on your own? One tempo a day.',
+    howTo: [
+      'Press Start and tap along with eight beats: you hear them (with sound on) and see the circle pulse. Then the beat goes silent and the circle fades. Keep tapping in time for eight more beats, on the screen or with Space.',
+      'Your score is how far your silent taps were from the real beats, on average, in milliseconds; a missed beat counts as half a beat out. The reveal shows each tap against its beat and whether you drifted fast or slow. Everyone gets the same tempo each day. Try as many times as you like; your best counts.',
+    ],
+    daily: true,
+    color: 'iris',
+    sample: '±23 ms',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {
