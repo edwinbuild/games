@@ -305,7 +305,7 @@ export function Footer({ links, note, siteName, credit }: FooterProps) {
           {siteName && <a className="qg-footer-brand" href="/"><BrandMark size={22} />{siteName}</a>}
           {credit && (
             <p className="qg-footer-credit">
-              Made with <span className="qg-footer-heart" aria-label="love">♥</span> by <a href={credit.href} rel="author">{credit.label}</a>
+              Made with <span className="qg-footer-heart" role="img" aria-label="love">♥</span> by <a href={credit.href} rel="author">{credit.label}</a>
             </p>
           )}
         </div>

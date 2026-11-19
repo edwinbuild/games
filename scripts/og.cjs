@@ -1,5 +1,5 @@
 // Renders 1200x630 link-preview images into public/og/ (one per game + home).
-// Usage: npm run og   (needs Playwright + Chromium; re-run after adding a game)
+// Usage: npm run og [-- <slug|home> ...]   (needs Playwright + Chromium; re-run after adding a game)
 const { chromium } = require('playwright')
 const { execSync } = require('node:child_process')
 const path = require('node:path')
@@ -29,12 +29,19 @@ const card = (title, tag, fill, sample, badge) => `<html><head>${fonts}</head><b
   const b = await chromium.launch()
   const p = await b.newPage({ viewport: { width: 1200, height: 630 } })
   const out = (n) => path.join(root, 'public/og', n + '.png')
+  const only = process.argv.slice(2)
+  const want = (n) => !only.length || only.includes(n)
   for (const g of games) {
+    if (!want(g.slug)) continue
     await p.setContent(card(g.title, g.tagline, color(g.color), g.sample, g.daily ? 'Daily' : site.name), { waitUntil: 'networkidle' })
     await p.screenshot({ path: out(g.slug) })
   }
-  await p.setContent(card(site.name, site.tagline, color('mint'), `${games.length} games`, 'Free'), { waitUntil: 'networkidle' })
-  await p.screenshot({ path: out('home') })
+  // Home: the number of games with a card (unlisted pages, like the online duel's room page, don't count).
+  const listed = games.filter((g) => g.listed !== false).length
+  if (want('home')) {
+    await p.setContent(card(site.name, site.tagline, color('mint'), `${listed} games`, 'Free'), { waitUntil: 'networkidle' })
+    await p.screenshot({ path: out('home') })
+  }
   await b.close()
-  console.log(`Wrote ${games.length + 1} images to public/og/`)
+  console.log(`Wrote ${only.length || games.length + 1} image(s) to public/og/`)
 })()

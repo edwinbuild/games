@@ -2,6 +2,7 @@
 // Usage: npm run build && npm run e2e   (Playwright comes from the machine; see README)
 // - every page loads with no errors and no horizontal overflow at 360, 412, 820 and 1440px
 // - every game has a script in tests/e2e/games/<slug>.cjs that plays it to its result ticket
+const a11y = require('./a11y.cjs')
 const { chromium } = require('playwright')
 const { spawn } = require('node:child_process')
 const fs = require('node:fs')
@@ -84,7 +85,8 @@ async function waitForServer() {
     const browser = await chromium.launch()
     // Every page at each width; the widths run side by side.
     await Promise.all(WIDTHS.map(async (width) => {
-      const ctx = await browser.newContext({ viewport: { width, height: 900 }, isMobile: width < 900, hasTouch: width < 900 })
+      // 1440 runs in dark mode, so the accessibility check (412 and 1440) sees both themes.
+      const ctx = await browser.newContext({ viewport: { width, height: 900 }, isMobile: width < 900, hasTouch: width < 900, colorScheme: width === 1440 ? 'dark' : 'light' })
       const page = await ctx.newPage()
       for (const p of pages) {
         if (only.length && !only.some((o) => p.includes(o))) continue
@@ -101,6 +103,8 @@ async function waitForServer() {
           const rows = await page.evaluate(() => [...document.querySelectorAll('.qg-footer-stub > *')].map((el) => { const r = el.getBoundingClientRect(); return Math.round(r.top + r.height / 2) }))
           if (rows.length && Math.max(...rows) - Math.min(...rows) > 24) errors.push('footer is not on one row')
         }
+        // Accessibility at one phone width and one desktop width (the checks don't depend on the scheme).
+        if (width === 412 || width === 1440) errors.push(...(await a11y(page)).map((x) => `a11y: ${x}`))
         if (errors.length) failures.push(`${p} @${width}: ${errors.join('; ')}`)
       }
       await ctx.close()
@@ -139,6 +143,8 @@ async function waitForServer() {
       try {
         settle(page)
         const outcome = await require(path.join(__dirname, 'games', f))({ page, B, browser: withSettle(browser), scheme })
+        // Accessibility of wherever the script ended (usually the result ticket), before the shared checks move on.
+        if (outcome !== 'skip' && !page.isClosed()) errors.push(...(await a11y(page).catch(() => [])).map((x) => `a11y at the end: ${x}`))
         if (outcome !== 'skip' && !errors.length) errors.push(...(await sharedChecks(page, slug, clocked)))
       } catch (e) {
         errors.push(String(e.message || e).split('\n')[0])

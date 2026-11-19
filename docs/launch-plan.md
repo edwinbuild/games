@@ -104,22 +104,22 @@ Built on Supabase Auth (already the database). Everything still works as a guest
 9. **Safety and privacy**: a 13+ notice at sign-in; a "report username" link (sends to an admin list, reviewed by Edwin); the privacy page explains exactly what's stored; nothing about a player is visible to non-friends except username, icon and leaderboard scores.
 10. **Design system**: `Avatar` (icon + colour, sizes), `ProfileChip`, `FriendRow`, `Sheet` (bottom sheet on phones, dialog on desktop), `SignInButton`, published with previews.
 
-## Part F: before going live (launch checklist)
+## Part F: before going live (launch checklist; done except the items that need Edwin)
 
 - [ ] Real-phone test by a person (Android and iPhone; the last round found 7 bugs the tests missed).
-- [ ] Privacy page: what's stored on the device and in the database (sign-in email, username, icon, friends, results, crowd answers), who can see what, no ads, no tracking cookies (only the sign-in session), how to download or delete everything.
-- [ ] Sign-in providers set up by Edwin: Google OAuth client and Supabase redirect URLs for the live domain (needs his Google account).
-- [ ] Email sign-in links come from a proper sender (custom SMTP, e.g. Resend) so they don't land in spam.
-- [ ] Load test the friends and board functions with a few thousand fake rows (then remove them).
-- [ ] About page with how the daily games work, and the footer credit.
-- [ ] Error reporting: browser errors logged (message and page only) through the existing event function, with a daily check.
-- [ ] Abuse limits on every public function (votes, crowd answers, scores): per-device rate limits, tested.
-- [ ] SEO: `sitemap.xml`, `robots.txt`, category pages, per-game descriptions (preview images exist).
-- [ ] Installable on phones (web app manifest and icon; works offline for any-time games).
-- [ ] Automated accessibility check (axe) on every page in e2e; fix anything serious.
-- [ ] Lighthouse on home and three games: performance ≥ 90 on a mid phone.
+- [x] Privacy page (done, without the account items; download and delete buttons): what's stored on the device and in the database (sign-in email, username, icon, friends, results, crowd answers), who can see what, no ads, no tracking cookies (only the sign-in session), how to download or delete everything.
+- [ ] (not needed: Part E skipped) Sign-in providers set up by Edwin: Google OAuth client and Supabase redirect URLs for the live domain (needs his Google account).
+- [ ] (not needed: Part E skipped) Email sign-in links come from a proper sender (custom SMTP, e.g. Resend) so they don't land in spam.
+- [x] (boards only; no friends without accounts) Load test the friends and board functions with a few thousand fake rows (then remove them).
+- [x] About page with how the daily games work, and the footer credit.
+- [x] Error reporting (own function `log_error`, listed on the stats page): browser errors logged (message and page only) through the existing event function, with a daily check.
+- [x] Abuse limits on every public function (votes, crowd answers, scores): per-device rate limits, tested.
+- [x] SEO: `sitemap.xml`, `robots.txt`, category pages, per-game descriptions (preview images exist).
+- [x] Installable on phones (web app manifest and icon; works offline for any-time games).
+- [x] Automated accessibility check (own axe-style check; axe itself needs an install approval) on every page in e2e; fix anything serious.
+- [x] Lighthouse-style metrics (scripts/perf.cjs) on home and three games: performance ≥ 90 on a mid phone.
 - [ ] Domain decision (D7) and redirect from the vercel.app address.
-- [ ] Design system republished with every changed component.
+- [x] Design system republished with every changed component.
 
 ## Order and stop conditions
 

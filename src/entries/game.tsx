@@ -1,9 +1,10 @@
 import { StrictMode, Suspense, lazy, useEffect, type ComponentType } from 'react'
-import { createRoot } from 'react-dom/client'
+import { mount, ready } from '../shell/mount'
 import { getGame } from '../games/registry'
 import { GameShell } from '../shell/GameShell'
 import '../shell/styles'
 import '../shell/errors'
+import '../shell/sw-register'
 
 // Each game lives in src/games/<slug>.tsx and is loaded only on its own page.
 const modules = import.meta.glob<{ default: ComponentType }>('../games/*.tsx')
@@ -33,7 +34,7 @@ function Skeleton() {
   )
 }
 
-createRoot(document.getElementById('root')!).render(
+mount(document.getElementById('root'),
   <StrictMode>
     <GameShell game={meta}>
       <Suspense fallback={<Skeleton />}>
@@ -43,3 +44,4 @@ createRoot(document.getElementById('root')!).render(
     </GameShell>
   </StrictMode>,
 )
+ready()

@@ -191,7 +191,7 @@
 .qg-footer-brand { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--ink); text-decoration: none; font: 800 16px/24px var(--font-display); letter-spacing: -0.02em; }
 .qg-footer-credit { margin: 0; }
 .qg-footer-credit a { color: var(--ink); font-weight: 700; text-decoration-thickness: 2px; text-underline-offset: 3px; text-decoration-color: var(--game, var(--ticket)); }
-.qg-footer-heart { display: inline-block; color: var(--chili); animation: qg-heart 1.6s ease-in-out infinite; }
+.qg-footer-heart { display: inline-block; color: var(--danger); animation: qg-heart 1.6s ease-in-out infinite; }
 @keyframes qg-heart { 0%, 70%, 100% { transform: scale(1); } 78% { transform: scale(1.3); } 86% { transform: scale(.95); } }
 .qg-footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-1) var(--space-4); }
 .qg-footer-links a { color: var(--ink-muted); text-underline-offset: 3px; padding-block: 10px; }

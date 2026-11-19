@@ -1,5 +1,5 @@
 import { StrictMode, useEffect, useState, type CSSProperties } from 'react'
-import { createRoot } from 'react-dom/client'
+import { mount, ready } from '../shell/mount'
 import { TAGLINES } from '../games/taglines'
 import { LISTED as GAMES, playersLabel, SKILLS, type GameMeta, type Skill } from '../games/registry'
 import { SITE } from '../site'
@@ -11,6 +11,7 @@ import { load, save } from '../shell/storage'
 import { Countdown, FilterChips, GameCard, ProgressRing, TopBar } from '../ui'
 import '../shell/styles'
 import '../shell/errors'
+import '../shell/sw-register'
 
 /** What the card's colour band shows: the player's own result if they have one, else an example. */
 function score(g: GameMeta): { sample: string; label: string } {
@@ -201,8 +202,9 @@ function Home() {
   )
 }
 
-createRoot(document.getElementById('root')!).render(
+mount(document.getElementById('root'),
   <StrictMode>
     <Home />
   </StrictMode>,
 )
+ready()
