@@ -694,6 +694,21 @@ function GardenPathDemo() {
   )
 }
 
+/** Rule Stack: a 3×3 corner of the grid fills in, a rule ticks, and a new rule slides in. */
+function RuleStackDemo() {
+  const d = 4.4
+  const cells = ['#ff6a5c', '#5bbcff', '#3ed598', '#ffd166', '#ff6a5c', '#5bbcff', '#3ed598', '#ffd166', '#ff6a5c']
+  return (
+    <Scene still={2.6}>
+      <span className="demo-rs-grid">
+        {cells.map((c, i) => <A key={i} d={d} className="demo-rs-cell" k={`0%,${8 + i * 5}%{background:var(--paper)}${10 + i * 5}%,100%{background:${c}}`} />)}
+      </span>
+      <A d={d} className="demo-rs-rule" k={show([[0, 100]])}>✓ No two reds touch</A>
+      <A d={d} className="demo-rs-rule demo-rs-rule--new" ease="ease-out" k="0%,70%{opacity:0;transform:translateY(-6px)}76%,100%{opacity:1;transform:none}">✗ Every row has a green</A>
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -728,6 +743,7 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'untangle-lights': UntangleDemo,
   'word-ladder': WordLadderDemo,
   'garden-path': GardenPathDemo,
+  'rule-stack': RuleStackDemo,
   'higher-lower': HigherLowerDemo,
   'quick-draw': QuickDrawDemo,
 }

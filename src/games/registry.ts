@@ -414,6 +414,17 @@ export const GAMES: GameMeta[] = [
     skill: 'logic',
   },
   {
+    slug: 'rule-stack',
+    title: 'Rule Stack',
+    emoji: '🧩',
+    instructions: 'Colour the grid so every rule holds. Each level adds a rule.',
+    tagline: 'Paint a 4×4 grid to fit the rules. Every level adds one more, and it may break what you have.',
+    daily: true,
+    color: 'amber',
+    sample: '12/12 in 3:05',
+    skill: 'logic',
+  },
+  {
     slug: 'higher-lower',
     title: 'Higher Lower Online',
     emoji: '🌍',

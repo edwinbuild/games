@@ -134,6 +134,10 @@ export const HOW_TO: Record<string, string[]> = {
     'Draw one path from the seedling to the flower that visits every square of the garden exactly once, moving up, down, left or right. Drag through the squares; drag back to undo a step, or tap a square on the path to cut it back to there.',
     'Stones tell you what the path does on their square: on a filled stone (●) it turns, on a hollow stone (○) it goes straight through. Every garden has exactly one answer; your time counts, and the clock keeps going if you leave and come back. 5×5 early in the week, 6×6 at the weekend. On a keyboard, the arrows step the path.',
   ],
+  'rule-stack': [
+    'Pick a colour and tap squares of the 4×4 grid to paint them; tap a square again to clear it. Each colour also has a shape (● ▲ ■ ◆), so you can play without telling colours apart. The rules so far are listed under the grid, each with a ✓ or ✗.',
+    'When every rule holds, a new one arrives, like “no two red squares touch” or “every row has a blue”, and it may break your grid. There are twelve rules a day; all twelve can always hold at once. Your score is how many you clear, then your time. Each try gets twelve new rules; the first is the same for everyone. On a keyboard, arrows move, 1 to 4 paint and 0 clears.',
+  ],
   'higher-lower': [
     'Create a room and send the link (or the five-letter code); two to eight players can join. When everyone is ready, the host starts the quiz. Each question shows one country’s population or land area; say whether a second country’s number is higher or lower. You have ten seconds.',
     'The fastest right answer gets 3 points, the next 2, and every other right answer 1. Each phone times its own answer, so a slow connection doesn’t cost you. Ten questions, then the final scores. The numbers are the World Bank’s: population for 2023 and land area for 2022.',
