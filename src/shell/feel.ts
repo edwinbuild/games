@@ -139,6 +139,11 @@ export const feel = {
   click() {
     tone(2200, 14, { type: 'square', volume: 0.04, to: 1400 })
   },
+  /** A blade going through something. */
+  slice() {
+    vibrate(10)
+    tone(1700, 90, { type: 'sawtooth', volume: 0.035, to: 380 })
+  },
   /** Something landing. */
   thud() {
     tone(140, 120, { type: 'sine', volume: 0.16, to: 60 })

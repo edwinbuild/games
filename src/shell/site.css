@@ -367,3 +367,12 @@ button { font: inherit; }
 .cp-kbd { position: absolute; right: var(--space-2); bottom: var(--space-2); }
 .demo-cp-bubble { position: absolute; border-radius: 50%; background: var(--paper); border: 2px solid var(--line); box-sizing: border-box; }
 .demo-cp-ring { position: absolute; border-radius: 50%; border: 2px solid var(--line); box-sizing: border-box; opacity: 0; }
+
+/* Fair Slice */
+.fs-stage { position: relative; width: 100%; max-width: 460px; margin-inline: auto; touch-action: none; user-select: none; -webkit-user-select: none; overflow: hidden; cursor: crosshair; }
+.fs-canvas { display: block; width: 100%; aspect-ratio: 1; }
+.fs-kbd { position: absolute; right: var(--space-2); bottom: var(--space-2); }
+.demo-fs-half { position: absolute; left: 38px; top: 2px; width: 64px; height: 68px; }
+.demo-fs-half svg { display: block; width: 64px; height: 68px; }
+.demo-fs-half polygon { fill: var(--paper); stroke: var(--line); stroke-width: 2; stroke-linejoin: round; }
+.demo-fs-knife { position: absolute; left: 69px; top: -4px; width: 3px; height: 78px; background: var(--line); border-radius: 2px; }

@@ -287,6 +287,20 @@ export const GAMES: GameMeta[] = [
     color: 'lilac',
     sample: '41 of 60',
   },
+  {
+    slug: 'fair-slice',
+    title: 'Fair Slice',
+    emoji: '🔪',
+    instructions: 'Swipe one straight cut across each shape. Make the two halves exactly equal.',
+    tagline: 'Cut five shapes exactly in half with one swipe each. A square is easy; a star is not.',
+    howTo: [
+      'Each shape gets one straight cut: swipe across it and it splits in two, showing each half’s share of the area. Aim for 50% / 50%. A swipe that misses the shape doesn’t count; if a cut leaves three or more pieces, every piece on one side of the line counts as that side.',
+      'There are five shapes a day, the same for everyone, getting harder from a square to a wobbly blob. Your score is how far your cuts were from a fair half, on average. Try as many times as you like; your best try counts. On a computer, turn and move the cut with the arrow keys (hold Shift for fine steps) and press Space.',
+    ],
+    daily: true,
+    color: 'apricot',
+    sample: '1.4% off',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

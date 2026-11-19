@@ -373,6 +373,27 @@ function ChainPopDemo() {
   )
 }
 
+
+const STAR = '32.0,4.0 39.6,23.5 60.5,24.7 44.4,38.0 49.6,58.3 32.0,47.0 14.4,58.3 19.6,38.0 3.5,24.7 24.4,23.5'
+function FairSliceDemo() {
+  const d = 3.4
+  const half = (side: 'l' | 'r') => (
+    <A d={d} className="demo-fs-half" ease="cubic-bezier(.2,.9,.3,1.3)" style={{ clipPath: side === 'l' ? 'inset(0 50% 0 0)' : 'inset(0 0 0 50%)' }}
+      k={`0%,40%{transform:none}52%,92%{transform:translateX(${side === 'l' ? -7 : 7}px)}100%{transform:none}`}>
+      <svg viewBox="0 0 64 68"><polygon points={STAR} /></svg>
+    </A>
+  )
+  return (
+    <Scene still={2.4}>
+      {half('l')}
+      {half('r')}
+      <A d={d} className="demo-fs-knife" k="0%,18%{clip-path:inset(0 0 100% 0);opacity:1}38%{clip-path:inset(0 0 0 0);opacity:1}48%,100%{clip-path:inset(0 0 0 0);opacity:0}" />
+      <A d={d} k={show([[54, 94]])} className="demo-small" style={{ left: 14, top: 30 }}>50%</A>
+      <A d={d} k={show([[54, 94]])} className="demo-small" style={{ right: 2, top: 30 }}>50%</A>
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -392,4 +413,5 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'stack-tower': StackTowerDemo,
   'pour-line': PourLineDemo,
   'chain-pop': ChainPopDemo,
+  'fair-slice': FairSliceDemo,
 }
