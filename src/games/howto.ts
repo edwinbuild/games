@@ -126,6 +126,10 @@ export const HOW_TO: Record<string, string[]> = {
     'Lights are joined by wires, all tangled up. Drag a light anywhere on the board and its wires follow; wires that cross another wire glow red. Untangle them until no two wires cross.',
     'Every tangle can be undone: it was made from a layout with no crossings, then scrambled. Each time you drag a light counts as one move, and par is one move per light, so a sharp eye beats it. Monday has 8 lights, Sunday 12; one tangle a day, the same for everyone. On a keyboard, Tab to a light and move it with the arrows.',
   ],
+  'word-ladder': [
+    'You get a start word and an end word, both four letters. Type a word that changes just one letter of the last word in your ladder, and keep going until you reach the end word: COLD, CORD, WORD, WORM, WARM.',
+    'Every step has to be an everyday English word (no names, no rude words). Par is the shortest ladder there is: 3 steps on Monday, up to 6 on Sunday. You can take back your last word; your fewest steps of the day count. One ladder a day, the same for everyone.',
+  ],
   'higher-lower': [
     'Create a room and send the link (or the five-letter code); two to eight players can join. When everyone is ready, the host starts the quiz. Each question shows one country’s population or land area; say whether a second country’s number is higher or lower. You have ten seconds.',
     'The fastest right answer gets 3 points, the next 2, and every other right answer 1. Each phone times its own answer, so a slow connection doesn’t cost you. Ten questions, then the final scores. The numbers are the World Bank’s: population for 2023 and land area for 2022.',

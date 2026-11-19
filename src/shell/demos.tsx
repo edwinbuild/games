@@ -660,6 +660,21 @@ function UntangleDemo() {
   )
 }
 
+/** Word Ladder: COLD → CORD → WORD → WARM, one letter changing each beat. */
+function WordLadderDemo() {
+  const d = 4.4
+  const words: [string, number, number][] = [['cold', 0, 25], ['cord', 25, 50], ['word', 50, 75], ['warm', 75, 100]]
+  return (
+    <Scene still={4.2}>
+      {words.map(([w, a, b], k) => (
+        <A key={w} d={d} k={show([[a, b]])} className="demo-wl">
+          {[...w].map((c, i) => <span key={i} className={k && c !== words[k - 1][0][i] ? 'demo-wl-tile is-new' : 'demo-wl-tile'}>{c}</span>)}
+        </A>
+      ))}
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -692,6 +707,7 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'orbit-drop': OrbitDropDemo,
   'balance-beam': BalanceBeamDemo,
   'untangle-lights': UntangleDemo,
+  'word-ladder': WordLadderDemo,
   'higher-lower': HigherLowerDemo,
   'quick-draw': QuickDrawDemo,
 }

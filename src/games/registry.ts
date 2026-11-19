@@ -392,6 +392,17 @@ export const GAMES: GameMeta[] = [
     skill: 'logic',
   },
   {
+    slug: 'word-ladder',
+    title: 'Word Ladder',
+    emoji: '🪜',
+    instructions: 'Change one letter at a time to turn the first word into the last.',
+    tagline: 'COLD to WARM, one letter at a time, every step a real word. A new ladder every day.',
+    daily: true,
+    color: 'lemon',
+    sample: '4 steps',
+    skill: 'words',
+  },
+  {
     slug: 'higher-lower',
     title: 'Higher Lower Online',
     emoji: '🌍',
