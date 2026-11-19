@@ -110,4 +110,8 @@ export const HOW_TO: Record<string, string[]> = {
     'Tap to start the pendulum swinging, then tap again to stop it. If the bob stops inside the coloured zone, the next round starts: a little faster, with a smaller zone somewhere else. One miss ends the run.',
     'Your score is how many rounds you cleared in a row. Send the link to a friend and they get exactly the same swings and zones. Tap, click or press Space.',
   ],
+  'steady-line': [
+    'Put your finger (or the mouse) on Start and trace the channel all the way to the flag. Touch an edge or lift your finger and the try ends. The channel gets narrower as it goes.',
+    'Every day has one path, the same for everyone. Your score is how far you got; if you make it all the way, your time counts instead, and faster is better. Try as many times as you like; your best try counts.',
+  ],
 }

@@ -519,3 +519,13 @@ button { font: inherit; }
 .demo-ps-zone { position: absolute; left: 90px; top: 58px; width: 22px; height: 9px; border-radius: 5px; border: 2px solid var(--line); box-sizing: border-box; rotate: -8deg; }
 .demo-ps-rod { position: absolute; left: 89px; top: 0; width: 2px; height: 62px; background: var(--line); transform-origin: 50% 0; }
 .demo-ps-bob { position: absolute; left: -7px; bottom: -8px; width: 16px; height: 16px; border-radius: 50%; background: var(--paper); border: 2.5px solid var(--line); box-sizing: border-box; }
+
+/* Steady Line */
+.sl-stage { width: 100%; max-width: 400px; margin-inline: auto; overflow: hidden; }
+.sl-canvas { display: block; width: 100%; aspect-ratio: 300 / 420; touch-action: none; user-select: none; -webkit-user-select: none; cursor: crosshair; }
+.demo-sl, .demo-sl-trace-wrap { position: absolute; inset: 0; width: 140px; height: 72px; overflow: visible; }
+.demo-sl path { fill: none; stroke-linecap: round; }
+.demo-sl .demo-sl-wall { stroke: var(--line); stroke-width: 15; }
+.demo-sl .demo-sl-floor { stroke: var(--paper); stroke-width: 11; }
+.demo-sl .demo-sl-trace { stroke: var(--line); stroke-width: 2.5; stroke-dasharray: 100; stroke-dashoffset: 100; animation: demo-sl-trace 3.6s ease-in-out infinite; }
+@keyframes demo-sl-trace { 0%, 8% { stroke-dashoffset: 100 } 80%, 94% { stroke-dashoffset: 0 } 100% { stroke-dashoffset: 100 } }

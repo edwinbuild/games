@@ -303,6 +303,16 @@ export const GAMES: GameMeta[] = [
     color: 'denim',
     sample: '14 rounds',
   },
+  {
+    slug: 'steady-line',
+    title: 'Steady Line',
+    emoji: '〰️',
+    instructions: 'Trace the winding channel from start to flag without touching the edges. It gets narrower.',
+    tagline: 'Trace a winding path that keeps getting narrower. Steady hands only. One path a day.',
+    daily: true,
+    color: 'sage',
+    sample: '72%',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

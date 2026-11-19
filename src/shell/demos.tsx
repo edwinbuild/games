@@ -543,6 +543,26 @@ function PendulumStopDemo() {
   )
 }
 
+
+const SL_PATH = 'M16 62 C 40 62, 44 18, 70 22 S 104 58, 126 14'
+function SteadyLineDemo() {
+  const d = 3.6
+  return (
+    <Scene still={3}>
+      <svg className="demo-sl" viewBox="0 0 140 72" aria-hidden="true">
+        <path d={SL_PATH} className="demo-sl-wall" />
+        <path d={SL_PATH} className="demo-sl-floor" />
+      </svg>
+      <A d={d} className="demo-sl-trace-wrap" k="0%{opacity:1}100%{opacity:1}">
+        <svg className="demo-sl" viewBox="0 0 140 72" aria-hidden="true">
+          <path d={SL_PATH} className="demo-sl-trace" pathLength={100} />
+        </svg>
+      </A>
+      <span className="demo-small" style={{ left: 118, top: 0 }}>🏁</span>
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -571,4 +591,5 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'pipe-turn': PipeTurnDemo,
   'light-path': LightPathDemo,
   'pendulum-stop': PendulumStopDemo,
+  'steady-line': SteadyLineDemo,
 }
