@@ -7,7 +7,7 @@ import { puzzleLabel } from './daily'
 import { countPlay, getStats, takeNewBest, todaysDailyText } from './stats'
 import { CountUp } from './CountUp'
 import { feel } from './feel'
-import { ResultSlot } from './layout'
+import { bringGameIntoView, ResultSlot } from './layout'
 import { track } from './track'
 
 type Props = {
@@ -111,6 +111,7 @@ export function ResultCard(p: Props) {
             onClick={() => {
               track('start', p.game.slug) // each replay is a new game, so finish rate stays honest
               p.onReplay?.()
+              bringGameIntoView()
             }}
             data-primary="click"
             hint="Space"

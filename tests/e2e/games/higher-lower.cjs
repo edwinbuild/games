@@ -2,7 +2,7 @@
 // and both remaining phones agreeing on the final scores.
 const opts = { viewport: { width: 412, height: 915 }, isMobile: true, hasTouch: true }
 module.exports = async ({ page, B, browser, scheme }) => {
-  if (scheme === 'dark') return // one full online run is enough per suite
+  if (scheme === 'dark') return 'skip' // one full online run is enough per suite
   const A = page
   await A.goto(B + '/higher-lower/')
   await A.getByRole('button', { name: 'Create a room' }).click()
@@ -48,5 +48,14 @@ module.exports = async ({ page, B, browser, scheme }) => {
   // A and B answered opposite ways every round, so between them they got all ten right: 3 points each.
   const [a, b] = [ra, rb].map((t) => +t.match(/You\s+(\d+) pts/)[1])
   if (a + b < 30) throw new Error(`A and B together should have at least 30 points, got ${a} + ${b}`)
+  // The host leaves the rematch lobby: the next player in becomes host and can run the room.
+  await Bp.getByRole('button', { name: 'Rematch' }).click()
+  await Bp.locator('.qg-lobby').waitFor({ timeout: 20000 })
+  await A.getByRole('button', { name: 'Leave the room' }).click()
+  try {
+    await Bp.locator('.qg-lobby li', { hasText: '(you)' }).getByText(/^Host · /).waitFor({ timeout: 20000 })
+  } catch (e) {
+    throw new Error('the next player did not become host: ' + (await Bp.locator('main').innerText()).replace(/\s+/g, ' ').slice(0, 300))
+  }
   for (const c of ctxs) await c.close().catch(() => {})
 }

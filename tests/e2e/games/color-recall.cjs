@@ -30,6 +30,22 @@ module.exports = async ({ page, B, browser }) => {
   await playTry(page, true)
   await playTry(page, false)
   if (!/best of 2 tries/i.test(await page.locator('.qg-ticket').innerText())) throw new Error('tries not counted')
+  // A refresh mid-try picks up at the next colour.
+  await page.getByRole('button', { name: 'Try again' }).click()
+  await untilShown(page)
+  await page.clock.runFor(2200)
+  await page.getByRole('button', { name: 'Lock in' }).click()
+  await page.reload()
+  await page.getByText('Your try continues at colour 2 of 3.').waitFor({ timeout: 5000 })
+  await page.getByRole('button', { name: 'Show colour 2 of 3' }).click()
+  for (let i = 1; i < 3; i++) {
+    if (i > 1) await page.getByRole('button', { name: /Next colour/ }).click()
+    await untilShown(page)
+    await page.clock.runFor(2200)
+    await page.getByRole('button', { name: 'Lock in' }).click()
+  }
+  await page.locator('.qg-ticket').waitFor()
+  if (!/best of 3 tries/i.test(await page.locator('.qg-ticket').innerText())) throw new Error('resumed try not counted')
   const ctx = await browser.newContext(SMALL_PHONE)
   const p = await ctx.newPage()
   await p.clock.install()

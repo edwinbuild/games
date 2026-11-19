@@ -14,10 +14,10 @@ async function clear(p, n) {
 let step = ''
 const at = (s) => { step = s }
 module.exports = async (args) => {
-  try { await run(args) } catch (e) { e.message = `[${step}] ${e.message}`; throw e }
+  try { return await run(args) } catch (e) { e.message = `[${step}] ${e.message}`; throw e }
 }
 async function run({ page, B, browser, scheme }) {
-  if (scheme === 'dark') return // one full online run is enough per suite
+  if (scheme === 'dark') return 'skip' // one full online run is enough per suite
   const A = page
   at('create')
   await A.goto(B + '/spot-race/')

@@ -6,6 +6,7 @@ import { dailyDayFor, dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { drawStroke, length, pointsFrom, type P } from '../shell/ink'
 import { ResultCard } from '../shell/ResultCard'
+import { useRunState } from '../shell/session'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { AttemptTiles, Burst, Button, GetReady, Stage, type Attempt } from '../ui'
 
@@ -24,8 +25,9 @@ export default function ShapeRecall() {
   const shapes = useMemo(() => shapesFor(seed, tries.length), [seed, tries.length])
   // The finished try is saved at the last stroke, but the next try's shapes only come in when you move on.
   const pending = useRef<number[][] | null>(null)
-  const [scores, setScores] = useState<number[]>([])
-  const [phase, setPhase] = useState<Phase>(tries.length ? 'done' : 'ready')
+  // The try in progress survives a refresh (it picks up at the next shape).
+  const [scores, setScores] = useRunState<number[]>(`${game.slug}:${seed}:${oneOff ? 'once' : tries.length}`, [])
+  const [phase, setPhase] = useState<Phase>(scores.length ? 'ready' : tries.length ? 'done' : 'ready')
   const [fresh, setFresh] = useState(false)
   const [left, setLeft] = useState(SHOW_MS)
   const canvas = useRef<HTMLCanvasElement>(null)
@@ -187,7 +189,7 @@ export default function ShapeRecall() {
         {phase === 'compare' && <span className="sr2-score" aria-live="polite">{last}%</span>}
       </Stage>
       <div className="stack" style={{ marginTop: 'var(--space-3)' }}>
-        {phase === 'ready' && <Button size="lg" block color={game.color} onClick={show} data-primary="click" hint="Space">Show the first shape</Button>}
+        {phase === 'ready' && <Button size="lg" block color={game.color} onClick={show} data-primary="click" hint="Space">{scores.length ? `Show shape ${scores.length + 1} of ${ROUNDS}` : 'Show the first shape'}</Button>}
         {phase === 'compare' && scores.length < ROUNDS && <Button size="lg" block color={game.color} onClick={show} data-primary="click" hint="Space">Next shape ({scores.length + 1} of {ROUNDS})</Button>}
         {phase === 'compare' && scores.length === ROUNDS && <Button size="lg" block color={game.color} onClick={() => { if (pending.current) setTries(pending.current); pending.current = null; setPhase('done') }} data-primary="click" hint="Space">See my result</Button>}
         <p className="small muted center" style={{ margin: 0 }}>

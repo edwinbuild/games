@@ -1,8 +1,8 @@
 // The vote endpoint is replaced with a fixed split so test runs never add real votes.
 module.exports = async ({ page, B }) => {
   let votes = 0
-  await page.route('**/rest/v1/rpc/vote', (r) => { votes++; r.fulfill({ status: 200, contentType: 'application/json', body: '[{"a":62,"b":38}]' }) })
-  await page.route('**/rest/v1/rpc/split', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: '[{"a":63,"b":38}]' }))
+  await page.context().route('**/rest/v1/rpc/vote', (r) => { votes++; r.fulfill({ status: 200, contentType: 'application/json', body: '[{"a":62,"b":38}]' }) })
+  await page.context().route('**/rest/v1/rpc/split', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: '[{"a":63,"b":38}]' }))
   await page.goto(B + '/this-or-that/')
   await page.locator('.tot-option').nth(1).click()
   await page.locator('#crowd-guess').fill('55')

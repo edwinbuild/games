@@ -1,8 +1,8 @@
 // Stand-in crowd functions (never real picks): yesterday's results, today's one pick, and the too-few message.
 module.exports = async ({ page, B }) => {
   let picks = [], counts = [40, 30, 5, 20, 25]
-  await page.route('**/rest/v1/rpc/crowd_pick', async (r) => { picks.push(JSON.parse(r.request().postData())); await r.fulfill({ status: 204, body: '' }) })
-  await page.route('**/rest/v1/rpc/crowd_picks', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(counts) }))
+  await page.context().route('**/rest/v1/rpc/crowd_pick', async (r) => { picks.push(JSON.parse(r.request().postData())); await r.fulfill({ status: 204, body: '' }) })
+  await page.context().route('**/rest/v1/rpc/crowd_picks', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(counts) }))
   await page.goto(B + '/odd-pick/')
   // Pretend we picked option 2 yesterday.
   await page.evaluate(() => {

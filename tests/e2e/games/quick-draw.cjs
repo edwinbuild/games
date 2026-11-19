@@ -2,7 +2,7 @@
 // show (rude ones masked), a right guess ends the round with points, and a drawer who leaves is skipped.
 const opts = { viewport: { width: 412, height: 915 }, isMobile: true, hasTouch: true }
 module.exports = async ({ page, B, browser, scheme }) => {
-  if (scheme === 'dark') return // one full online run is enough per suite
+  if (scheme === 'dark') return 'skip' // one full online run is enough per suite
   const A = page
   await A.goto(B + '/quick-draw/')
   await A.getByRole('button', { name: 'Create a room' }).click()

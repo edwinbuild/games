@@ -1,3 +1,5 @@
+const { assertFullyVisible, SMALL_PHONE } = require('../helpers.cjs')
+
 // A paused clock makes timing exact: one try tapping on every silent beat, one 60 ms late with a missed beat.
 module.exports = async ({ page, B }) => {
   await page.clock.install()
@@ -31,4 +33,20 @@ module.exports = async ({ page, B }) => {
   await page.getByRole('button', { name: 'See my result' }).click()
   const t = await page.locator('.qg-ticket').innerText()
   if (!/best of 2 tries/i.test(t) || !t.includes(`±${first} ms`)) throw new Error('ticket wrong: ' + t)
+
+  // Small phone: after Try again the beat circle is fully on screen before you start.
+  const ctx = await page.context().browser().newContext(SMALL_PHONE)
+  const sp = await ctx.newPage()
+  try {
+    await sp.clock.install()
+    await sp.goto(B + '/beat-keeper/')
+    await sp.getByRole('button', { name: 'Start the beat' }).tap()
+    await sp.clock.runFor(20000)
+    await sp.getByRole('button', { name: 'See my result' }).tap()
+    await sp.locator('.qg-ticket').waitFor()
+    await sp.clock.runFor(1500)
+    await sp.locator('.qg-ticket').getByRole('button', { name: 'Try again' }).tap()
+    await sp.clock.runFor(1000)
+    await assertFullyVisible(sp, '.bk-stage', 'the beat circle after Try again')
+  } finally { await ctx.close() }
 }

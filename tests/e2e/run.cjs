@@ -12,6 +12,37 @@ const PORT = 4179
 const B = `http://localhost:${PORT}`
 const WIDTHS = [360, 412, 820, 1440]
 const only = process.argv.slice(2)
+// Daily games (from the registry): reopening one after playing must show the result again, quietly.
+const registry = fs.readFileSync(path.join(root, 'src/games/registry.ts'), 'utf8')
+const DAILY = new Set([...registry.matchAll(/slug: '([a-z-]+)'[\s\S]*?(?=slug: '|$)/g)].filter((m) => /daily: true/.test(m[0])).map((m) => m[1]))
+
+/**
+ * Checks run after every game script that played to the end (a script returns 'skip' when it
+ * deliberately didn't): the game recorded something in local stats, nothing overflows sideways,
+ * and a daily game shows today's result again on reopening without sending another finish.
+ */
+async function sharedChecks(page, slug, clocked) {
+  const problems = []
+  const over = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth).catch(() => 0)
+  if (over > 1) problems.push(`horizontal overflow ${over}px at the end`)
+  const st = await page.evaluate((slug) => JSON.parse(localStorage.getItem('qg:stats:' + slug) ?? 'null'), slug).catch(() => null)
+  if (!st || !(st.plays > 0 || st.lastDaily)) problems.push('nothing recorded in local stats')
+  if (DAILY.has(slug)) {
+    // A fresh tab in the same browser profile; a fake clock a script paused (it is per profile) runs again.
+    if (clocked) await page.clock.resume()
+    const tab = await page.context().newPage()
+    await tab.goto(`${B}/${slug}/`)
+    const shown = await tab.locator('.qg-ticket').waitFor({ timeout: 8000 }).then(() => true, () => false)
+    if (!shown) problems.push('reopening today did not show the result')
+    else {
+      await tab.waitForTimeout(400)
+      const n = await tab.evaluate(() => Number(document.documentElement.dataset.finishes ?? 0))
+      if (n) problems.push(`reopening today sent ${n} finish event(s)`)
+    }
+    await tab.close()
+  }
+  return problems
+}
 
 async function waitForServer() {
   for (let i = 0; i < 60; i++) {
@@ -55,8 +86,14 @@ async function waitForServer() {
         const page = await ctx.newPage()
         const errors = []
         page.on('pageerror', (e) => errors.push(e.message))
+        page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errors.push('console: ' + m.text().slice(0, 160)) })
+        // Note whether the script installs a fake clock (resuming one that was never installed breaks the page).
+        let clocked = false
+        const install = page.clock.install.bind(page.clock)
+        page.clock.install = (...a) => { clocked = true; return install(...a) }
         try {
-          await require(path.join(__dirname, 'games', f))({ page, B, browser, scheme })
+          const outcome = await require(path.join(__dirname, 'games', f))({ page, B, browser, scheme })
+          if (outcome !== 'skip' && !errors.length) errors.push(...(await sharedChecks(page, slug, clocked)))
         } catch (e) {
           errors.push(String(e.message || e).split('\n')[0])
         }

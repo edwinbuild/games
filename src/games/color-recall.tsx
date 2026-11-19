@@ -6,6 +6,7 @@ import { dailyDayFor, dailyRandom, dateKey, puzzleLabel, seededRandom } from '..
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
+import { useRunState } from '../shell/session'
 import { AttemptTiles, Button, Score, Stage, type Attempt, GetReady } from '../ui'
 
 const game = getGame('color-recall')
@@ -31,8 +32,9 @@ export default function ColorRecall() {
   // Every finished try is a list of three scores; the best try counts.
   const [tries, setTries] = useState<number[][]>(() => (oneOff ? [] : loadToday(game.slug, [] as number[][])))
   const targets = coloursFor(day, tries.length)
-  const [current, setCurrent] = useState<number[]>([])
-  const [phase, setPhase] = useState<Phase>(tries.length ? 'compare' : 'ready')
+  // The try in progress survives a refresh (it picks up at the next colour).
+  const [current, setCurrent] = useRunState<number[]>(`${game.slug}:${dateKey(day)}:${oneOff ? 'once' : tries.length}`, [])
+  const [phase, setPhase] = useState<Phase>(current.length ? 'ready' : tries.length ? 'compare' : 'ready')
   const [guess, setGuess] = useState<Hsl>(randomStart)
   const [left, setLeft] = useState(SHOW_MS)
   const [fresh, setFresh] = useState(false)
@@ -147,8 +149,8 @@ export default function ColorRecall() {
     return (
       <Stage>
         <div className="stack">
-          <p className="body" style={{ margin: 0 }}>Each colour shows for {SHOW_MS / 1000} seconds, then hides. Rebuild it with the three sliders.</p>
-          <Button size="lg" block color={game.color} onClick={show} data-primary="click" hint="Space">Show the first colour</Button>
+          <p className="body" style={{ margin: 0 }}>{round ? `Your try continues at colour ${round + 1} of ${ROUNDS}.` : `Each colour shows for ${SHOW_MS / 1000} seconds, then hides. Rebuild it with the three sliders.`}</p>
+          <Button size="lg" block color={game.color} onClick={show} data-primary="click" hint="Space">{round ? `Show colour ${round + 1} of ${ROUNDS}` : 'Show the first colour'}</Button>
         </div>
       </Stage>
     )

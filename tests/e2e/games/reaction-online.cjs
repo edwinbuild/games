@@ -1,6 +1,6 @@
 // Real Supabase Realtime: two players in a fresh room, plus a third who must be turned away.
 module.exports = async ({ page, B, browser, scheme }) => {
-  if (scheme === 'dark') return // one full online run is enough per suite
+  if (scheme === 'dark') return 'skip' // one full online run is enough per suite
   const A = page
   await A.goto(B + '/reaction-online/')
   await A.getByRole('button', { name: 'Create a room' }).click()

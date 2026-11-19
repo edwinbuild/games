@@ -24,3 +24,18 @@ export function ResultSlot({ children, scrollIntoView }: { children: ReactNode; 
   )
   return aside ? createPortal(node, aside) : node
 }
+
+/**
+ * After Play again / Try again on a phone the page was scrolled down to the result, which is now
+ * gone: bring the top of the game back under the top bar so the stage isn't left above the screen.
+ */
+export function bringGameIntoView() {
+  if (!stacked()) return
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    const main = document.querySelector('.game-main')
+    if (!main) return
+    const bar = document.querySelector('.qg-topbar')?.getBoundingClientRect().bottom ?? 0
+    const top = main.getBoundingClientRect().top
+    if (top < bar) window.scrollTo({ top: Math.max(0, scrollY + top - bar - 8), behavior: reducedMotion() ? 'auto' : 'smooth' })
+  }))
+}

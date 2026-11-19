@@ -3,8 +3,8 @@ const { stats } = require('../helpers.cjs')
 // Stand-in crowd functions (never real answers): answer, guess, the crowd chart, coming back, and too few answers.
 module.exports = async ({ page, B }) => {
   let sent = [], crowd = { n: 150, mean: 0.4, hist: [1, 2, 4, 7, 11, 16, 22, 25, 21, 18, 14, 12, 9, 7, 5, 4, 3, 2, 1, 1] }
-  await page.route('**/rest/v1/rpc/crowd_answer', async (r) => { sent.push(JSON.parse(r.request().postData())); await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([crowd]) }) })
-  await page.route('**/rest/v1/rpc/crowd_numbers', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([crowd]) }))
+  await page.context().route('**/rest/v1/rpc/crowd_answer', async (r) => { sent.push(JSON.parse(r.request().postData())); await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([crowd]) }) })
+  await page.context().route('**/rest/v1/rpc/crowd_numbers', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([crowd]) }))
   await page.goto(B + '/guess-the-crowd/')
   const slider = page.locator('#gc-slider')
   await slider.waitFor()
