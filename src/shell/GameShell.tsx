@@ -22,7 +22,7 @@ export function GameShell({ game, children }: { game: GameMeta; children: ReactN
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key !== ' ' && e.key !== 'Enter') return
-      if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return
+      if (e.defaultPrevented || e.repeat || e.metaKey || e.ctrlKey || e.altKey) return // a game already handled it
       const t = e.target as HTMLElement | null
       if (t && t.closest('input, textarea, select, button, a, [role="button"]')) return
       const el =

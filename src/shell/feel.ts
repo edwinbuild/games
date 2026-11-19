@@ -139,6 +139,10 @@ export const feel = {
   click() {
     tone(2200, 14, { type: 'square', volume: 0.04, to: 1400 })
   },
+  /** The nth domino in a run tipping over; pitch climbs with n. */
+  tick(n = 0) {
+    tone(popHz(n) * 2, 24, { type: 'square', volume: 0.035 })
+  },
   /** A blade going through something. */
   slice() {
     vibrate(10)

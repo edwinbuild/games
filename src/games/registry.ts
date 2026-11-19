@@ -315,6 +315,20 @@ export const GAMES: GameMeta[] = [
     color: 'seafoam',
     sample: '38.2s',
   },
+  {
+    slug: 'domino-drop',
+    title: 'Domino Drop',
+    emoji: '🁢',
+    instructions: 'Fill the gaps with five spare dominoes, then push the first one and watch the run fall.',
+    tagline: 'Place five spare dominoes in the gaps, push, and watch the whole line go down. One run a day.',
+    howTo: [
+      'A winding line of dominoes has five gaps where the run would stop. Tap to place a spare domino; it lines up with its neighbours, you can drag it to adjust and tap it again to turn it. Then press Push. A domino tips the next only if it is close enough and roughly in the way it falls; blocks stop the run.',
+      'Every day has one board, the same for everyone. Your score is how many of the 40 dominoes fall. Try as many times as you like; your best run counts. On a computer, move a cursor with the arrow keys, press Enter to place or turn a spare, and Space to push.',
+    ],
+    daily: true,
+    color: 'butter',
+    sample: '38 of 40',
+  },
 ]
 
 export function getGame(slug: string): GameMeta {

@@ -417,6 +417,27 @@ function TidyUpDemo() {
   )
 }
 
+
+function DominoDropDemo() {
+  const d = 3.8
+  // A gentle arc of dominoes with one gap; a spare drops into the gap, then the push runs through.
+  const xs = [14, 28, 42, 56, 84, 98, 112, 126]
+  const spareX = 70
+  const y = (x: number) => 46 - Math.sin((x / 140) * Math.PI) * 18
+  const at = (x: number) => 30 + (x - 14) * 0.38 // falls one after another, left to right
+  const domino = (x: number, spare = false) => (
+    <A key={x} d={d} className={`demo-dd${spare ? ' demo-dd--spare' : ''}`} style={{ left: x - 2, top: y(x) - 7 }}
+      k={`0%,${at(x)}%{width:4px;background:var(--paper)}${at(x) + 5}%,95%{width:12px;background:var(--line)}100%{width:4px;background:var(--paper)}`} />
+  )
+  return (
+    <Scene still={3.4}>
+      {xs.map((x) => domino(x))}
+      <A d={d} k={show([[14, 100]])} style={{ position: 'absolute', inset: 0 }}>{domino(spareX, true)}</A>
+      <Tap d={d} at={12} x={spareX} y={y(spareX)} />
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -438,4 +459,5 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'chain-pop': ChainPopDemo,
   'fair-slice': FairSliceDemo,
   'tidy-up': TidyUpDemo,
+  'domino-drop': DominoDropDemo,
 }

@@ -414,3 +414,9 @@ button { font: inherit; }
 .demo-tu-slot { background: transparent; border: 1.5px dashed var(--line); opacity: 0.6; }
 .demo-tu-tri.demo-tu-slot { background: transparent; opacity: 0.35; }
 .demo-tu-tri.demo-tu-slot::after { background: var(--paper); }
+
+/* Domino Drop */
+.dd-stage { width: 100%; max-width: 400px; margin-inline: auto; overflow: hidden; }
+.dd-canvas { display: block; width: 100%; aspect-ratio: 300 / 420; touch-action: none; user-select: none; -webkit-user-select: none; cursor: copy; }
+.demo-dd { position: absolute; width: 4px; height: 14px; border: 1.5px solid var(--line); border-radius: 1.5px; background: var(--paper); box-sizing: border-box; }
+.demo-dd--spare { border-width: 2.5px; }
