@@ -27,7 +27,17 @@ button { font: inherit; }
 .between > .small { white-space: nowrap; }
 .muted { color: var(--ink-muted); }
 .center { text-align: center; }
-.loading { color: var(--ink-muted); padding: var(--space-7) 0; text-align: center; }
+/* While a game's code loads: the shape of a stage and its key, gently shimmering. */
+.game-skeleton { display: grid; gap: var(--space-3); }
+.game-skeleton-stage, .game-skeleton-key { border-radius: var(--radius-lg); background: var(--surface-sunken); border: var(--border-edge) solid var(--line); position: relative; overflow: hidden; }
+.game-skeleton-stage { height: min(380px, 52dvh); }
+.game-skeleton-key { height: 56px; border-radius: var(--radius-md); }
+.game-skeleton-stage::after, .game-skeleton-key::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, color-mix(in srgb, var(--surface) 70%, transparent) 50%, transparent 70%); transform: translateX(-100%); animation: skeleton 1.3s ease-in-out infinite; }
+@keyframes skeleton { to { transform: translateX(100%); } }
+/* On first load the game slides up into place (not when it changes screens later). */
+[data-entering] .game-main > :not(.game-head) { animation: game-in 420ms cubic-bezier(.2,.8,.2,1) both; }
+@keyframes game-in { from { opacity: 0; transform: translateY(16px); } }
+@media (prefers-reduced-motion: reduce) { .game-skeleton-stage::after, .game-skeleton-key::after, [data-entering] .game-main > :not(.game-head) { animation: none; } }
 .support { margin: 0; color: var(--ink-muted); font: 500 14px/20px var(--font-body); }
 
 /* Static how-to-play text in the HTML (for search engines and first paint). */

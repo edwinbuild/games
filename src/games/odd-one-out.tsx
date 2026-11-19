@@ -70,7 +70,7 @@ export default function OddOneOut() {
   return (
     <>
       <div className="between" style={{ marginBottom: 'var(--space-3)' }}>
-        <Score label={done ? 'Cleared' : 'Level'} value={done ? score : level} size="md" />
+        <Score label={done ? 'Cleared' : 'Level'} value={done ? score : level} size="md" bump />
         <Score label={done ? "Time's up" : started ? 'Time' : 'Starts on first tap'} value={`${Math.ceil(left)}s`} size="md" />
       </div>
 

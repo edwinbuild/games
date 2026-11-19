@@ -101,7 +101,7 @@ export default function MemoryPath() {
     <>
       <div className="between" style={{ marginBottom: 'var(--space-3)' }}>
         <span className="small muted">{status}</span>
-        <Score label="Steps" value={score} size="md" />
+        <Score label="Steps" value={score} size="md" bump />
       </div>
       <Stage flush>
         <div className="grid mp-grid" style={{ gridTemplateColumns: `repeat(${N}, 1fr)` }}>

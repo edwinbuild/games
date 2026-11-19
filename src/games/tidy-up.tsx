@@ -152,7 +152,7 @@ export default function TidyUp() {
     <>
       <div className="between" style={{ marginBottom: 'var(--space-3)' }}>
         <Score label={startAt == null ? 'Starts on first touch' : 'Time'} value={`${elapsed.toFixed(1)}s`} size="md" />
-        <Score label="Left" value={left} size="md" />
+        <Score label="Left" value={left} size="md" bump />
       </div>
       <Stage flush>
         <div ref={stage} className="tu-board" role="group" aria-label="A tray of things and an organiser. Drag each thing into its outline, the right way round. Tap a thing to turn it.">

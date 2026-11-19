@@ -336,3 +336,8 @@
 .qg-ring-text { position: relative; font: 800 17px/1 var(--font-mono); color: var(--ink); letter-spacing: -0.03em; }
 .qg-ring-text small { font-size: 11px; color: var(--ink-muted); }
 @media (prefers-reduced-motion: reduce) { .qg-ring-fill { animation: none; } .qg-filter { transition: none; } }
+
+/* Score bump: a step counter pops when it changes. */
+.qg-score-value--bump { display: inline-block; animation: qg-bump 320ms cubic-bezier(.2,.9,.3,1.4); }
+@keyframes qg-bump { 0% { transform: scale(1.28); } 100% { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .qg-score-value--bump { animation: none; } }

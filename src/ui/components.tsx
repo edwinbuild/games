@@ -75,7 +75,7 @@ export type ToggleChipProps = {
 }
 export function ToggleChip({ label, on, onChange }: ToggleChipProps) {
   return (
-    <button type="button" className="qg-filter" aria-pressed={on} onClick={() => onChange(!on)}>
+    <button type="button" className="qg-chip" aria-pressed={on} onClick={() => onChange(!on)}>
       {label}
       <span className="qg-chip-state"> {on ? 'on' : 'off'}</span>
     </button>
@@ -144,15 +144,20 @@ export type ScoreProps = {
   /** `hidden` dims the number (Blind Timer's ??.??); `accent` colours it with `accentColor`. */
   tone?: 'default' | 'accent' | 'hidden'
   accentColor?: string
+  /** Pop the value when it changes (step counters like Level or Moves). */
+  bump?: boolean
 }
-export function Score({ value, label, size = 'xl', tone = 'default', accentColor }: ScoreProps) {
+export function Score({ value, label, size = 'xl', tone = 'default', accentColor, bump }: ScoreProps) {
+  // With `bump`, the value pops when it changes (never on first show): for counters that step, not running timers.
+  const mounted = useRef(false)
+  useEffect(() => { mounted.current = true }, [])
   return (
     <div
       className={cx('qg-score', size === 'md' && 'qg-score--md', tone !== 'default' && `qg-score--${tone}`)}
       style={accentColor ? ({ ['--qg-accent' as string]: /^[a-z-]+$/.test(accentColor) ? `var(--${accentColor})` : accentColor } as CSSProperties) : undefined}
     >
       {label && <span className="qg-score-label">{label}</span>}
-      <span className="qg-score-value">{value}</span>
+      <span key={bump ? String(value) : undefined} className={cx('qg-score-value', bump && mounted.current && 'qg-score-value--bump')}>{value}</span>
     </div>
   )
 }

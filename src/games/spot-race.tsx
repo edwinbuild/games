@@ -192,7 +192,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
       <>
         <div style={{ marginBottom: 'var(--space-3)' }}>{strip}</div>
         <div className="between" style={{ marginBottom: 'var(--space-3)' }}>
-          <Score label="Level" value={level + 1} size="md" />
+          <Score label="Level" value={level + 1} size="md" bump />
           <Score label="Time" value={`${Math.ceil(left / 1000)}s`} size="md" />
         </div>
         <Stage flush><OddGrid setup={setup} level={level} shake={shake} onPick={pick} /></Stage>

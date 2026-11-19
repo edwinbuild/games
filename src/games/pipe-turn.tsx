@@ -109,7 +109,7 @@ export default function PipeTurn() {
   return (
     <>
       <div className="between" style={{ marginBottom: 'var(--space-3)' }}>
-        <Score label="Turns" value={String(moves)} size="md" />
+        <Score label="Turns" value={String(moves)} size="md" bump />
         <Score label="Par" value={String(board.par)} size="md" />
       </div>
       <Stage className="pt-stage" style={{ position: 'relative' }}>

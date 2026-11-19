@@ -116,8 +116,8 @@ export default function LightPath() {
   return (
     <>
       <div className="between" style={{ marginBottom: 'var(--space-3)' }}>
-        <Score label="Mirrors" value={`${mirrors} / ${MAX_MIRRORS}`} size="md" />
-        <Score label="Targets lit" value={`${goal.filter((i) => beam.lit.has(i)).length} / ${goal.length}`} size="md" />
+        <Score label="Mirrors" value={`${mirrors} / ${MAX_MIRRORS}`} size="md" bump />
+        <Score label="Targets lit" value={`${goal.filter((i) => beam.lit.has(i)).length} / ${goal.length}`} size="md" bump />
       </div>
       <Stage className="lp-stage" style={{ position: 'relative' }}>
         <div className="lp-wrap">

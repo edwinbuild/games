@@ -122,9 +122,9 @@ export default function FlipGrid() {
     <Stage>
       <div className="stack">
         <div className="between">
-          <Score label="Moves" value={String(taps.length)} size="md" />
+          <Score label="Moves" value={String(taps.length)} size="md" bump />
           <Score label="Par" value={String(par)} size="md" />
-          <Score label="Lit left" value={String(left)} size="md" />
+          <Score label="Lit left" value={String(left)} size="md" bump />
         </div>
         <div className="fg-grid" role="grid" aria-label="Flip grid, 5 by 5">
           {grid.map((dark, i) => (
