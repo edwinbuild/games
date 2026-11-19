@@ -16,4 +16,9 @@ module.exports = async ({ page, B }) => {
   await page.locator('.qg-ticket').waitFor()
   const h = await page.locator('.qg-ticket-headline').textContent()
   if (!/Aqua wins 3–0/.test(h)) throw new Error('unexpected result: ' + h)
+  // Regression: a finished match shows in "Your record" (it used to say "Nothing yet").
+  await page.waitForFunction(() => JSON.parse(localStorage.getItem('qg:stats:tap-duel') ?? '{"plays":0}').plays === 1)
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.reload()
+  await page.locator('.game-info').getByText('1 match played').waitFor({ timeout: 5000 })
 }

@@ -4,7 +4,7 @@ import { SITE } from '../site'
 import { Burst, Button, ChallengeBoard, Countdown, PlayNext, ResultTicket, TextField } from '../ui'
 import { challengeUrl, displayName, mergeRow, myId, myName, readChallenge, setMyName } from './challenge'
 import { puzzleLabel } from './daily'
-import { getStats, takeNewBest, todaysDailyText } from './stats'
+import { countPlay, getStats, takeNewBest, todaysDailyText } from './stats'
 import { CountUp } from './CountUp'
 import { feel } from './feel'
 import { ResultSlot } from './layout'
@@ -46,6 +46,8 @@ export function ResultCard(p: Props) {
     if ((p.trackFinish ?? true) && !tracked.current) {
       tracked.current = true
       track('finish', p.game.slug, p.finishData)
+      // Multiplayer games have no personal score to keep, but every finished match counts as played.
+      if (p.game.players && p.game.players !== 1) countPlay(p.game.slug)
       feel.click()
       feel.done()
     }

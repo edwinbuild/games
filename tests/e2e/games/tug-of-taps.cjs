@@ -17,4 +17,9 @@ module.exports = async ({ page, B }) => {
   if (!/Aqua wins/.test(text)) throw new Error('unexpected winner: ' + text.slice(0, 80))
   const coralTaps = Number((/(\d+) taps/.exec(await halves.nth(0).innerText()) || [])[1])
   if (coralTaps !== 10) throw new Error(`Coral taps should be 10 (early tap ignored), got ${coralTaps}`)
+  // Regression: a finished match shows in "Your record" (it used to say "Nothing yet").
+  await page.waitForFunction(() => JSON.parse(localStorage.getItem('qg:stats:tug-of-taps') ?? '{"plays":0}').plays === 1)
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.reload()
+  await page.locator('.game-info').getByText('1 match played').waitFor({ timeout: 5000 })
 }
