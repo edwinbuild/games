@@ -20,8 +20,10 @@ type Colors = { fill: string; edge: string; ink: string; muted: string }
 export default function ShapeRecall() {
   const { day, oneOff } = dailyDayFor(readChallenge(game.slug)?.s)
   const seed = dateKey(day)
-  const shapes = useMemo(() => shapesFor(seed), [seed])
   const [tries, setTries] = useState<number[][]>(() => (oneOff ? [] : loadToday(game.slug, [] as number[][])))
+  const shapes = useMemo(() => shapesFor(seed, tries.length), [seed, tries.length])
+  // The finished try is saved at the last stroke, but the next try's shapes only come in when you move on.
+  const pending = useRef<number[][] | null>(null)
   const [scores, setScores] = useState<number[]>([])
   const [phase, setPhase] = useState<Phase>(tries.length ? 'done' : 'ready')
   const [fresh, setFresh] = useState(false)
@@ -122,7 +124,7 @@ export default function ShapeRecall() {
     setPhase('compare')
     if (next.length === ROUNDS) {
       const all = [...tries, next]
-      setTries(all)
+      pending.current = all
       if (!oneOff) {
         saveToday(game.slug, all)
         const best = Math.max(...all.map(average))
@@ -187,7 +189,7 @@ export default function ShapeRecall() {
       <div className="stack" style={{ marginTop: 'var(--space-3)' }}>
         {phase === 'ready' && <Button size="lg" block color={game.color} onClick={show} data-primary="click" hint="Space">Show the first shape</Button>}
         {phase === 'compare' && scores.length < ROUNDS && <Button size="lg" block color={game.color} onClick={show} data-primary="click" hint="Space">Next shape ({scores.length + 1} of {ROUNDS})</Button>}
-        {phase === 'compare' && scores.length === ROUNDS && <Button size="lg" block color={game.color} onClick={() => setPhase('done')} data-primary="click" hint="Space">See my result</Button>}
+        {phase === 'compare' && scores.length === ROUNDS && <Button size="lg" block color={game.color} onClick={() => { if (pending.current) setTries(pending.current); pending.current = null; setPhase('done') }} data-primary="click" hint="Space">See my result</Button>}
         <p className="small muted center" style={{ margin: 0 }}>
           {phase === 'compare' ? 'Dashed: the shape. Solid: yours. Size and position don’t matter, only the shape.' : 'Each shape shows for 2 seconds. Then draw it with your finger or the mouse.'}
         </p>

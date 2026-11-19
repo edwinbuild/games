@@ -43,8 +43,9 @@ function spline(ctrl: P[], per = 16): P[] {
 export type Shape = { kind: 'zigzag' | 'curve' | 'loop'; points: P[] }
 
 /** The day's three shapes: a zigzag, a curve and a loop, the same for everyone. */
-export function shapesFor(seed: string): Shape[] {
-  const r = seededRandom(`shape-recall:${seed}`)
+export function shapesFor(seed: string, tryIndex = 0): Shape[] {
+  // Try k of the day gets its own shapes (try 0 is the day's first set), so shapes shown after one try never help the next.
+  const r = seededRandom(tryIndex === 0 ? `shape-recall:${seed}` : `shape-recall:${seed}:try${tryIndex}`)
   const m = 50, span = SIZE - 2 * m
   const zn = 4 + Math.floor(r() * 3)
   const zig: P[] = Array.from({ length: zn }, (_, i) => ({ x: m + (span * i) / (zn - 1), y: m + (i % 2 ? 0.7 + r() * 0.3 : r() * 0.3) * span }))

@@ -22,6 +22,11 @@ describe('Shape Recall', () => {
     expect(matchScore(loop.points, zig.points)).toBeLessThan(60)
     expect(matchScore(loop.points, [{ x: 0, y: 0 }, { x: 300, y: 300 }])).toBeLessThan(40)
   })
+  it('gives each try its own shapes, the same for everyone', () => {
+    expect(shapesFor('2027-01-01', 1)).toEqual(shapesFor('2027-01-01', 1))
+    expect(shapesFor('2027-01-01', 1)).not.toEqual(shapesFor('2027-01-01', 0))
+    expect(shapesFor('2027-01-01', 0)).toEqual(shapesFor('2027-01-01'))
+  })
   it('gives everyone the same three shapes, inside the board', () => {
     expect(shapesFor('x')).toEqual(shapesFor('x'))
     for (let d = 0; d < 50; d++) for (const s of shapesFor(`d${d}`)) for (const p of s.points) {

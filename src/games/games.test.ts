@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { cardsFor } from './luckiest-person'
 import { targetFor } from './blind-timer'
 import { targetsFor } from './pitch-match'
+import { coloursFor } from './color-recall'
 import { getStats, recordDaily, recordPlay, todaysDailyText } from '../shell/stats'
 
 beforeEach(() => {
@@ -55,5 +56,14 @@ describe('result text for the home cards', () => {
     recordPlay('r', 250, (a, b) => a < b, '250ms')
     recordPlay('r', 400, (a, b) => a < b, '400ms')
     expect(getStats('r').bestText).toBe('250ms')
+  })
+})
+
+describe('per-try puzzles', () => {
+  it('gives each Color Recall try its own colours, the same for everyone', () => {
+    const d = new Date(2027, 2, 4)
+    expect(coloursFor(d, 1)).toEqual(coloursFor(d, 1))
+    expect(coloursFor(d, 1)).not.toEqual(coloursFor(d, 0))
+    expect(coloursFor(d, 0)).toEqual(coloursFor(d))
   })
 })

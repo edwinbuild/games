@@ -36,11 +36,11 @@ export const HOW_TO: Record<string, string[]> = {
   ],
   'color-recall': [
     'A colour fills the screen for two seconds, then hides. Rebuild it with the hue, saturation and lightness sliders and press Lock in. After each colour you see yours next to the real one.',
-    'There are three colours a day, the same for everyone. Each match is scored by how different the two colours look to the human eye (the CIEDE2000 measure), and your day’s result is the average. Try as many times as you like; your best try counts.',
+    'There are three colours a day, the same for everyone. Each match is scored by how different the two colours look to the human eye (the CIEDE2000 measure), and your day’s result is the average. Try as many times as you like; your best try counts. Each try gets its own three colours, the same for everyone.',
   ],
   'count-flash': [
     'Each field of dots shows for 0.8 seconds, which is too short to count. Type your estimate and lock it in; the field comes back with the real number.',
-    'There are five fields a day, from about a dozen dots to three hundred, the same for everyone. Each guess scores 100 minus your percentage error, and your result is the average. Try as many times as you like; your best try counts.',
+    'There are five fields a day, from about a dozen dots to three hundred, the same for everyone. Your result is your average error: how far your guesses were from the real counts, as a percentage (guessing 30 for 20 dots is 50% off). Try as many times as you like; your best try counts. Each try of the day gets its own five fields (the same for everyone), so the counts you see after one try never help the next.',
   ],
   'tug-of-taps': [
     'Put the phone between you; each player gets one half of the screen. After a 3-2-1 countdown, tap your own half as fast as you can. Every tap pulls the rope one step toward you.',
@@ -116,7 +116,7 @@ export const HOW_TO: Record<string, string[]> = {
   ],
   'shape-recall': [
     'Each shape (a zigzag, a curve, a loop) shows for two seconds, then hides. Draw it from memory in one stroke with your finger or the mouse. Your drawing is laid over the real shape, with how closely they match.',
-    'Size, position and the direction you draw in don’t matter, only the shape. There are three shapes a day, the same for everyone, and your result is the average match. Try as many times as you like; your best try counts. This game needs a touch screen, mouse or pen.',
+    'Size, position and the direction you draw in don’t matter, only the shape. There are three shapes a day, the same for everyone, and your result is the average match. Try as many times as you like; your best try counts. This game needs a touch screen, mouse or pen. Each try gets its own three shapes, the same for everyone.',
   ],
   'higher-lower': [
     'Create a room and send the link (or the five-letter code); two to eight players can join. When everyone is ready, the host starts the quiz. Each question shows one country’s population or land area; say whether a second country’s number is higher or lower. You have ten seconds.',

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { getGame } from './registry'
 import { css, matchScore, type Hsl } from './color-recall/color'
 import { readChallenge } from '../shell/challenge'
-import { dailyDayFor, dailyRandom, dateKey, puzzleLabel } from '../shell/daily'
+import { dailyDayFor, dailyRandom, dateKey, puzzleLabel, seededRandom } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
@@ -13,8 +13,9 @@ const ROUNDS = 3
 const SHOW_MS = 2000
 
 /** Today's three colours, the same for everyone; saturated enough and not too dark or pale to remember. */
-export function coloursFor(d = new Date()): Hsl[] {
-  const r = dailyRandom(game.slug, d)
+/** Try k of the day gets its own colours (try 0 is the day's first set), so colours shown after one try never help the next. */
+export function coloursFor(d = new Date(), k = 0): Hsl[] {
+  const r = k === 0 ? dailyRandom(game.slug, d) : seededRandom(`${game.slug}:${dateKey(d)}:try${k}`)
   return Array.from({ length: ROUNDS }, () => ({ h: Math.round(r() * 360), s: Math.round(35 + r() * 55), l: Math.round(30 + r() * 45) }))
 }
 
@@ -27,9 +28,9 @@ type Phase = 'ready' | 'countdown' | 'show' | 'match' | 'compare'
 
 export default function ColorRecall() {
   const { day, oneOff } = dailyDayFor(readChallenge(game.slug)?.s)
-  const targets = coloursFor(day)
   // Every finished try is a list of three scores; the best try counts.
   const [tries, setTries] = useState<number[][]>(() => (oneOff ? [] : loadToday(game.slug, [] as number[][])))
+  const targets = coloursFor(day, tries.length)
   const [current, setCurrent] = useState<number[]>([])
   const [phase, setPhase] = useState<Phase>(tries.length ? 'compare' : 'ready')
   const [guess, setGuess] = useState<Hsl>(randomStart)
@@ -118,7 +119,7 @@ export default function ColorRecall() {
             {fresh && lastTry && lastTry.length === ROUNDS && (
               <>
                 <div className="cr-compare">
-                  <div><span className="cr-swatch" style={{ background: css(targets[ROUNDS - 1]) }} /><span className="small muted">Last colour</span></div>
+                  <div><span className="cr-swatch" style={{ background: css(coloursFor(day, tries.length - 1)[ROUNDS - 1]) }} /><span className="small muted">Last colour</span></div>
                   <div><span className="cr-swatch" style={{ background: css(guess) }} /><span className="small muted">Yours</span></div>
                 </div>
                 <p className="body-strong" style={{ margin: 0 }}>Last try: {average(lastTry)}% match</p>

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { getGame } from './registry'
 import { countsFor, placeDots, roundScore } from './count-flash/dots'
+import { bestOf, errorOf, scoresOf, trySeed, type Stored, type Try } from './count-flash/tries'
 import { readChallenge } from '../shell/challenge'
 import { dailyDayFor, dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
@@ -15,7 +16,6 @@ const ROUNDS = 5
 
 const grade = (s: number): Attempt => (s >= 90 ? 'hit' : s >= 75 ? 'near' : 'miss')
 const square = (s: number) => ({ hit: '🟩', near: '🟨', miss: '🟥', empty: '⬜' })[grade(s)]
-const average = (xs: number[]) => Math.round(xs.reduce((a, b) => a + b, 0) / xs.length)
 
 type Phase = 'ready' | 'countdown' | 'flash' | 'guess' | 'reveal'
 
@@ -33,10 +33,12 @@ function Field({ n, seed }: { n: number; seed: string }) {
 export default function CountFlash() {
   const { day, oneOff } = dailyDayFor(readChallenge(game.slug)?.s)
   const seed = dateKey(day)
-  const counts = countsFor(seed)
-  const [tries, setTries] = useState<number[][]>(() => (oneOff ? [] : loadToday(game.slug, [] as number[][])))
-  // The try in progress survives a refresh.
-  const [current, setCurrent] = useRunState<number[]>(`${game.slug}:${seed}:${tries.length}`, [])
+  const [tries, setTries] = useState<Stored[]>(() => (oneOff ? [] : loadToday(game.slug, [] as Stored[])))
+  // Each try has its own fields, so the counts revealed after one try never help the next.
+  const fieldSeed = trySeed(seed, tries.length)
+  const counts = countsFor(fieldSeed)
+  // The try in progress (the guesses so far) survives a refresh.
+  const [current, setCurrent] = useRunState<number[]>(`${game.slug}:${seed}:${tries.length}:g`, [])
   const [phase, setPhase] = useState<Phase>('ready')
   const [guess, setGuess] = useState('')
   const [fresh, setFresh] = useState(false)
@@ -68,53 +70,54 @@ export default function CountFlash() {
     if (s >= 90) feel.good()
     else if (s < 75) feel.bad()
     else feel.tap()
-    const next = [...current, s]
+    const next = [...current, g]
     setCurrent(next)
     setPhase('reveal')
     // The try is recorded at the last answer, so a refresh before "See your result" can't lose it.
     if (next.length === ROUNDS) {
-      const all = [...tries, next]
+      const all: Stored[] = [...tries, { g: next, n: counts } satisfies Try]
       finished.current = all
       if (!oneOff) {
         saveToday(game.slug, all)
-        const best = Math.max(...all.map(average))
-        recordDaily(game.slug, best, new Date(), `${100 - best}% off`)
+        const best = errorOf(bestOf(all))
+        recordDaily(game.slug, -best, new Date(), `${best}% off`)
       }
       setFresh(true)
     }
   }
-  const finished = useRef<number[][] | null>(null)
+  const finished = useRef<Stored[] | null>(null)
 
   function next() {
     if (current.length < ROUNDS) return flash()
-    setTries(finished.current ?? [...tries, current])
+    setTries(finished.current ?? [...tries, { g: current, n: counts }])
     setCurrent([])
     setPhase('ready')
   }
 
-  const tiles = Array.from({ length: ROUNDS }, (_, i) => (i < current.length ? grade(current[i]) : 'empty' as Attempt))
+  const tiles = Array.from({ length: ROUNDS }, (_, i) => (i < current.length ? grade(roundScore(current[i], counts[i])) : 'empty' as Attempt))
 
   if (done) {
-    const bestTry = tries.reduce((a, b) => (average(b) > average(a) ? b : a))
-    const best = average(bestTry)
+    const bestTry = bestOf(tries)
+    const best = errorOf(bestTry)
+    const lastTry = tries[tries.length - 1]
     const nTries = `${tries.length} ${tries.length === 1 ? 'try' : 'tries'}`
     const stats = getStats(game.slug)
     return (
       <>
         <Stage>
           <div className="stack" style={{ justifyItems: 'center' }}>
-            <p className="body-strong" style={{ margin: 0 }}>Today’s counts: {counts.join(', ')}</p>
-            <AttemptTiles attempts={bestTry.map(grade)} />
+            {!Array.isArray(lastTry) && <p className="body-strong" style={{ margin: 0 }}>Last try’s counts: {lastTry.n.join(', ')}. Your next try gets new fields.</p>}
+            <AttemptTiles attempts={scoresOf(bestTry).map(grade)} />
           </div>
         </Stage>
         <ResultCard
           game={game}
-          headline={`Within ${100 - best}% on average`}
+          headline={`${best}% off on average`}
           detail={<>Your best of {nTries} {oneOff ? `on the ${puzzleLabel(day)} fields` : 'today'}{!oneOff && stats.streak > 1 ? ` · ${stats.streak} day streak` : ''}</>}
-          shareText={`🔢 Count Flash ${puzzleLabel(day)}\n${bestTry.map(square).join('')}\nWithin ${100 - best}% on average, best of ${nTries}`}
+          shareText={`🔢 Count Flash ${puzzleLabel(day)}\n${scoresOf(bestTry).map(square).join('')}\n${best}% off on average, best of ${nTries}`}
           finishData={{ score: best, tries: tries.length }}
           trackFinish={fresh}
-          challenge={{ seed, score: best, text: `${100 - best}% off`, lowerIsBetter: false }}
+          challenge={{ seed, score: best, text: `${best}% off`, lowerIsBetter: true }}
           onReplay={flash}
           replayLabel="Try again"
         />
@@ -131,8 +134,8 @@ export default function CountFlash() {
         </div>
         <div className="cf-box">
           {phase === 'countdown' && <GetReady onDone={startFlash} />}
-          {phase === 'flash' && <Field n={n} seed={seed} />}
-          {phase === 'reveal' && <Field n={counts[round - 1]} seed={seed} />}
+          {phase === 'flash' && <Field n={n} seed={fieldSeed} />}
+          {phase === 'reveal' && <Field n={counts[round - 1]} seed={fieldSeed} />}
           {phase === 'ready' && <p className="body cf-hint">The dots show for less than a second. Don’t count: estimate.</p>}
           {phase === 'guess' && <p className="result cf-hint">How many?</p>}
         </div>
