@@ -43,6 +43,8 @@ export default function GuessTheCrowd() {
       const r = await rpc<Crowd[]>('crowd_answer', { p_game: game.slug, p_day: dateKey(today), p_question: id, p_value: toShare(q, answer) })
       const s = { answer, guess }
       saveToday(game.slug, s)
+      // Answering is today's play (streak), even before the crowd is big enough to score it.
+      recordDaily(game.slug, null, new Date(), 'Answered', true)
       setSaved(s)
       setCrowd(r[0])
       setFresh(true)

@@ -1,3 +1,5 @@
+const { stats } = require('../helpers.cjs')
+
 // Stand-in crowd functions (never real answers): answer, guess, the crowd chart, coming back, and too few answers.
 module.exports = async ({ page, B }) => {
   let sent = [], crowd = { n: 150, mean: 0.4, hist: [1, 2, 4, 7, 11, 16, 22, 25, 21, 18, 14, 12, 9, 7, 5, 4, 3, 2, 1, 1] }
@@ -36,4 +38,13 @@ module.exports = async ({ page, B }) => {
   await page.getByText(/Only 6 answers so far, too few/).waitFor()
   if (await page.locator('.qg-hist').count()) throw new Error('chart shown with too few answers')
   if (!/Answer saved/.test(await page.locator('.qg-ticket').innerText())) throw new Error('ticket should wait for the crowd')
+  // An early answer still counts the day (streak), with no score yet.
+  const st = await stats(page, 'guess-the-crowd')
+  if (!st || st.streak !== 1 || st.daily[st.lastDaily] !== null || st.dailyText[st.lastDaily] !== 'Answered') throw new Error('early answer not recorded: ' + JSON.stringify(st))
+  // Later the crowd is big enough: coming back scores the day.
+  crowd = { n: 40, mean: 0.5, hist: Array(20).fill(2) }
+  await page.reload()
+  await page.locator('.qg-hist').waitFor()
+  const st2 = await stats(page, 'guess-the-crowd')
+  if (typeof st2.daily[st2.lastDaily] !== 'number' || !/% off/.test(st2.dailyText[st2.lastDaily]) || st2.streak !== 1) throw new Error('day not scored later: ' + JSON.stringify(st2))
 }
