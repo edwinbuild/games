@@ -250,7 +250,8 @@ export default function PourLine() {
     const best = bestOf(all)
     if (!oneOff) {
       saveToday(game.slug, all)
-      if (best != null) recordDaily(game.slug, best, new Date(), fmt(best), true)
+      // An all-spill day still counts as played (streak), with no score.
+      recordDaily(game.slug, best, new Date(), best == null ? 'Spilled' : fmt(best), true)
     }
     setFresh(true)
     setTimeout(() => setPhase('done'), !r.spilled && r.perfect ? 1600 : 1200)

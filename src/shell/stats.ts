@@ -9,8 +9,8 @@ export type Stats = {
   lastDaily: string | null
   streak: number
   maxStreak: number
-  /** Daily results by date, e.g. { "2027-01-04": 0.04 }. */
-  daily: Record<string, number>
+  /** Daily results by date, e.g. { "2027-01-04": 0.04 }; null means played but no score yet (a spill). */
+  daily: Record<string, number | null>
   /** Short display text of the best score ("243ms", "Lv 7"), shown on the home card. */
   bestText?: string
   /** Short display text of each daily result, by date. */
@@ -57,20 +57,28 @@ export function countPlay(game: string): Stats {
 }
 
 /** Record today's daily result and advance the streak (once per day). */
-export function recordDaily(game: string, score: number, now = new Date(), text?: string, lowerIsBetter = false): Stats {
+/**
+ * Record today's daily result. `score` null marks the day as played without a score (every try
+ * spilled, or a crowd answer still waiting for the crowd): the streak counts, bests are untouched.
+ */
+export function recordDaily(game: string, score: number | null, now = new Date(), text?: string, lowerIsBetter = false): Stats {
   const s = getStats(game)
   const today = dateKey(now)
   const beats = (a: number, b: number) => (lowerIsBetter ? a < b : a > b)
-  const earlier = Object.entries(s.daily).filter(([d]) => d !== today).map(([, v]) => v)
+  const earlier = Object.entries(s.daily).filter(([d, v]) => d !== today && v != null).map(([, v]) => v as number)
   const before = earlier.length ? earlier.reduce((a, b) => (beats(a, b) ? a : b)) : null
-  if (before != null && beats(score, before) && (s.daily[today] == null || beats(score, s.daily[today]))) newBests.add(game)
+  const current = s.daily[today] ?? null
+  if (score != null && before != null && beats(score, before) && (current == null || beats(score, current))) newBests.add(game)
   if (s.lastDaily !== today) {
     s.streak = s.lastDaily === previousDateKey(now) ? s.streak + 1 : 1
     s.maxStreak = Math.max(s.maxStreak, s.streak)
     s.lastDaily = today
   }
-  s.daily[today] = score
-  if (text) s.dailyText = { ...s.dailyText, [today]: text }
+  // A day without a score never overwrites one that has a score.
+  if (score != null || current == null) {
+    s.daily[today] = score
+    if (text) s.dailyText = { ...s.dailyText, [today]: text }
+  }
   save(`stats:${game}`, s)
   return s
 }
@@ -80,7 +88,8 @@ export function todaysDailyText(game: string, now = new Date()): string | undefi
   return getStats(game).dailyText?.[dateKey(now)]
 }
 
-export function todaysDaily(game: string, now = new Date()): number | undefined {
+/** Today's daily result: undefined if not played today, null if played without a score. */
+export function todaysDaily(game: string, now = new Date()): number | null | undefined {
   return getStats(game).daily[dateKey(now)]
 }
 

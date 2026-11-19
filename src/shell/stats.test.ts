@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { getStats, loadToday, recordDaily, recordPlay, saveToday, takeNewBest } from './stats'
+import { countPlay, getStats, loadToday, recordDaily, recordPlay, saveToday, takeNewBest, todaysDaily, todaysDailyText } from './stats'
 
 beforeEach(() => {
   const store = new Map<string, string>()
@@ -50,6 +50,43 @@ describe('stats', () => {
     expect(getStats('d')).toMatchObject({ streak: 2, maxStreak: 2 })
     recordDaily('d', 4, new Date(2027, 0, 5, 9)) // missed days
     expect(getStats('d')).toMatchObject({ streak: 1, maxStreak: 2 })
+  })
+
+  it('counts a day played without a score towards the streak, but never as a best', () => {
+    const d1 = new Date(2027, 0, 1), d2 = new Date(2027, 0, 2), d3 = new Date(2027, 0, 3)
+    recordDaily('sp', null, d1, 'Spilled', true)
+    expect(todaysDaily('sp', d1)).toBeNull()
+    expect(todaysDailyText('sp', d1)).toBe('Spilled')
+    expect(getStats('sp')).toMatchObject({ streak: 1 })
+    // The next day's real score is not a "new best" over a spill.
+    recordDaily('sp', 12, d2, '12% off', true)
+    expect(takeNewBest('sp')).toBe(false)
+    expect(getStats('sp')).toMatchObject({ streak: 2 })
+    // A later spill on a day with a score keeps the score.
+    recordDaily('sp', 8, d3, '8% off', true)
+    recordDaily('sp', null, d3, 'Spilled', true)
+    expect(todaysDaily('sp', d3)).toBe(8)
+    expect(todaysDailyText('sp', d3)).toBe('8% off')
+    expect(takeNewBest('sp')).toBe(true)
+  })
+
+  it('carries streaks across month and year ends, and breaks on a skipped day', () => {
+    recordDaily('m', 1, new Date(2027, 0, 31, 23, 59))
+    recordDaily('m', 1, new Date(2027, 1, 1, 0, 1))
+    recordDaily('m', 1, new Date(2027, 1, 2))
+    expect(getStats('m')).toMatchObject({ streak: 3, maxStreak: 3 })
+    recordDaily('y2', 1, new Date(2027, 11, 31, 22))
+    recordDaily('y2', 1, new Date(2028, 0, 1, 8))
+    expect(getStats('y2').streak).toBe(2)
+    recordDaily('y2', 1, new Date(2028, 0, 3))
+    expect(getStats('y2')).toMatchObject({ streak: 1, maxStreak: 2 })
+  })
+
+  it('counts matches without touching the best', () => {
+    countPlay('duel')
+    countPlay('duel')
+    expect(getStats('duel')).toMatchObject({ plays: 2, best: null })
+    expect(takeNewBest('duel')).toBe(false)
   })
 
   it('resets per-day state at midnight', () => {
