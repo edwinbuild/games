@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { GAMES, type GameMeta } from '../games/registry'
+import { LISTED, type GameMeta } from '../games/registry'
 import { SITE } from '../site'
 import { Burst, Button, ChallengeBoard, Countdown, PlayNext, ResultTicket, TextField } from '../ui'
 import { challengeUrl, displayName, mergeRow, myId, myName, readChallenge, setMyName } from './challenge'
@@ -34,7 +34,7 @@ type Props = {
 
 /** Pick one other game to suggest; rotates by day. */
 function nextGame(current: string) {
-  const others = GAMES.filter((g) => g.slug !== current)
+  const others = LISTED.filter((g) => g.slug !== current)
   const day = Math.floor(Date.now() / 86_400_000)
   return others[(day + current.length) % others.length]
 }

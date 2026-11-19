@@ -1,5 +1,13 @@
 module.exports = async ({ page, B }) => {
   await page.goto(B + '/tap-duel/')
+  // One card, two modes: the switch goes to the online page and back.
+  await page.getByRole('button', { name: 'Online', exact: true }).click()
+  await page.waitForURL(/\/reaction-online\//, { waitUntil: 'load' })
+  await page.getByRole('button', { name: 'Create a room' }).waitFor()
+  await page.waitForTimeout(400) // let the page transition finish, as a person would
+  await page.getByRole('button', { name: 'One phone', exact: true }).click()
+  await page.waitForURL(/\/tap-duel\//, { waitUntil: 'load' })
+  await page.waitForTimeout(400)
   await page.getByRole('button', { name: 'Start the duel' }).click()
   const halves = page.locator('.qg-split-half')
   // Round 1: Coral taps early and loses it.

@@ -27,6 +27,8 @@ export type GameMeta = {
   sample: string
   /** What the game asks of you: the category it is listed under. */
   skill: Skill
+  /** false: the page works (old links, room links) but the game has no card of its own. */
+  listed?: false
   /** Who plays: one person, several on one phone, or several online. Defaults to 1. */
   players?: 1 | 'same-phone-2' | 'same-phone-3' | 'online-2' | 'online-2-8'
 }
@@ -99,38 +101,16 @@ export const GAMES: GameMeta[] = [
     skill: 'eye',
   },
   {
-    slug: 'luckiest-person',
-    title: 'Luckiest Person',
-    emoji: '🍀',
-    instructions: 'Pick one of today\'s five face-down cards. Higher is luckier.',
-    tagline: 'Five face-down cards, one pick a day. Everyone gets the same five.',
-    daily: true,
-    color: 'lagoon',
-    sample: '87',
-    skill: 'crowd',
-  },
-  {
     slug: 'tap-duel',
-    title: 'Tap Duel',
+    title: 'Reaction Duel',
     emoji: '🤝',
     instructions: 'Two players, one phone. Tap your side the moment it turns green. First to three.',
-    tagline: 'Two players, one phone: first to tap after the signal wins the round.',
+    tagline: 'Two players: on one phone, or each on your own. First to tap after the signal wins the round.',
     daily: false,
     color: 'coral',
     sample: '3–1',
     players: 'same-phone-2',
     skill: 'friends',
-  },
-  {
-    slug: 'this-or-that',
-    title: 'This or That',
-    emoji: '🔀',
-    instructions: 'Pick your answer, then guess how today’s players split.',
-    tagline: 'One question a day. Pick a side, then guess how everyone else picked.',
-    daily: true,
-    color: 'aqua',
-    sample: '4 pts off',
-    skill: 'crowd',
   },
   {
     slug: 'color-recall',
@@ -188,6 +168,7 @@ export const GAMES: GameMeta[] = [
     sample: '3–2',
     players: 'online-2',
     skill: 'friends',
+    listed: false,
   },
   {
     slug: 'flip-grid',
@@ -424,6 +405,9 @@ export const GAMES: GameMeta[] = [
     skill: 'friends',
   },
 ]
+
+/** Games with a card on the home page, in the sitemap and suggested as "play next". */
+export const LISTED: GameMeta[] = GAMES.filter((g) => g.listed !== false)
 
 export function getGame(slug: string): GameMeta {
   const g = GAMES.find((x) => x.slug === slug)

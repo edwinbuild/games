@@ -4,7 +4,7 @@
 // Run with Node 22.18+ (TypeScript types are stripped natively).
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { GAMES, SKILLS, type GameMeta } from '../src/games/registry.ts'
+import { GAMES, LISTED, SKILLS, type GameMeta } from '../src/games/registry.ts'
 import { HOW_TO } from '../src/games/howto.ts'
 import { SITE } from '../src/site.ts'
 
@@ -39,6 +39,8 @@ function page(opts: {
     <meta name="description" content="${esc(opts.description)}" />
     <link rel="canonical" href="${url}" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- Page-to-page transitions must be opted into before the page renders, so this can't wait for the stylesheet. -->
+    <style>@view-transition{navigation:auto}@media (prefers-reduced-motion:reduce){@view-transition{navigation:none}}</style>
     <script>try{var t=JSON.parse(localStorage.getItem('qg:theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
     <meta name="theme-color" content="#f4f4f2" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0b0b0b" media="(prefers-color-scheme: dark)" />
@@ -82,7 +84,7 @@ ${howTo}
 }
 
 function homePage() {
-  const list = GAMES.map(
+  const list = LISTED.map(
     (g) => `        <li><a href="/${g.slug}/">${esc(g.title)}</a>: ${esc(g.tagline)}</li>`,
   ).join('\n')
   return page({
@@ -105,7 +107,7 @@ ${list}
 // the plain links are there for the first paint and for no-JavaScript readers.
 /** A category page: the home page filtered to one kind of game, with its own title and list. */
 function categoryPage(k: (typeof SKILLS)[number]) {
-  const games = GAMES.filter((g) => g.skill === k.id)
+  const games = LISTED.filter((g) => g.skill === k.id)
   const list = games.map((g) => `        <li><a href="/${g.slug}/">${esc(g.title)}</a>: ${esc(g.tagline)}</li>`).join('\n')
   return page({
     title: `${k.label} games | ${SITE.name}`,
@@ -123,7 +125,7 @@ ${list}
     </section>`,
   })
 }
-const CATEGORIES = SKILLS.filter((k) => GAMES.some((g) => g.skill === k.id))
+const CATEGORIES = SKILLS.filter((k) => LISTED.some((g) => g.skill === k.id))
 
 const footer = `    <div id="footer"><footer class="qg-footer"><a href="/">All games</a> · <a href="/about/">About</a> · Made with ♥ by <a href="https://edwinsm.me">edwinsm.me</a></footer></div>`
 
@@ -195,7 +197,7 @@ for (const g of GAMES) {
   writeFileSync(resolve(site, g.slug, 'index.html'), gamePage(g))
 }
 // Sitemap and robots.txt for search engines.
-const urls = ['/', ...CATEGORIES.map((k) => `/c/${k.id}/`), ...GAMES.map((g) => `/${g.slug}/`), '/about/']
+const urls = ['/', ...CATEGORIES.map((k) => `/c/${k.id}/`), ...LISTED.map((g) => `/${g.slug}/`), '/about/']
 writeFileSync(
   resolve(root, 'public/sitemap.xml'),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${BASE_URL}${u}</loc></url>`).join('\n')}\n</urlset>\n`,

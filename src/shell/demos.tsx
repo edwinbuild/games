@@ -175,30 +175,6 @@ function PitchMatchDemo() {
   )
 }
 
-function LuckiestDemo() {
-  const d = 4
-  const nums = [34, 87, 12, 61, 9]
-  const picked = 3
-  return (
-    <Scene still={3.2}>
-      {nums.map((n, i) => {
-        const mine = i === picked
-        const flip = mine ? 40 : 57
-        const k = mine
-          ? '0%,35%{transform:none}40%{transform:scaleX(0)}45%,94%{transform:translateY(-6px)}100%{transform:none}'
-          : '0%,52%{transform:none}57%{transform:scaleX(0)}62%,100%{transform:none}'
-        return (
-          <A key={i} d={d} k={k} className={`demo-lp-card${mine ? ' demo-lp-mine' : ''}`} style={{ left: 22 + i * 20, top: 22 }}>
-            <A d={d} k={show([[0, flip], [96, 100]])} className="demo-lp-back" />
-            <A d={d} k={show([[flip, 96]])} className="demo-text" style={{ fontSize: 10 }}>{String(n)}</A>
-          </A>
-        )
-      })}
-      <Tap d={d} at={32} x={22 + picked * 20 + 9} y={36} />
-      <A d={d} k={show([[66, 96]])} className="demo-small" style={{ left: 22, top: 6 }}>Best was 87</A>
-    </Scene>
-  )
-}
 
 function TapDuelDemo() {
   const d = 3.2
@@ -219,21 +195,6 @@ function TapDuelDemo() {
   )
 }
 
-function ThisOrThatDemo() {
-  const d = 3.6
-  return (
-    <Scene still={2.9}>
-      <A d={d} className="demo-box demo-emoji" style={{ left: 22, top: 2, width: 44, height: 34 }} k="0%,23%{background:var(--paper)}24%,96%{background:var(--line)}100%{background:var(--paper)}">☕</A>
-      <span className="demo-box demo-emoji" style={{ left: 74, top: 2, width: 44, height: 34 }}>🍵</span>
-      <Tap d={d} at={22} x={44} y={19} />
-      <span className="demo-box" style={{ left: 16, top: 46, width: 108, height: 14, borderRadius: 4 }}>
-        <A d={d} className="demo-tot-fill" ease="ease-out" k="0%,52%{width:0}74%,96%{width:64%}100%{width:0}" />
-      </span>
-      <A d={d} k={show([[34, 96]])} className="demo-tot-guess" style={{ left: 16 + 108 * 0.55 }} />
-      <A d={d} k={show([[76, 96]])} className="demo-small" style={{ left: 16, top: 64 }}>64% picked ☕</A>
-    </Scene>
-  )
-}
 
 function ColorRecallDemo() {
   const d = 4
@@ -686,9 +647,7 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'odd-one-out': OddOneOutDemo,
   'memory-path': MemoryPathDemo,
   'pitch-match': PitchMatchDemo,
-  'luckiest-person': LuckiestDemo,
   'tap-duel': TapDuelDemo,
-  'this-or-that': ThisOrThatDemo,
   'color-recall': ColorRecallDemo,
   'count-flash': CountFlashDemo,
   'tug-of-taps': TugDemo,

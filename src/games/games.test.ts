@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { cardsFor } from './luckiest-person'
 import { targetFor } from './blind-timer'
 import { targetsFor } from './pitch-match'
 import { coloursFor } from './color-recall'
@@ -18,17 +17,6 @@ beforeEach(() => {
 })
 
 describe('daily puzzles', () => {
-  it('deals the same five different cards to everyone on a date', () => {
-    for (let d = 1; d <= 60; d++) {
-      const day = new Date(2027, 0, d)
-      const cards = cardsFor(day)
-      expect(cards).toEqual(cardsFor(day))
-      expect(new Set(cards).size).toBe(5)
-      for (const c of cards) expect(c).toBeGreaterThanOrEqual(1), expect(c).toBeLessThanOrEqual(100)
-    }
-    expect(cardsFor(new Date(2027, 0, 1))).not.toEqual(cardsFor(new Date(2027, 0, 2)))
-  })
-
   it('keeps Blind Timer targets between 5 and 12 seconds', () => {
     for (let d = 1; d <= 60; d++) {
       const t = targetFor(new Date(2027, 0, d))

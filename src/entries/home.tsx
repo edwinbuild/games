@@ -1,6 +1,6 @@
 import { StrictMode, useEffect, useState, type CSSProperties } from 'react'
 import { createRoot } from 'react-dom/client'
-import { GAMES, playersLabel, SKILLS, type GameMeta, type Skill } from '../games/registry'
+import { LISTED as GAMES, playersLabel, SKILLS, type GameMeta, type Skill } from '../games/registry'
 import { SITE } from '../site'
 import { formatCount, SHOW_FROM, useRecentPlays } from '../shell/live'
 import { DEMOS } from '../shell/demos'

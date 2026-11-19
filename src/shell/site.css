@@ -735,3 +735,8 @@ button { font: inherit; }
 .pm-chip { display: block; width: 100%; max-width: 64px; aspect-ratio: 1; border-radius: var(--radius-sm); border: var(--border-edge) solid var(--edge); }
 .pm-strip-pair .pm-chip + .pm-chip { margin-top: -10px; border-radius: 50%; width: 70%; }
 @media (prefers-reduced-motion: reduce) { .pm-tube-fill { transition: none; } }
+
+/* Reaction Duel: one phone or online, as a switch above the game. */
+.duel-modes { display: flex; justify-content: center; margin-bottom: var(--space-4); }
+/* Guess the Crowd's bonus round sits under the main result. */
+.tot-bonus { margin-top: var(--space-4); }

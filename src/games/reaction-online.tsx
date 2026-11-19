@@ -4,6 +4,7 @@ import { makeDelays, roundWinner, TARGET, type Result } from './reaction-online/
 import { myName, setMyName } from '../shell/challenge'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
+import { DuelModes } from '../shell/DuelModes'
 import { goToRoom, roomFromUrl, RoomLanding, RoomNotice } from '../shell/online'
 import { useRoom, useStepOutIfStale, type Member } from '../shell/room'
 import { Button, Lobby, PLAYERS, RoomCode, ScoreStrip, Stage, TextField } from '../ui'
@@ -13,7 +14,8 @@ const MAX = 2
 
 export default function ReactionOnline() {
   const [code, setCode] = useState<string | null>(roomFromUrl)
-  if (!code) return <RoomLanding game={game} intro="Play a friend on their own phone. One of you makes a room and sends the link; the other joins." onRoom={(c) => { goToRoom(c); setCode(c) }} />
+  // Before joining a room you can switch to playing on one phone (both modes share one card).
+  if (!code) return <><DuelModes current="online" /><RoomLanding game={game} intro="Play a friend on their own phone. One of you makes a room and sends the link; the other joins." onRoom={(c) => { goToRoom(c); setCode(c) }} /></>
   return <Room code={code} onLeave={() => { goToRoom(null); setCode(null) }} />
 }
 

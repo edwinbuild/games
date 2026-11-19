@@ -12,7 +12,7 @@ module.exports = async ({ page, B, browser }) => {
   await page.getByRole('button', { name: /^With friends/ }).click()
   let now = await sections(page)
   if (now.length !== 1 || now[0] !== 'With friends') throw new Error('With friends filter: ' + now)
-  if ((await page.locator('.home-main .qg-card').count()) !== 6) throw new Error('expected 6 games with friends')
+  if ((await page.locator('.home-main .qg-card').count()) !== 5) throw new Error('expected 5 games with friends (the two reaction duels share one card)')
 
   // Remembered after a reload; a played daily game moves the ring.
   await page.evaluate(() => {
@@ -32,6 +32,13 @@ module.exports = async ({ page, B, browser }) => {
   if (now.length !== 1 || now[0] !== 'Today’s puzzles') throw new Error('Daily filter: ' + now)
   await page.getByRole('button', { name: /^All/ }).click()
   if ((await sections(page)).length !== all.length) throw new Error('All did not bring every section back')
+
+  // A card opens its game with the page transition and no errors (the transition opt-in used to
+  // arrive too late, with the JavaScript-loaded stylesheet, and every navigation logged an error).
+  await page.locator('a.qg-card[href="/flip-grid/"]').click()
+  await page.waitForURL(/\/flip-grid\//, { waitUntil: 'load' })
+  await page.locator('.game-title').waitFor()
+  await page.waitForTimeout(500)
 
   // A category page opens on its kind, with its own heading.
   await page.goto(B + '/c/logic/')

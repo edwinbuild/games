@@ -6,6 +6,7 @@ import { dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
+import { ThisOrThatBonus } from './guess-the-crowd/ThisOrThatBonus'
 import { Burst, Button, Histogram, Stage } from '../ui'
 
 const game = getGame('guess-the-crowd')
@@ -101,6 +102,8 @@ function Result({ q, saved, crowd, off, fresh, error }: { q: Question; saved: Sa
   if (!crowd) return <Stage><p className="body muted center" style={{ margin: 0 }}>{error || 'Loading the crowd…'}</p></Stage>
   const enough = crowd.n >= ENOUGH && crowd.mean != null
   const mean = enough ? fromShare(q, crowd.mean!) : 0
+  // Before 20 answers: a provisional score from the answers so far, so nobody waits for one.
+  const early = !enough && crowd.mean != null && crowd.n > 1 ? offBy(q, saved.guess, crowd.mean) : null
   const stats = getStats(game.slug)
   return (
     <>
@@ -122,7 +125,8 @@ function Result({ q, saved, crowd, off, fresh, error }: { q: Question; saved: Sa
             />
           ) : (
             <p className="body" style={{ margin: 0 }}>
-              Only {crowd.n} answer{crowd.n === 1 ? '' : 's'} so far, too few to show the crowd. You answered {show(q, saved.answer)} and guessed {show(q, saved.guess)}. Check back later today to see how close you were.
+              Only {crowd.n} answer{crowd.n === 1 ? '' : 's'} so far, too few to show the crowd. You answered {show(q, saved.answer)} and guessed {show(q, saved.guess)}.{' '}
+              {early != null ? <>So far you’re <strong>{early.toFixed(1)}% off</strong>; the final score comes once 20 people have answered.</> : 'Check back later today to see how close you were.'}
             </p>
           )}
         </div>
@@ -138,6 +142,7 @@ function Result({ q, saved, crowd, off, fresh, error }: { q: Question; saved: Sa
         challenge={{ seed: dateKey(today), score: off ?? 0, text: off != null ? `${off.toFixed(1)}% off` : 'Answered', lowerIsBetter: true }}
         plainLink
       />
+      <ThisOrThatBonus color={game.color} />
     </>
   )
 }

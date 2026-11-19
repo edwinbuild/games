@@ -3,6 +3,7 @@ import { getGame } from './registry'
 import { judgeRound, matchWinner, TIE_MS, type Press } from './duel-rules'
 import { newSeed, readChallenge } from '../shell/challenge'
 import { seededRandom } from '../shell/daily'
+import { DuelModes } from '../shell/DuelModes'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { AttemptTiles, Button, PLAYERS, SplitStage, type Attempt } from '../ui'
@@ -139,6 +140,7 @@ export default function TapDuel() {
 
   return (
     <>
+      {phase === 'ready' && rounds.length === 0 && <DuelModes current="phone" />}
       <SplitStage halves={[half(0), half(1)]} onPress={press} />
       {phase === 'ready' && (
         <div style={{ marginTop: 'var(--space-4)' }}>

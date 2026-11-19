@@ -22,17 +22,9 @@ export const HOW_TO: Record<string, string[]> = {
     'Press Listen to hear the target tone. Move the slider, play your tone, and press Lock in when they sound the same. You need your phone\'s sound on.',
     'There are three tones a day, the same for everyone. Being one semitone off (one piano key) scores 50%; matching exactly scores 100%. Try as many times as you like; your best try counts and the share says how many it took.',
   ],
-  'luckiest-person': [
-    'Every day there are five face-down cards, each with a number from 1 to 100. Everyone gets the same five cards in the same places, so you and your friends are choosing from the same row.',
-    'You get one pick a day. Then all five turn over and you see whether you took the best one. Share your card and compare with friends. After your pick you can practise with random decks; they don\'t count.',
-  ],
   'tap-duel': [
-    'Put the phone flat between you; each player gets one half of the screen. Both halves say Wait, then turn green at the same moment. The first player to tap their own half wins the round.',
-    'Tapping before it turns green loses the round. If you both tap within 10 milliseconds it is a tie and the round is replayed. First to three rounds wins. On a computer, use the A and L keys.',
-  ],
-  'this-or-that': [
-    'Every day there is one two-way question, the same for everyone, like “Window seat or aisle seat?”. Pick your answer, then guess what share of the other players today picked the first option.',
-    'Lock in to see the real split so far. Your score is how close your guess was to everyone else’s votes at that moment (your own vote doesn’t count): within 3 percentage points is a great read of the crowd. One vote a day; the split keeps moving as more people play.',
+    'Two players. On one phone, each takes a half of the screen; online, each plays on their own phone (make a room and send the link). Wait for the signal, then tap as fast as you can: the first tap after it wins the round.',
+    'Tap before the signal and the round goes to the other player. Taps within 10 milliseconds of each other are a tie and the round is played again. First to three wins the duel.',
   ],
   'color-recall': [
     'A colour fills the screen for two seconds, then hides. Rebuild it with the hue, saturation and lightness sliders and press Lock in. After each colour you see yours next to the real one.',
@@ -92,7 +84,7 @@ export const HOW_TO: Record<string, string[]> = {
   ],
   'guess-the-crowd': [
     'Every day has one number question, the same for everyone, like “How many hours did you sleep last night?”. Slide to your own answer, then guess the average answer of everyone who plays today. One answer a day.',
-    'You then see how everyone answered so far, with your answer, your guess and the real average marked. Your score is how far your guess was from the average, as a share of the range; within 3% is a great read of the crowd. Until 20 people have answered there is nothing to compare with, so check back later. Only the answers are stored, never who gave them.',
+    'You then see how everyone answered so far, with your answer, your guess and the real average marked. Your score is how far your guess was from the average, as a share of the range; within 3% is a great read of the crowd. Until 20 people have answered you get a provisional score from the answers so far; the final one comes later. Then there is a bonus This or That: pick a side of a two-way question and guess how everyone else split. Only the answers are stored, never who gave them.',
   ],
   'beat-keeper': [
     'Press Start and tap along with eight beats: you hear them (with sound on) and see the circle pulse. Then the beat goes silent and the circle fades. Keep tapping in time for eight more beats, on the screen or with Space.',
