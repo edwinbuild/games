@@ -55,6 +55,7 @@ button { font: inherit; }
   .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .cards--daily .qg-card-band { min-height: 120px; }
   .cards--daily .qg-card-sample { font-size: 44px; line-height: 46px; }
+  .cards .qg-card-band--demo .qg-card-sample { font-size: 30px; line-height: 32px; }
 }
 
 /* Grids of cells inside a stage (Odd One Out, Memory Path). */
@@ -258,3 +259,59 @@ button { font: inherit; }
 .st-stage { position: relative; width: 100%; max-width: 480px; margin-inline: auto; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; overflow: hidden; }
 .st-canvas { display: block; width: 100%; height: min(64dvh, 540px); }
 .st-kbd { position: absolute; left: 50%; top: 96px; transform: translateX(-50%); }
+
+/* Card demos: a 140×72 scene on the card band. Paused until the card is on screen. */
+.demo { position: relative; display: block; width: 140px; height: 72px; transform: scale(1.3); transform-origin: 100% 100%; margin-top: 22px; --line: var(--on-fill); --paper: #fff; }
+.demo * { animation-play-state: paused; }
+.qg-card[data-playing] .demo * { animation-play-state: running; }
+.demo-block { position: absolute; height: 14px; background: var(--paper); border: 2px solid var(--line); border-radius: 3px; box-sizing: border-box; }
+.demo-tap { position: absolute; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; border: 3px solid var(--line); opacity: 0; }
+
+/* Stack Tower: a block slides, stops, drops; the overhang falls away. */
+.demo-st-mover { position: absolute; left: 0; bottom: 42px; width: 70px; height: 14px; animation: demo-st-move 3.2s cubic-bezier(.45,0,.55,1) infinite; }
+.demo-st-cut { animation: demo-st-cut 3.2s ease-in infinite; transform-origin: 0 100%; }
+@keyframes demo-st-move {
+  0% { transform: translate(0, 0); opacity: 1 } 28% { transform: translate(70px, 0) } 46% { transform: translate(56px, 0) }
+  54% { transform: translate(56px, 14px) } 88% { transform: translate(56px, 14px); opacity: 1 } 94%, 100% { transform: translate(56px, 14px); opacity: 0 }
+}
+@keyframes demo-st-cut {
+  0%, 54% { transform: none; opacity: 1 } 78% { transform: translate(10px, 34px) rotate(55deg); opacity: 1 } 84%, 100% { transform: translate(10px, 40px) rotate(60deg); opacity: 0 }
+}
+
+/* Flip Grid: one tap flips a plus of five tiles off. */
+.demo-fg-grid { position: absolute; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(5, 11px); gap: 3px; }
+.demo-fg-grid > span { width: 11px; height: 11px; border-radius: 2px; background: var(--paper); border: 1.5px solid var(--line); box-sizing: border-box; }
+.demo-fg-grid > .demo-fg-on { background: var(--line); }
+.demo-fg-grid > .demo-fg-hit { animation: demo-fg-flip 3s ease-in-out infinite; }
+.demo-fg-tap { right: 22.5px; bottom: 22.5px; margin: 0; animation: demo-tap 3s ease-out infinite; }
+@keyframes demo-fg-flip {
+  0%, 40% { background: var(--line); transform: none } 46% { transform: rotateY(90deg); background: var(--line) }
+  47% { background: var(--paper) } 52%, 88% { background: var(--paper); transform: none } 92% { transform: rotateY(90deg); background: var(--paper) } 93%, 100% { background: var(--line); transform: none }
+}
+@keyframes demo-tap { 0%, 30% { opacity: 0; transform: scale(1.6) } 38% { opacity: 1; transform: scale(1) } 46% { opacity: 0; transform: scale(0.7) } 100% { opacity: 0 } }
+
+/* Tug of Taps: two players tap, the knot pulls one way, then the other way to the win. */
+.demo-tug-rope { position: absolute; left: 18px; right: 18px; bottom: 26px; height: 4px; background: var(--line); border-radius: 2px; }
+.demo-tug-knot { position: absolute; left: 64px; bottom: 19px; width: 12px; height: 18px; background: var(--paper); border: 2px solid var(--line); border-radius: 3px; box-sizing: border-box; animation: demo-tug-knot 3.6s cubic-bezier(.3,0,.3,1) infinite; }
+.demo-tug-p { position: absolute; bottom: 14px; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; border: 2px solid var(--line); box-sizing: border-box; }
+.demo-tug-p svg { width: 14px; height: 14px; fill: var(--line); }
+.demo-tug-a { left: 0; background: var(--coral); animation: demo-tug-a 3.6s ease-out infinite; }
+.demo-tug-b { right: 0; background: var(--aqua); border-radius: 6px; animation: demo-tug-b 3.6s ease-out infinite; }
+@keyframes demo-tug-knot {
+  0% { transform: translateX(0) } 10% { transform: translateX(8px) } 20% { transform: translateX(15px) } 30% { transform: translateX(20px) }
+  40% { transform: translateX(10px) } 50% { transform: translateX(-2px) } 60% { transform: translateX(-16px) } 70%, 90% { transform: translateX(-34px) } 100% { transform: translateX(0) }
+}
+@keyframes demo-tug-b { 0%, 30% { transform: scale(1) } 5%, 15%, 25% { transform: scale(1.18) } 10%, 20% { transform: scale(0.94) } 31%, 100% { transform: scale(1) } }
+@keyframes demo-tug-a {
+  0%, 34% { transform: scale(1) } 38%, 46%, 54%, 62% { transform: scale(1.18) } 42%, 50%, 58%, 66% { transform: scale(0.94) }
+  70% { transform: scale(1) } 74% { transform: translateY(-6px) scale(1.08) } 78% { transform: none } 82% { transform: translateY(-6px) scale(1.08) } 86%, 100% { transform: none }
+}
+
+/* Reduced motion: each scene holds its key frame. */
+@media (prefers-reduced-motion: reduce) {
+  .demo * { animation-play-state: paused !important; }
+  .demo-st-mover, .demo-st-cut { animation-delay: -2.1s; }
+  .demo-fg-hit, .demo-fg-tap { animation-delay: -1.2s; }
+  .demo-tug-knot, .demo-tug-a, .demo-tug-b { animation-delay: -2.6s; }
+}
+@media (max-width: 759px) { .qg-card-band--demo .qg-card-sample { font-size: 28px; line-height: 30px; } }

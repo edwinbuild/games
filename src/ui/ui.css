@@ -135,6 +135,10 @@
   min-height: 88px; padding: var(--space-3) var(--space-4); background: var(--qg-fill); color: var(--on-fill);
   border-bottom: var(--border-edge) solid var(--edge);
 }
+.qg-card-band--demo { min-height: 120px; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: end; }
+.qg-card-band--demo .qg-card-score { justify-items: start; gap: 4px; }
+.qg-card-band--demo .qg-pill { margin-bottom: var(--space-1); }
+.qg-card-demo { display: grid; justify-items: end; align-self: stretch; align-items: end; min-width: 0; }
 .qg-card-sample { font: 700 34px/36px var(--font-mono); letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
 .qg-card-body { display: grid; align-content: start; gap: var(--space-1); padding: var(--space-4); }
 .qg-card-title { font: 700 20px/24px var(--font-display); }

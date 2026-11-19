@@ -1,8 +1,9 @@
-import { StrictMode } from 'react'
+import { StrictMode, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import { GAMES, playersLabel, type GameMeta } from '../games/registry'
 import { SITE } from '../site'
 import { formatCount, SHOW_FROM, useRecentPlays } from '../shell/live'
+import { DEMOS } from '../shell/demos'
 import { SiteFooter } from '../shell/SiteFooter'
 import { getStats, todaysDaily, todaysDailyText } from '../shell/stats'
 import { Countdown, GameCard, TopBar } from '../ui'
@@ -30,6 +31,7 @@ function status(g: GameMeta): { text?: string; done?: boolean } {
 function Card({ g }: { g: GameMeta }) {
   const st = status(g)
   const sc = score(g)
+  const Demo = DEMOS[g.slug]
   return (
     <li>
       <GameCard
@@ -44,12 +46,26 @@ function Card({ g }: { g: GameMeta }) {
         done={st.done}
         transitionName={g.slug}
         tag={playersLabel(g) ?? undefined}
+        demo={Demo ? <Demo /> : undefined}
       />
     </li>
   )
 }
 
+/** Card demos play only while their card is on screen. */
+function usePlayOnScreen() {
+  useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) (e.target as HTMLElement).toggleAttribute('data-playing', e.isIntersecting)
+    }, { threshold: 0.4 })
+    document.querySelectorAll('.qg-card:has(.demo)').forEach((el) => io.observe(el))
+    return () => io.disconnect()
+  }, [])
+}
+
 function Home() {
+  usePlayOnScreen()
   const solo = (g: GameMeta) => !g.players || g.players === 1
   const daily = GAMES.filter((g) => g.daily && solo(g))
   const friends = GAMES.filter((g) => !solo(g))

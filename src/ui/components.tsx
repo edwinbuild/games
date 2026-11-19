@@ -505,16 +505,20 @@ export type GameCardProps = {
   transitionName?: string
   /** A tag for multiplayer games, shown on the band: "2 players", "Online · 2–8". */
   tag?: string
+  /** A short looping scene of the game's key moment, shown on the band (decorative). */
+  demo?: ReactNode
 }
-export function GameCard({ title, tagline, href, color, sample, sampleLabel, daily, status, done, transitionName, tag }: GameCardProps) {
+export function GameCard({ title, tagline, href, color, sample, sampleLabel, daily, status, done, transitionName, tag, demo }: GameCardProps) {
+  const pill = (daily || tag) && <Pill tone="neutral">{tag ?? 'Daily'}</Pill>
   return (
     <a className="qg-card" href={href} style={fill(color)}>
-      <span className="qg-card-band" style={transitionName ? { viewTransitionName: `band-${transitionName}` } : undefined}>
+      <span className={cx('qg-card-band', demo != null && 'qg-card-band--demo')} style={transitionName ? { viewTransitionName: `band-${transitionName}` } : undefined}>
         <span className="qg-card-score">
+          {demo != null && pill}
           {sampleLabel && <span className="qg-card-sample-label">{sampleLabel}</span>}
           <span className="qg-card-sample">{sample}</span>
         </span>
-        {(daily || tag) && <Pill tone="neutral">{tag ?? 'Daily'}</Pill>}
+        {demo != null ? <span className="qg-card-demo" aria-hidden="true">{demo}</span> : pill}
       </span>
       <span className="qg-card-body">
         <span className="qg-card-title" style={transitionName ? { viewTransitionName: `title-${transitionName}` } : undefined}>{title}</span>
