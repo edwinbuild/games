@@ -641,6 +641,25 @@ function BalanceBeamDemo() {
   )
 }
 
+/** Untangle Lights: two wires cross (red); one light slides over and the wire straightens out. */
+function UntangleDemo() {
+  const d = 4
+  const move = '0%,20%{transform:translate(0,0)}50%,100%{transform:translate(-50px,50px)}'
+  const wire = (x1: number, y1: number, x2: number, y2: number, bad = false) => (
+    <svg className="demo-ul" viewBox="0 0 140 72" aria-hidden="true"><line x1={x1} y1={y1} x2={x2} y2={y2} className={bad ? 'demo-ul-wire demo-ul-wire--bad' : 'demo-ul-wire'} /></svg>
+  )
+  return (
+    <Scene still={3.6}>
+      {wire(20, 14, 120, 60)}
+      <A d={d} className="demo-ul-layer" k={show([[0, 49]])}>{wire(120, 14, 20, 60, true)}</A>
+      <A d={d} className="demo-ul-layer" k={show([[50, 100]])}>{wire(70, 64, 20, 60)}</A>
+      {[[20, 14], [20, 60], [120, 60]].map(([x, y]) => <span key={`${x}${y}`} className="demo-ul-dot" style={{ left: x - 6, top: y - 6 }} />)}
+      <A d={d} className="demo-ul-dot" style={{ left: 114, top: 8 }} ease="ease-in-out" k={move} />
+      <A d={d} className="demo-small" style={{ left: 64, top: 22 }} k={show([[58, 100]])}>✓</A>
+    </Scene>
+  )
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   'blind-timer': BlindTimerDemo,
   'reaction-chain': ReactionChainDemo,
@@ -672,6 +691,7 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'paint-mix': PaintMixDemo,
   'orbit-drop': OrbitDropDemo,
   'balance-beam': BalanceBeamDemo,
+  'untangle-lights': UntangleDemo,
   'higher-lower': HigherLowerDemo,
   'quick-draw': QuickDrawDemo,
 }

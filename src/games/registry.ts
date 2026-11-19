@@ -381,6 +381,17 @@ export const GAMES: GameMeta[] = [
     skill: 'logic',
   },
   {
+    slug: 'untangle-lights',
+    title: 'Untangle Lights',
+    emoji: '💡',
+    instructions: 'Drag the lights until no wires cross. Fewer moves is better.',
+    tagline: 'A tangle of lights and wires. Drag them apart until nothing crosses. A new tangle every day.',
+    daily: true,
+    color: 'twilight',
+    sample: '9 moves',
+    skill: 'logic',
+  },
+  {
     slug: 'higher-lower',
     title: 'Higher Lower Online',
     emoji: '🌍',

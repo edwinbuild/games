@@ -122,6 +122,10 @@ export const HOW_TO: Record<string, string[]> = {
     'A seesaw sits on its pivot with dark weights fixed to it, so it tips. Choose a weight from the tray (1 to 5, two of each) and tap a free peg to put it there; tap it again to take it off. The beam tips and wobbles as you go.',
     'Each weight turns a beam by its size times its distance from the middle, so a 2 four pegs out balances a 4 two pegs out. From Thursday to Sunday a second beam hangs from the first: it has to sit level too, and everything on it pulls on the top beam where it hangs. Level it all with as few of your weights as you can; par is the fewest possible. One puzzle a day, the same for everyone; your best try counts. On a keyboard, the arrows choose a peg and 1 to 5 place a weight.',
   ],
+  'untangle-lights': [
+    'Lights are joined by wires, all tangled up. Drag a light anywhere on the board and its wires follow; wires that cross another wire glow red. Untangle them until no two wires cross.',
+    'Every tangle can be undone: it was made from a layout with no crossings, then scrambled. Each time you drag a light counts as one move, and par is one move per light, so a sharp eye beats it. Monday has 8 lights, Sunday 12; one tangle a day, the same for everyone. On a keyboard, Tab to a light and move it with the arrows.',
+  ],
   'higher-lower': [
     'Create a room and send the link (or the five-letter code); two to eight players can join. When everyone is ready, the host starts the quiz. Each question shows one country’s population or land area; say whether a second country’s number is higher or lower. You have ten seconds.',
     'The fastest right answer gets 3 points, the next 2, and every other right answer 1. Each phone times its own answer, so a slow connection doesn’t cost you. Ten questions, then the final scores. The numbers are the World Bank’s: population for 2023 and land area for 2022.',
