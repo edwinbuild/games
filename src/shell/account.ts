@@ -14,6 +14,8 @@ export type Profile = {
   inviteCode: string
   streak: number
   incoming: number
+  /** Unseen reactions and fresh game invites. */
+  news?: number
 }
 
 export const cachedProfile = () => load<Profile | null>('profile', null)

@@ -206,6 +206,17 @@ const statsPage = () =>
     body: `    <div id="root"></div>`,
   }).replace('<meta name="description"', '<meta name="robots" content="noindex, nofollow" />\n    <meta name="description"')
 
+// The profile page: personal, so search engines are kept out.
+const mePage = () =>
+  page({
+    title: `Your profile | ${SITE.name}`,
+    description: 'Your username, icon, streaks and friends.',
+    path: '/me/',
+    image: '/og/home.png',
+    entry: '../../src/entries/me.tsx',
+    body: `    <div id="root"></div>\n    <div id="footer"></div>`,
+  }).replace('<meta name="description"', '<meta name="robots" content="noindex, nofollow" />\n    <meta name="description"')
+
 const notFoundPage = () =>
   staticPage({
     title: 'Page not found',
@@ -224,6 +235,8 @@ mkdirSync(resolve(site, 'about'), { recursive: true })
 writeFileSync(resolve(site, 'about', 'index.html'), aboutPage())
 mkdirSync(resolve(site, 'privacy'), { recursive: true })
 writeFileSync(resolve(site, 'privacy', 'index.html'), privacyPage())
+mkdirSync(resolve(site, 'me'), { recursive: true })
+writeFileSync(resolve(site, 'me', 'index.html'), mePage())
 mkdirSync(resolve(site, 'stats'), { recursive: true })
 writeFileSync(resolve(site, 'stats', 'index.html'), statsPage())
 for (const k of CATEGORIES) {
@@ -240,5 +253,5 @@ writeFileSync(
   resolve(root, 'public/sitemap.xml'),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${BASE_URL}${u}</loc></url>`).join('\n')}\n</urlset>\n`,
 )
-writeFileSync(resolve(root, 'public/robots.txt'), `User-agent: *\nAllow: /\nDisallow: /stats/\nSitemap: ${BASE_URL}/sitemap.xml\n`)
-console.log(`Generated ${GAMES.length + CATEGORIES.length + 4} pages in site/`)
+writeFileSync(resolve(root, 'public/robots.txt'), `User-agent: *\nAllow: /\nDisallow: /stats/\nDisallow: /me/\nSitemap: ${BASE_URL}/sitemap.xml\n`)
+console.log(`Generated ${GAMES.length + CATEGORIES.length + 5} pages in site/`)

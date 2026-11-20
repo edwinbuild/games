@@ -898,3 +898,34 @@ button { font: inherit; }
 .acct-prompt { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-3); border-radius: var(--radius-md); background: var(--surface-sunken); }
 /* The narrowest phones: the top bar keeps brand, account and sound; the Daily tag shows on the page itself. */
 @media (max-width: 389px) { .qg-topbar-right > .qg-pill { display: none; } }
+
+/* ---------- Profile page (/me/) and friends ---------- */
+.me { display: grid; gap: var(--space-5); padding-bottom: var(--space-5); }
+.me-head { display: flex; gap: var(--space-4); align-items: center; flex-wrap: wrap; }
+.me-avatar { border: 0; background: none; padding: 0; border-radius: 50%; cursor: pointer; }
+.me-avatar:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.me-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); }
+.me-stat { display: grid; gap: 2px; padding: var(--space-3); border-radius: var(--radius-md); background: var(--surface-sunken); }
+.me-stat-n { font: 800 28px/1 var(--font-display); }
+.me-games, .me-earn, .qg-friends { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.me-game { display: grid; grid-template-columns: 36px 1fr; grid-template-rows: auto auto; column-gap: var(--space-3); align-items: center; padding: 8px var(--space-3); border-radius: var(--radius-md); background: var(--surface); border: 1.5px solid var(--line); color: var(--ink); text-decoration: none; }
+.me-game:hover { background: var(--surface-sunken); }
+.me-game-dot { grid-row: span 2; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-size: 18px; border: 1.5px solid var(--edge); }
+.me-game-name { font: 700 15px/20px var(--font-body); }
+.me-earn li { display: flex; align-items: center; gap: var(--space-3); }
+.me-earn li:not(.is-earned) .qg-avatar { filter: grayscale(1); opacity: .45; }
+.me-add { align-items: flex-end; }
+.me-add .qg-field { flex: 1; min-width: 0; }
+.qg-friend { display: grid; grid-template-columns: 40px 1fr auto; gap: var(--space-3); align-items: center; padding: 8px var(--space-3); border-radius: var(--radius-md); background: var(--surface); border: 1.5px solid var(--line); }
+.qg-friend-text { display: grid; min-width: 0; }
+.qg-friend-text strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qg-friend-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.qg-friend-more { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--edge); background: var(--surface-sunken); color: var(--ink); font: 800 18px/1 var(--font-body); cursor: pointer; }
+.qg-friend-menu { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: flex-end; width: 100%; }
+.qg-friend:has(.qg-friend-menu) .qg-friend-actions { grid-column: 1 / -1; }
+.qg-btn-link { font: 800 14px/1 var(--font-body); padding: 10px 16px; border-radius: var(--radius-pill); background: var(--ink); color: var(--canvas); text-decoration: none; }
+.qg-reactions { display: flex; gap: 4px; grid-column: 1 / -1; justify-content: flex-end; }
+.qg-reaction { min-width: 36px; height: 32px; padding: 0 6px; border-radius: var(--radius-pill); border: 1.5px solid var(--line); background: var(--surface); font: 600 14px/1 var(--font-body); color: var(--ink); cursor: pointer; }
+.qg-reaction[aria-pressed="true"] { border-color: var(--ink); background: var(--surface-sunken); }
+.qg-reaction.is-static { cursor: default; border-color: transparent; }
+.qg-friends-today .qg-board-list li { grid-template-columns: 28px 1fr auto; row-gap: 4px; }

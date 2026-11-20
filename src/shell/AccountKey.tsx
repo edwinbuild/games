@@ -7,7 +7,7 @@ import { load } from './storage'
 
 const AccountSheets = lazy(() => import('./AccountSheets'))
 const Avatar = lazy(() => import('../ui/icons').then((m) => ({ default: m.Avatar })))
-type Cached = { username: string | null; icon: string; colour: string; incoming: number } | null
+type Cached = { username: string | null; icon: string; colour: string; incoming: number; news?: number } | null
 const SYNC_EVERY = 10 * 60_000
 
 export function AccountKey() {
@@ -15,6 +15,7 @@ export function AccountKey() {
   const [sheet, setSheet] = useState<SheetMode | null>(null)
   const me = signedIn()
   const profile = me ? load<Cached>('profile', null) : null
+  const badge = (profile?.incoming ?? 0) + (profile?.news ?? 0)
 
   useEffect(() => {
     const offAuth = onAuthChange(redraw)
@@ -42,11 +43,11 @@ export function AccountKey() {
   return (
     <>
       {me ? (
-        <a className="qg-account" href="/me/" aria-label={profile?.username ? `Your profile, ${profile.username}${profile.incoming ? `, ${profile.incoming} friend requests` : ''}` : 'Your profile'}>
+        <a className="qg-account" href="/me/" aria-label={profile?.username ? `Your profile, ${profile.username}${badge ? `, ${badge} new` : ''}` : 'Your profile'}>
           <Suspense fallback={<span className="qg-account-dot" style={{ background: `var(--${profile?.colour ?? 'mint'})` }} />}>
             <Avatar icon={profile?.icon} colour={profile?.colour} size={34} />
           </Suspense>
-          {!!profile?.incoming && <span className="qg-account-badge" aria-hidden="true">{profile.incoming}</span>}
+          {badge > 0 && <span className="qg-account-badge" aria-hidden="true">{badge}</span>}
         </a>
       ) : (
         <button type="button" className="qg-signin-key" aria-label="Sign in" onClick={() => setSheet({ kind: 'sign-in' })}>

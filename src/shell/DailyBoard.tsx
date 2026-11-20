@@ -1,12 +1,13 @@
 // Today's board under a daily result: your rank and percentile, and the top 50 on request.
 // Loaded on its own (after the ticket), so the code every page loads stays small.
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { boardsOn, dailyBoard, myRank, submitScore, type BoardRow, type Rank } from './board'
 import { myName } from './challenge'
 import { signedIn } from './auth'
 import { load } from './storage'
 import { Avatar } from '../ui/icons'
 
+const FriendsToday = lazy(() => import('./FriendsToday'))
 const ordinal = (n: number) => `#${n.toLocaleString('en')}`
 
 export default function DailyBoard({ game, day, score, text, submit }: { game: string; day: string; score: number; text: string; submit: boolean }) {
@@ -29,6 +30,8 @@ export default function DailyBoard({ game, day, score, text, submit }: { game: s
   if (!boardsOn() || failed || !rank || rank.rank == null) return null
   const alone = rank.total < 2
   return (
+    <>
+    {signedIn() && <Suspense fallback={null}><FriendsToday game={game} day={day} after={rank} /></Suspense>}
     <section className="qg-board" aria-label="Today's board">
       <p className="qg-board-line">
         {alone ? (
@@ -59,5 +62,6 @@ export default function DailyBoard({ game, day, score, text, submit }: { game: s
         {signedIn() ? <>You’re on the board as {load<{ username: string | null } | null>('profile', null)?.username ?? 'your username'}.</> : <>Your name on the board is the one you set for challenges; without one you’re “A player”. Sign in for a username and an icon.</>}
       </p>
     </section>
+    </>
   )
 }
