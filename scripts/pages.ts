@@ -173,6 +173,8 @@ const aboutPage = () =>
       <p>The site also counts how many games are started and finished, and keeps the answers to the crowd games (never who gave them). Everything kept, and how to download or delete it, is on the <a href="/privacy/">privacy page</a>.</p>
       <h2>Sound</h2>
       <p>Sound is off until you turn it on with the switch at the top of each game, and the setting is remembered. Pitch Match always plays its tones, because listening is the game.</p>
+      <h2>Word lists</h2>
+      <p>Letter Race checks words against common English words from <a href="http://wordlist.aspell.net/" rel="noopener">SCOWL</a> (Kevin Atkinson and others), with rude words taken out. The other word games use short lists picked by hand.</p>
       <h2 id="versions">Versions</h2>
       <ul>
 ${VERSIONS.map((x) => `        <li><strong>${esc(x.v)}</strong> (${esc(x.date)}): ${esc(x.notes)}</li>`).join('\n')}

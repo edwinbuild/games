@@ -16,7 +16,7 @@ type Inbox = {
   invites: { username: string; icon: string; colour: string; game: string; room: string; at: string }[]
   reactions: { username: string; icon: string; colour: string; emoji: string; game: string; day: string }[]
 }
-const ONLINE = ['dots-and-boxes', 'reaction-online', 'spot-race', 'higher-lower', 'quick-draw']
+const ONLINE = ['dots-and-boxes', 'reaction-online', 'spot-race', 'higher-lower', 'quick-draw', 'letter-race']
 const CODE_LETTERS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'
 const newRoom = () => Array.from({ length: 5 }, () => CODE_LETTERS[Math.floor(Math.random() * CODE_LETTERS.length)]).join('')
 

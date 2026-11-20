@@ -1,10 +1,9 @@
-import { StrictMode, useEffect, useState, type CSSProperties } from 'react'
+import { StrictMode, useEffect, useState, type ComponentType, type CSSProperties } from 'react'
 import { mount, ready } from '../shell/mount'
 import { TAGLINES } from '../games/taglines'
 import { LISTED as ALL_GAMES, playersLabel, SKILLS, type GameMeta, type Skill } from '../games/registry'
 import { SITE } from '../site'
 import { formatCount, SHOW_FROM, useRecentPlays } from '../shell/live'
-import { DEMOS } from '../shell/demos'
 import { SiteFooter } from '../shell/SiteFooter'
 import { AccountKey } from '../shell/AccountKey'
 import { siteConfig, useSiteConfig } from '../shell/config'
@@ -40,10 +39,20 @@ function status(g: GameMeta): { text?: string; done?: boolean } {
   return {}
 }
 
+// The card demos load just after the page shows (their space is kept, so nothing moves).
+type Demos = Record<string, ComponentType>
+let demos: Demos | null = null
+const demosReady = import('../shell/demos').then((m) => (demos = m.DEMOS)).catch(() => null)
+function LazyDemo({ slug }: { slug: string }) {
+  const [all, setAll] = useState(demos)
+  useEffect(() => { if (!all) void demosReady.then((d) => d && setAll(d)) }, [all])
+  const Demo = all?.[slug]
+  return Demo ? <Demo /> : null
+}
+
 function Card({ g, i, gs }: { g: GameMeta; i: number; gs: GameStats }) {
   const st = status(g)
   const sc = score(g)
-  const Demo = DEMOS[g.slug]
   return (
     // --i staggers the cards rising in.
     <li style={{ '--i': i } as CSSProperties}>
@@ -59,7 +68,7 @@ function Card({ g, i, gs }: { g: GameMeta; i: number; gs: GameStats }) {
         done={st.done}
         transitionName={g.slug}
         tag={[siteConfig().new.includes(g.slug) && 'New', playersLabel(g)].filter(Boolean).join(' · ') || undefined}
-        demo={Demo ? <Demo /> : undefined}
+        demo={<LazyDemo slug={g.slug} />}
         meta={gameLine(g.slug, gs, siteConfig().counters.plays) || undefined}
       />
     </li>
@@ -73,7 +82,7 @@ function usePlayOnScreen() {
     const io = new IntersectionObserver((entries) => {
       for (const e of entries) (e.target as HTMLElement).toggleAttribute('data-playing', e.isIntersecting)
     }, { threshold: 0.4 })
-    document.querySelectorAll('.qg-card:has(.demo)').forEach((el) => io.observe(el))
+    document.querySelectorAll('.qg-card:has(.qg-card-demo)').forEach((el) => io.observe(el))
     return () => io.disconnect()
   }, [])
 }

@@ -134,6 +134,14 @@ export const HOW_TO: Record<string, string[]> = {
     'Draw one path from the seedling to the flower that visits every square of the garden exactly once, moving up, down, left or right. Drag through the squares; drag back to undo a step, or tap a square on the path to cut it back to there.',
     'Stones tell you what the path does on their square: on a filled stone (●) it turns, on a hollow stone (○) it goes straight through. Every garden has exactly one answer; your time counts, and the clock keeps going if you leave and come back. 5×5 early in the week, 6×6 at the weekend. On a keyboard, the arrows step the path.',
   ],
+  'tilt': [
+    'Tilt the board up, down, left or right by swiping, with the arrow buttons or with the arrow keys. Every marble rolls in a straight line until it hits the edge, a black block or another marble. A marble that rolls onto the hole with its own shape (● ▲ ■) drops in; any other hole is just floor to it.',
+    'Get every marble into its hole in as few tilts as you can. Par is the fewest possible, found by trying every way. Monday has a small board and two marbles; by the weekend it’s bigger, with three. You can undo, and if there’s no way left to finish the game says so. One board a day, the same for everyone; your best try counts.',
+  ],
+  'sum-path': [
+    'Start on the top-left square and draw a path to the bottom-right one, moving up, down, left or right and using each square at most once. The numbers on the squares you pass through add up, and the total shows above the grid. Hit the target exactly when you reach the end.',
+    'The straight way rarely adds up, so you’ll need to wander, but every extra square counts against you: par is the fewest squares that can make the target. Drag back to undo, or tap a square on the path to cut it back. Monday is a 5×5 grid; from Thursday it’s 6×6 with longer detours. One grid a day, the same for everyone; your best try counts. On a keyboard, the arrows step the path.',
+  ],
   'rule-stack': [
     'Pick a colour and tap squares of the 4×4 grid to paint them; tap a square again to clear it. Each colour also has a shape (● ▲ ■ ◆), so you can play without telling colours apart. The rules so far are listed under the grid, each with a ✓ or ✗.',
     'When every rule holds, a new one arrives, like “no two red squares touch” or “every row has a blue”, and it may break your grid. There are twelve rules a day; all twelve can always hold at once. Your score is how many you clear, then your time. Each try gets twelve new rules; the first is the same for everyone. On a keyboard, arrows move, 1 to 4 paint and 0 clears.',
@@ -141,6 +149,10 @@ export const HOW_TO: Record<string, string[]> = {
   'dots-and-boxes': [
     'Take turns drawing one line between two neighbouring dots. Whoever draws the fourth side of a box claims it and must draw again. When every line is drawn, the player with more boxes wins. Tap near a line to draw it; on a keyboard, Tab to a line and press Enter.',
     'Play the computer (easy is a 3×3 board, medium and hard are 4×4), a friend on this phone, or a friend on their own phone with a room link. The trick: near the end, every line gives boxes away. Count the safe lines left so your opponent has to open the first long chain, and sometimes leave the last two boxes of a chain to keep control. Hard plays that way.',
+  ],
+  'letter-race': [
+    'Make a room and send the link: two to eight friends, each on their own phone. When the host starts, everyone gets the same seven letters after a three-second countdown. Tap letters (or type them) to spell a word and press Enter; each letter can be used as often as it shows on the tiles. Words need three letters or more and must be in the word list.',
+    'You have one minute. Points go by length: 1 for three letters, 2 for four, 4 for five, 6 for six and 10 for a word that uses all seven. When time is up, a word that only you found scores double. Shuffle the tiles to see new words; at the end you see everyone’s words and some that nobody found. The word list is common English words from SCOWL.',
   ],
   'higher-lower': [
     'Create a room and send the link (or the five-letter code); two to eight players can join. When everyone is ready, the host starts the quiz. Each question shows one country’s population or land area; say whether a second country’s number is higher or lower. You have ten seconds.',

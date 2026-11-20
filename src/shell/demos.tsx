@@ -660,6 +660,53 @@ function UntangleDemo() {
   )
 }
 
+/** Tilt: the board tips right, the marble rolls to the wall, then down into its hole. */
+function TiltDemo() {
+  const d = 4
+  const roll = '0%,15%{transform:translate(0,0)}35%,50%{transform:translate(78px,0)}62%{transform:translate(78px,26px) scale(1)}75%,100%{transform:translate(78px,26px) scale(.2);opacity:0}'
+  return (
+    <Scene still={1.4}>
+      <span className="demo-tl-board" />
+      <span className="demo-tl-block" style={{ left: 56, top: 38 }} />
+      <span className="demo-tl-hole" style={{ left: 104, top: 38 }}>●</span>
+      <A d={d} className="demo-tl-marble" style={{ left: 26, top: 12 }} ease="cubic-bezier(.45,0,.7,1)" k={roll}>●</A>
+      <A d={d} className="demo-small" style={{ left: 64, top: 2 }} k={show([[16, 34]])}>→</A>
+      <A d={d} className="demo-small" style={{ left: 64, top: 2 }} k={show([[51, 66]])}>↓</A>
+      <A d={d} className="demo-small" style={{ left: 64, top: 2 }} k={show([[78, 100]])}>✓</A>
+    </Scene>
+  )
+}
+
+/** Sum Path: squares light up corner to corner while the total counts up to the target. */
+const SP_DIGITS = [3, 7, 2, 5, 1, 4, 6, 2, 8, 3]
+const SP_ROUTE = [0, 1, 6, 7, 8, 9]
+function SumPathDemo() {
+  const d = 4.4
+  const at = (i: number) => ({ left: 6 + (i % 5) * 22, top: 12 + Math.floor(i / 5) * 26 })
+  let total = 0
+  return (
+    <Scene still={4}>
+      {SP_ROUTE.map((c, k) => <A key={`on${c}`} d={d} className="demo-sp-on" style={at(c)} k={show([[8 + k * 12, 100]])} />)}
+      {SP_DIGITS.map((v, i) => <span key={i} className="demo-sp" style={{ ...at(i), background: 'transparent' }}>{v}</span>)}
+      {SP_ROUTE.map((c, k) => { total += SP_DIGITS[c]; const t = total; return <A key={`t${c}`} d={d} className="demo-small" style={{ left: 118, top: 30, fontSize: 14 }} k={show([[8 + k * 12, k === SP_ROUTE.length - 1 ? 100 : 8 + (k + 1) * 12 - 0.2]])}>{t}</A> })}
+    </Scene>
+  )
+}
+
+/** Letter Race: seven tiles; a word builds up from them, then scores. */
+function LetterRaceDemo() {
+  const d = 4.4
+  const tiles = ['r', 'a', 'g', 'd', 'e', 'n', 's']
+  const word = ['g', 'a', 'r', 'd', 'e', 'n']
+  return (
+    <Scene still={3.6}>
+      {word.map((c, i) => <A key={`w${i}`} d={d} className="demo-lr-letter" style={{ left: 22 + i * 16, top: 4 }} k={show([[8 + i * 9, 86]])}>{c}</A>)}
+      <A d={d} className="demo-small" style={{ left: 120, top: 8 }} k={show([[64, 86]])}>+6</A>
+      {tiles.map((c, i) => <span key={c} className="demo-lr-tile" style={{ left: 6 + i * 19, top: 38 }}>{c}</span>)}
+    </Scene>
+  )
+}
+
 /** Word Ladder: COLD → CORD → WORD → WARM, one letter changing each beat. */
 function WordLadderDemo() {
   const d = 4.4
@@ -761,7 +808,10 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'word-ladder': WordLadderDemo,
   'garden-path': GardenPathDemo,
   'rule-stack': RuleStackDemo,
+  'tilt': TiltDemo,
+  'sum-path': SumPathDemo,
   'dots-and-boxes': DotsDemo,
   'higher-lower': HigherLowerDemo,
+  'letter-race': LetterRaceDemo,
   'quick-draw': QuickDrawDemo,
 }

@@ -33,10 +33,13 @@ export const TAGLINES: Record<string, string> = {
   'orbit-drop': 'A ball circles a planet. Let go at the right moment to fly to the next one. How far can you get?',
   'balance-beam': 'Level a tipped seesaw with as few weights as you can. Later in the week a second beam hangs from it.',
   'untangle-lights': 'A tangle of lights and wires. Drag them apart until nothing crosses. A new tangle every day.',
+  'tilt': 'Marbles roll until something stops them. Tilt the board to sink each one in its own hole. A new board every day.',
+  'sum-path': 'Corner to corner, the numbers must add up to exactly the target. Fewest squares wins. A new grid every day.',
   'word-ladder': 'COLD to WARM, one letter at a time, every step a real word. A new ladder every day.',
   'garden-path': 'One path through every square of the garden. The stones say where it turns. One answer a day.',
   'rule-stack': 'Paint a 4×4 grid to fit the rules. Every level adds one more, and it may break what you have.',
   'dots-and-boxes': 'The pen-and-paper classic. Play the computer (easy to hard), a friend on this phone, or a friend online.',
+  'letter-race': 'Seven letters, one minute, up to eight friends. Long words score big; words nobody else found score double.',
   'higher-lower': 'Up to eight friends, ten country questions: higher or lower? Real numbers, fastest right answer wins.',
   'quick-draw': 'Draw it, guess it. Two to eight friends take turns drawing a word against the clock.',
 }
