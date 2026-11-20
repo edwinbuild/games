@@ -7,7 +7,8 @@ import { ResultCard } from '../shell/ResultCard'
 import { DuelModes } from '../shell/DuelModes'
 import { goToRoom, roomFromUrl, RoomLanding, RoomNotice } from '../shell/online'
 import { useRoom, useStepOutIfStale, type Member } from '../shell/room'
-import { Button, Lobby, PLAYERS, RoomCode, ScoreStrip, Stage, TextField } from '../ui'
+import { Button, Stage, TextField } from '../ui/components'
+import { Lobby, PLAYERS, RoomCode, ScoreStrip } from '../ui/multiplayer'
 import { avatarOf } from '../shell/roomAvatar'
 
 const game = getGame('reaction-online')

@@ -54,6 +54,8 @@ function page(opts: {
     <script>try{var t=JSON.parse(localStorage.getItem('qg:theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
     <meta name="theme-color" content="#f4f4f2" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0b0b0b" media="(prefers-color-scheme: dark)" />
+    <!-- The database: opening the connection early saves a round trip on the first call (boards, settings). -->
+    <link rel="preconnect" href="${SITE.api.url}" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" />

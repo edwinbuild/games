@@ -7,7 +7,8 @@ import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, recordDaily } from '../shell/stats'
 import { load, save } from '../shell/storage'
-import { Burst, Button, Stage, SplitBars } from '../ui'
+import { SplitBars } from '../ui/charts'
+import { Burst, Button, Stage } from '../ui/components'
 import { boardKey } from '../shell/board'
 
 const game = getGame('odd-pick')

@@ -6,7 +6,8 @@ import { seededRandom } from '../shell/daily'
 import { DuelModes } from '../shell/DuelModes'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
-import { AttemptTiles, Button, PLAYERS, SplitStage, type Attempt } from '../ui'
+import { AttemptTiles, Button, type Attempt } from '../ui/components'
+import { PLAYERS, SplitStage } from '../ui/multiplayer'
 
 const game = getGame('tap-duel')
 const TARGET = 3

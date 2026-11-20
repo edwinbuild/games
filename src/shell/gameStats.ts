@@ -9,16 +9,23 @@ export type GameStats = { plays: Record<string, number>; likes: Record<string, {
 const EMPTY: GameStats = { plays: {}, likes: {}, online: 0, onlineByGame: {}, live: false }
 let inflight: Promise<GameStats> | null = null
 
+export const statsStale = () => Date.now() - load<number>('game-stats-at', 0) >= 120_000
+/** Keeps fresh numbers from the database. Anything unexpected (an outage, an old database) counts as no numbers. */
+export function acceptStats(x: unknown): GameStats {
+  const ok: GameStats = x && typeof x === 'object' && 'plays' in x ? { ...EMPTY, ...(x as GameStats), live: true } : EMPTY
+  save('game-stats', ok); save('game-stats-at', Date.now())
+  return ok
+}
+/** Set by the settings refresh when it fetched the numbers too (one call for both). */
+let shared: Promise<GameStats> | null = null
+export const shareStats = (p: Promise<GameStats>) => { shared = p; p.finally(() => { if (shared === p) shared = null }).catch(() => {}) }
+
 export function useGameStats(): GameStats {
   const [s, setS] = useState<GameStats>(() => ({ ...EMPTY, ...load<Partial<GameStats>>('game-stats', {}) }))
   useEffect(() => {
-    if (Date.now() - load<number>('game-stats-at', 0) < 120_000) return
-    inflight ??= rpc<GameStats>('game_stats').then((x) => {
-      // Anything unexpected (an outage, an old database) counts as no numbers.
-      const ok: GameStats = x && typeof x === 'object' && 'plays' in x ? { ...EMPTY, ...x, live: true } : EMPTY
-      save('game-stats', ok); save('game-stats-at', Date.now())
-      return ok
-    })
+    if (shared) { shared.then(setS, () => {}); return }
+    if (!statsStale()) return
+    inflight ??= rpc<GameStats>('game_stats').then(acceptStats)
     inflight.then(setS, () => { save('game-stats', EMPTY); setS(EMPTY) }).finally(() => { inflight = null })
   }, [])
   return s

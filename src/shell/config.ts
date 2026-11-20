@@ -3,6 +3,7 @@
 // refreshed in the background once a minute at most.
 import { useEffect, useReducer } from 'react'
 import { rpc } from './api'
+import { acceptStats, shareStats, statsStale } from './gameStats'
 import { setSeedHook } from './daily'
 import { load, save } from './storage'
 
@@ -52,7 +53,16 @@ export function useSiteConfig(): SiteConfig {
 export function refreshConfig(): void {
   if (Date.now() - load<number>('config-at', 0) < 60_000) return
   save('config-at', Date.now())
-  rpc<Partial<SiteConfig>>('site_config').then((c) => { if (c && typeof c === 'object') setConfig(c) }, () => {})
+  const apply = (c: unknown) => { if (c && typeof c === 'object') setConfig(c as Partial<SiteConfig>) }
+  // When the numbers are stale too, one call fetches both.
+  if (statsStale()) {
+    const both = rpc<{ config?: unknown; stats?: unknown } | null>('page_data').catch(() => null)
+    const has = (d: unknown, k: string) => !!d && typeof d === 'object' && !!(d as Record<string, unknown>)[k]
+    shareStats(both.then((d) => (has(d, 'stats') ? acceptStats(d!.stats) : rpc('game_stats').then(acceptStats))))
+    both.then((d) => (has(d, 'config') ? apply(d!.config) : rpc('site_config').then(apply, () => {})))
+    return
+  }
+  rpc<Partial<SiteConfig>>('site_config').then(apply, () => {})
 }
 
 /** A banner is shown until its end time (if it has one). */

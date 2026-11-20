@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import type { GameMeta } from '../games/registry'
 import { SITE } from '../site'
 import { ChallengeBanner, TopBar } from '../ui/components'
@@ -16,6 +16,21 @@ import { lazy, Suspense } from 'react'
 // Optional extras: if the piece can't load (offline), the page simply goes without it.
 const Comments = lazy(() => import('./Comments').catch(() => ({ default: () => null })))
 import { SoundToggle } from './SoundToggle'
+
+/** Renders its children only once the reader scrolls near (the comments sit below the game). */
+function WhenNear({ children }: { children: ReactNode }) {
+  const at = useRef<HTMLDivElement>(null)
+  const [near, setNear] = useState(false)
+  useEffect(() => {
+    const el = at.current
+    if (!el || near) return
+    if (typeof IntersectionObserver === 'undefined') { setNear(true); return }
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) setNear(true) }, { rootMargin: '600px 0px' })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [near])
+  return near ? <>{children}</> : <div ref={at} aria-hidden="true" style={{ height: 1 }} />
+}
 import { track } from './track'
 
 /** Page frame shared by every game: top bar, title, one line of instructions. */
@@ -93,7 +108,7 @@ export function GameShell({ game, children }: { game: GameMeta; children: ReactN
               <>
                 {banner && <ChallengeBanner text={banner} color={game.color} />}
                 {children}
-                <Suspense fallback={null}><Comments game={game.slug} /></Suspense>
+                <WhenNear><Suspense fallback={null}><Comments game={game.slug} /></Suspense></WhenNear>
               </>
             )}
           </main>

@@ -6,7 +6,8 @@ import { dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
-import { Burst, Button, Histogram, Stage } from '../ui'
+import { Histogram } from '../ui/charts'
+import { Burst, Button, Stage } from '../ui/components'
 import { boardKey } from '../shell/board'
 
 const game = getGame('guess-the-crowd')

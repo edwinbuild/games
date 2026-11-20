@@ -9,7 +9,8 @@ import { feel } from '../shell/feel'
 import { goToRoom, roomFromUrl, RoomLanding, RoomNotice } from '../shell/online'
 import { ResultCard } from '../shell/ResultCard'
 import { useRoom, useStepOutIfStale } from '../shell/room'
-import { Button, Lobby, PlayerChip, PLAYERS, RoomCode, Score, ScoreStrip, Stage, TextField } from '../ui'
+import { Button, Score, Stage, TextField } from '../ui/components'
+import { Lobby, PlayerChip, PLAYERS, RoomCode, ScoreStrip } from '../ui/multiplayer'
 import { avatarOf } from '../shell/roomAvatar'
 
 const game = getGame('spot-race')

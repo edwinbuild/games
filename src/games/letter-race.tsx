@@ -10,7 +10,8 @@ import { ResultCard } from '../shell/ResultCard'
 import { useRoom, useStepOutIfStale } from '../shell/room'
 import { count } from '../shell/plural'
 import { load } from '../shell/storage'
-import { Burst, Button, Lobby, PlayerChip, PLAYERS, RoomCode, ScoreStrip, Stage, TextField } from '../ui'
+import { Burst, Button, Stage, TextField } from '../ui/components'
+import { Lobby, PlayerChip, PLAYERS, RoomCode, ScoreStrip } from '../ui/multiplayer'
 import { avatarOf } from '../shell/roomAvatar'
 
 const game = getGame('letter-race')

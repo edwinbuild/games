@@ -5,7 +5,8 @@ import { newSeed } from '../shell/challenge'
 import { feel } from '../shell/feel'
 import { count as plural } from '../shell/plural'
 import { ResultCard } from '../shell/ResultCard'
-import { Button, PLAYERS, SplitStage } from '../ui'
+import { Button } from '../ui/components'
+import { PLAYERS, SplitStage } from '../ui/multiplayer'
 
 const game = getGame('tug-of-taps')
 /** Two keys each, to alternate like two thumbs: A/S for one player, K/L for the other. */

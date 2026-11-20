@@ -8,7 +8,8 @@ import { ResultCard } from '../shell/ResultCard'
 import { useRunState } from '../shell/session'
 import { load, save } from '../shell/storage'
 import { countPlay, recordPlay } from '../shell/stats'
-import { Button, PLAYERS, ScoreStrip, Segmented, Stage } from '../ui'
+import { Button, Segmented, Stage } from '../ui/components'
+import { PLAYERS, ScoreStrip } from '../ui/multiplayer'
 
 const game = getGame('dots-and-boxes')
 // The online room (and the realtime client) loads only when it's picked.
