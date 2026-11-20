@@ -40,8 +40,23 @@
 .hw-row.is-shake { animation: none; }
 }
 @keyframes hw-shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-/* Computers: sized to fill the space (see useFit): this many boards across, squares this big. */
-.hw-boards.is-fit { grid-template-columns: repeat(var(--cols), auto); justify-content: center; gap: 12px; }
-.hw-boards.is-fit .hw-row { grid-template-columns: repeat(5, var(--cell)); }
-.hw-boards.is-fit .hw-cell { width: var(--cell); height: var(--cell); font-size: calc(var(--cell) * .5); border-width: max(1.5px, calc(var(--cell) / 24)); }
+/* Computers: every board on screen, filling the width (see useFit); squares --cw wide, --ch tall. */
+.hw-boards.is-fit { grid-template-columns: repeat(var(--cols), auto); justify-content: center; column-gap: 20px; row-gap: 14px; }
+.hw-boards.is-fit .hw-board { gap: 4px; padding: 4px; }
+.hw-boards.is-fit .hw-row { grid-template-columns: repeat(5, var(--cw)); gap: 4px; }
+.hw-boards.is-fit .hw-cell { width: var(--cw); height: var(--ch); aspect-ratio: auto; border-radius: 6px; font-size: min(calc(var(--ch) * .68), 32px); border-width: max(1.5px, min(2.5px, calc(var(--ch) / 14))); }
+.hw-boards.is-fit .hw-cell.is-elsewhere { border-width: max(1.5px, min(2.5px, calc(var(--ch) / 12))); }
+/* While playing on a computer the boards get the whole width; how to play moves below them. */
+@media (min-width: 1000px) {
+  .game-layout:has(.hw-boards.is-fit) { grid-template-columns: minmax(0, 1fr); }
+  .page--game:has(.hw-boards.is-fit) { max-width: min(1840px, calc(100vw - 64px)); }
+  .hw-stage:has(.is-fit) { padding: var(--space-3) var(--space-2); }
+  /* Room for the boards: no one-line description (how to play is just below), no key note, shorter keys. */
+  .game-layout:has(.hw-boards.is-fit) .game-head p { display: none; }
+  .hw-stage:has(.is-fit) ~ .hw-bottom > p:last-child { display: none; }
+  .hw-stage:has(.is-fit) ~ .hw-bottom .hw-key { height: 50px; max-width: 84px; }
+  .hw-stage:has(.is-fit) ~ .hw-bottom .hw-key--wide { max-width: 128px; }
+  .hw-stage:has(.is-fit) ~ .hw-bottom .hw-keys { max-width: 960px; width: 100%; margin-inline: auto; }
+  .hw-stage:has(.is-fit) ~ .hw-bottom { padding-top: var(--space-1); gap: 6px; }
+}
 @media (min-width: 1000px) { .hw-key { max-width: 56px; height: 58px; font-size: 18px; } .hw-key--wide { max-width: 84px; } }

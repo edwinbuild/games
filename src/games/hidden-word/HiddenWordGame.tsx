@@ -20,38 +20,36 @@ const EMOJI: Record<Mark, string> = { right: '🔵', elsewhere: '🟡', out: '�
 const SAY = { short: 'Five letters, please.', unknown: 'That’s not in the word list.' }
 
 /**
- * On a computer the boards fill the space between the heading and the keyboard: try 1, 2, 4 or 8
- * boards across and keep whichever gives the biggest squares. Phones keep their own layout.
+ * On a computer every board is on screen at once and the boards fill the width: one, two or four
+ * across (eight words: two rows of four). Squares may be wider than tall, so all the rows of
+ * guesses fit the screen's height without scrolling. Phones keep their own layout.
  */
+type Fit = { cols: number; w: number; h: number }
 function useFit(n: number, rows: number, ready: unknown) {
   const ref = useRef<HTMLDivElement>(null)
-  const [fit, setFit] = useState<{ cols: number; cell: number } | null>(null)
+  const [fit, setFit] = useState<Fit | null>(null)
   useEffect(() => {
     const measure = () => {
       const el = ref.current
       if (!el || window.innerWidth < 1000) { setFit(null); return }
-      const gap = 12, inner = 3 // between boards, between squares
+      const gapX = 20, gapY = 14, inner = 4 // between boards across, between rows of boards, between squares
+      const cols = Math.min(n, 4)
+      const across = Math.ceil(n / cols)
       const width = el.clientWidth
-      const bottom = document.querySelector('.hw-bottom')?.getBoundingClientRect().height ?? 260
-      const height = window.innerHeight - (el.getBoundingClientRect().top + window.scrollY) - bottom - 16
-      let best = { cols: Math.min(n, 2), cell: 0 }
-      for (const cols of [1, 2, 4, 8].filter((c) => c <= n)) {
-        const across = Math.ceil(n / cols)
-        const w = (width - (cols - 1) * gap - cols * 8) / cols / 5 - inner
-        const h = (height - (across - 1) * gap - across * 8) / across / rows - inner
-        const cell = Math.min(w, h, 76)
-        if (cell > best.cell) best = { cols, cell }
-      }
-      // Too small to read when everything has to fit: four across at a readable size, and scroll.
-      if (best.cell < 24) {
-        const cols = Math.min(n, 4)
-        best = { cols, cell: Math.min((width - (cols - 1) * gap - cols * 8) / cols / 5 - inner, 40) }
-      }
-      setFit(best.cell >= 14 ? { cols: best.cols, cell: Math.floor(best.cell) } : null)
+      const bottom = document.querySelector('.hw-bottom')?.getBoundingClientRect().height ?? 240
+      const height = window.innerHeight - (el.getBoundingClientRect().top + window.scrollY) - bottom - 12
+      const w = Math.min((width - (cols - 1) * gapX - cols * 8) / cols / 5 - inner, 96)
+      let h = Math.min((height - (across - 1) * gapY - across * 8) / across / rows - inner, w, 72)
+      // Too short to read: keep a readable height and let the page scroll behind the keyboard.
+      if (h < 18) h = 22
+      setFit(w >= 18 ? { cols, w: Math.floor(w), h: Math.floor(h) } : null)
     }
     measure()
+    // The layout widens once the boards are fitted (how to play moves below), so measure again then.
+    const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(() => measure())
+    if (ref.current) ro?.observe(ref.current)
     window.addEventListener('resize', measure)
-    return () => window.removeEventListener('resize', measure)
+    return () => { ro?.disconnect(); window.removeEventListener('resize', measure) }
   }, [n, rows, ready])
   return [ref, fit] as const
 }
@@ -137,7 +135,7 @@ export default function HiddenWordGame({ mode }: { mode: Mode }) {
 
   const solvedCount = at.filter((x) => x != null).length
   const boardsView = (
-    <div ref={fitRef} className={`hw-boards hw-boards--${n}${fit ? ' is-fit' : ''}`} style={fit ? ({ '--cols': fit.cols, '--cell': `${fit.cell}px` } as React.CSSProperties) : undefined} data-answers={showSolution ? answers.join(' ') : undefined} data-guesses={guesses.join(' ')}>
+    <div ref={fitRef} className={`hw-boards hw-boards--${n}${fit ? ' is-fit' : ''}`} style={fit ? ({ '--cols': fit.cols, '--cw': `${fit.w}px`, '--ch': `${fit.h}px` } as React.CSSProperties) : undefined} data-answers={showSolution ? answers.join(' ') : undefined} data-guesses={guesses.join(' ')}>
       {answers.map((a, b) => {
         const doneAt = at[b]
         const rows = doneAt == null ? guesses : guesses.slice(0, doneAt + 1)

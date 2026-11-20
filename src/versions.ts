@@ -2,6 +2,7 @@
 // corner and on the About page); package.json carries the same number. Plain Node reads this file
 // too (scripts/pages.ts), so keep it free of imports.
 export const VERSIONS: { v: string; date: string; notes: string }[] = [
+  { v: '1.8.1', date: '2026-11-20', notes: 'Two, Four and Eight Words on a computer: every board on screen at once, filling the width (eight words in two rows of four).' },
   { v: '1.8.0', date: '2026-11-20', notes: 'Big screens: pages and game boards grow to fill the screen, and the word games lay their boards out to fit.' },
   { v: '1.7.0', date: '2026-11-20', notes: 'Faster everywhere: pages show before their code has loaded, fonts and styles are lighter, home starts quicker, online rooms show their code at once. And practice rounds after the daily word games.' },
   { v: '1.6.0', date: '2026-11-20', notes: 'Word guessing: Hidden Word (one word, six guesses), and Two, Four and Eight Words, where every guess goes on every board. New words every day.' },
