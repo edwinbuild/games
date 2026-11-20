@@ -1,0 +1,9 @@
+/* Styles for steady-line, loaded with its code (split out of site.css). */
+/* Steady Line */
+.sl-stage { width: 100%; max-width: 400px; margin-inline: auto; overflow: hidden; }
+.sl-canvas { display: block; width: 100%; aspect-ratio: 300 / 420; touch-action: none; user-select: none; -webkit-user-select: none; cursor: crosshair; }
+/* Desktop game pages: boards use the wider column, but never taller than the screen allows
+   (260px is roughly the top bar, title and the key under the board). */
+@media (min-width: 1000px) {
+.sl-stage { max-width: min(480px, calc((100dvh - 280px) * 0.714)); }
+}

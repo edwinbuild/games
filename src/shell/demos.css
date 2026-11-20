@@ -1,0 +1,205 @@
+/* Styles for the home cards' demos, loaded with its code (split out of site.css). */
+/* Card demos: a 140×72 scene on the card band. Paused until the card is on screen. */
+.demo { position: relative; display: block; width: 140px; height: 72px; transform: scale(1.3); transform-origin: 100% 100%; margin-top: 22px; --line: var(--on-fill); --paper: var(--highlight); }
+.demo * { animation-play-state: paused; }
+.demo-block { position: absolute; height: 14px; background: var(--paper); border: 2px solid var(--line); border-radius: 3px; box-sizing: border-box; }
+.demo-box { position: absolute; background: var(--paper); border: 2px solid var(--line); border-radius: 6px; box-sizing: border-box; overflow: hidden; }
+.demo-text { position: absolute; inset: 0; display: grid; place-items: center; font: 700 13px/1 var(--font-mono); color: var(--line); white-space: nowrap; }
+.demo-small { position: absolute; font: 800 9px/1 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; color: var(--line); white-space: nowrap; }
+.demo-tap { position: absolute; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; border: 3px solid var(--line); opacity: 0; }
+/* Stack Tower: a block slides, stops, drops; the overhang falls away. */
+.demo-st-mover { position: absolute; left: 0; bottom: 42px; width: 70px; height: 14px; animation: demo-st-move 3.2s cubic-bezier(.45,0,.55,1) infinite; }
+.demo-st-cut { animation: demo-st-cut 3.2s ease-in infinite; transform-origin: 0 100%; }
+/* Flip Grid: one tap flips a plus of five tiles off. */
+.demo-fg-grid { position: absolute; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(5, 11px); gap: 3px; }
+.demo-fg-grid > span { width: 11px; height: 11px; border-radius: 2px; background: var(--paper); border: 1.5px solid var(--line); box-sizing: border-box; }
+.demo-fg-grid > .demo-fg-on { background: var(--line); }
+.demo-fg-grid > .demo-fg-hit { animation: demo-fg-flip 3s ease-in-out infinite; }
+.demo-fg-tap { right: 22.5px; bottom: 22.5px; margin: 0; animation: demo-tap 3s ease-out infinite; }
+/* Tug of Taps: two players tap, the knot pulls one way, then the other way to the win. */
+.demo-tug-rope { position: absolute; left: 18px; right: 18px; bottom: 26px; height: 4px; background: var(--line); border-radius: 2px; }
+.demo-tug-knot { position: absolute; left: 64px; bottom: 19px; width: 12px; height: 18px; background: var(--paper); border: 2px solid var(--line); border-radius: 3px; box-sizing: border-box; animation: demo-tug-knot 3.6s cubic-bezier(.3,0,.3,1) infinite; }
+.demo-tug-p { position: absolute; bottom: 14px; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; border: 2px solid var(--line); box-sizing: border-box; }
+.demo-tug-p svg { width: 14px; height: 14px; fill: var(--line); }
+.demo-tug-a { left: 0; background: var(--coral); animation: demo-tug-a 3.6s ease-out infinite; }
+.demo-tug-b { right: 0; background: var(--aqua); border-radius: 6px; animation: demo-tug-b 3.6s ease-out infinite; }
+/* Paint Mix demo: target and bowl discs, falling drops, a swirl. */
+.demo-pm-disc { position: absolute; width: 50px; height: 50px; border-radius: 50%; border: 2.5px solid var(--line); box-sizing: border-box; }
+.demo-pm-swirl { position: absolute; width: 50px; height: 50px; border-radius: 50%; border: 4px solid transparent; border-top-color: #f6e13f; border-left-color: color-mix(in srgb, #f6e13f 50%, transparent); box-sizing: border-box; opacity: 0; }
+.demo-pm-drop { position: absolute; width: 14px; height: 16px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; background: #f6e13f; border: 2px solid var(--line); box-sizing: border-box; opacity: 0; }
+/* Orbit Drop demo: two planets with dashed rings and a ball that flies between them. */
+.demo-od-ring { position: absolute; border-radius: 50%; border: 1.5px dashed color-mix(in srgb, var(--line) 55%, transparent); box-sizing: border-box; }
+.demo-od-ring--next { border-color: var(--line); }
+.demo-od-planet { position: absolute; border-radius: 50%; background: var(--paper); border: 2.5px solid var(--line); box-sizing: border-box; }
+.demo-od-planet--next { background: color-mix(in srgb, var(--line) 22%, var(--paper)); }
+.demo-od-flash { position: absolute; border-radius: 50%; border: 3px solid var(--paper); box-sizing: border-box; opacity: 0; }
+.demo-od-ball { position: absolute; left: -5px; top: -5px; width: 10px; height: 10px; border-radius: 50%; background: var(--paper); border: 2px solid var(--line); box-sizing: border-box; }
+/* Balance Beam demo. */
+.demo-bb-pivot { position: absolute; left: 61px; top: 50px; width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent; border-bottom: 18px solid var(--line); }
+.demo-bb-beam { position: absolute; left: 10px; top: 44px; width: 120px; height: 6px; border-radius: 3px; background: var(--paper); border: 2px solid var(--line); box-sizing: border-box; transform-origin: 50% 50%; }
+.demo-bb-w { position: absolute; bottom: 4px; display: grid; place-items: center; border-radius: 2px; background: var(--paper); border: 2px solid var(--line); box-sizing: border-box; font: 800 8px/1 var(--font-mono); color: var(--line); }
+.demo-bb-w--fixed { background: var(--line); color: var(--paper); }
+/* Untangle Lights demo. */
+.demo-ul, .demo-ul-layer { position: absolute; inset: 0; width: 140px; height: 72px; }
+.demo-ul-wire { stroke: var(--line); stroke-width: 2.5; stroke-linecap: round; }
+.demo-ul-wire--bad { stroke: #c62f22; stroke-dasharray: 5 4; }
+.demo-ul-dot { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: var(--paper); border: 2.5px solid var(--line); box-sizing: border-box; }
+/* Word Ladder demo. */
+.demo-wl { position: absolute; inset: 0; display: flex; gap: 5px; align-items: center; justify-content: center; }
+.demo-wl-tile { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 4px; border: 2.5px solid var(--line); background: var(--paper); font: 800 15px/1 var(--font-mono); text-transform: uppercase; color: var(--line); box-sizing: border-box; }
+/* Garden Path demo: the line draws itself along the route. */
+.demo-gp { position: absolute; inset: 0; width: 140px; height: 72px; overflow: visible; }
+.demo-gp-cell { fill: var(--paper); stroke: var(--line); stroke-width: 1; opacity: .9; }
+.demo-gp-stone { fill: var(--line); }
+.demo-gp-line { fill: none; stroke: var(--line); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 100; animation: demo-gp-draw 4.4s ease-in-out infinite; }
+/* Rule Stack demo. */
+.demo-rs-grid { position: absolute; left: 0; top: 4px; display: grid; grid-template-columns: repeat(3, 20px); gap: 3px; }
+.demo-rs-cell { width: 20px; height: 20px; border-radius: 4px; border: 2px solid var(--line); box-sizing: border-box; background: var(--paper); }
+.demo-rs-rule { position: absolute; left: 72px; top: 8px; width: 68px; font: 800 8px/10px var(--font-body); color: var(--line); }
+.demo-rs-rule--new { top: 40px; }
+/* Dots & Boxes demo. */
+.demo-db-dot { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+.demo-db-line { position: absolute; width: 4px; height: 36px; border-radius: 2px; background: var(--line); }
+.demo-db-box { position: absolute; width: 26px; height: 26px; border-radius: 4px; background: var(--coral); border: 2px solid var(--line); box-sizing: border-box; }
+/* Reduced motion: each scene holds its key frame (--still is set on each scene). */
+@media (prefers-reduced-motion: reduce) {
+  .demo * { animation-play-state: paused !important; animation-delay: var(--still, 0s) !important; }
+}
+.demo-emoji { display: grid; place-items: center; font-size: 18px; line-height: 1; }
+.demo-shape { position: absolute; left: 4px; top: 4px; width: 10px; height: 10px; }
+.demo-shape svg { display: block; width: 10px; height: 10px; stroke: var(--line); stroke-width: 2; }
+.demo-track { position: absolute; height: 3px; border-radius: 2px; background: var(--line); opacity: 0.55; }
+.demo-knob { position: absolute; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: var(--paper); border: 2px solid var(--line); box-sizing: border-box; }
+.demo-knob--sm { width: 9px; height: 9px; margin-left: -4px; border-width: 1.5px; }
+.demo-odd { position: absolute; left: 51px; top: 4px; display: grid; grid-template-columns: repeat(4, 20px); gap: 3px; }
+.demo-odd > span:not(.demo-tap) { width: 20px; height: 20px; display: grid; place-items: center; font-size: 12px; line-height: 1; background: var(--paper); border-radius: 4px; }
+.demo-mp-cell { position: absolute; width: 13px; height: 13px; border-radius: 3px; background: var(--paper); border: 1.5px solid var(--line); box-sizing: border-box; overflow: hidden; }
+.demo-mp-lit { position: absolute; inset: 0; background: var(--line); }
+.demo-wave, .demo-wave-wrap { position: absolute; width: 120px; height: 40px; overflow: visible; }
+.demo-wave-wrap .demo-wave { position: static; }
+.demo-wave path { fill: none; stroke: var(--line); stroke-width: 2.5; stroke-linecap: round; }
+.demo-wave .demo-wave-target { stroke-width: 2; stroke-dasharray: 3 4; opacity: 0.5; }
+.demo-lp-card { position: absolute; width: 18px; height: 28px; border-radius: 4px; background: var(--paper); border: 2px solid var(--line); box-sizing: border-box; overflow: hidden; }
+.demo-lp-mine { border-width: 2.5px; }
+.demo-lp-back { position: absolute; inset: 0; background: repeating-linear-gradient(45deg, var(--line) 0 2px, var(--paper) 2px 5px); }
+.demo-tot-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--line); }
+.demo-tot-guess { position: absolute; top: 42px; width: 3px; height: 18px; margin-left: -1.5px; background: var(--chili); border: 1px solid var(--line); box-sizing: content-box; }
+.demo-dots { position: absolute; inset: 0; }
+.demo-dots > span { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: var(--line); }
+.demo-ray { position: absolute; width: 96px; height: 3px; margin-top: -1.5px; background: var(--line); border-radius: 2px; transform-origin: 0 50%; }
+.demo-ray--true { background: repeating-linear-gradient(90deg, var(--paper) 0 5px, transparent 5px 9px); outline: 1px solid transparent; }
+.demo-ray--move { width: 70px; }
+.demo-ray-knob { position: absolute; right: -6px; top: -5px; width: 13px; height: 13px; border-radius: 50%; background: var(--paper); border: 2px solid var(--line); box-sizing: border-box; }
+.demo-phone { border-radius: 8px; }
+.demo-link { position: absolute; left: 54px; right: 54px; top: 34px; border-top: 2px dashed var(--line); }
+.demo-chip { position: absolute; width: 42px; height: 15px; border-radius: 8px; border: 1.5px solid var(--line); box-sizing: border-box; overflow: hidden; }
+.demo-sr-board { position: absolute; display: grid; grid-template-columns: repeat(3, 13px); gap: 2px; }
+.demo-sr-board > span { width: 13px; height: 13px; border-radius: 3px; background: var(--paper); position: relative; }
+.demo-sr-board > span::after { content: ""; position: absolute; inset: 4px; border-radius: 50%; border: 1.5px solid var(--line); }
+.demo-pl-tap { position: absolute; left: 56px; top: 0; width: 28px; height: 10px; background: var(--paper); border: 2px solid var(--line); border-radius: 3px; box-sizing: border-box; }
+.demo-pl-stream { position: absolute; left: 67px; top: 10px; width: 6px; height: 54px; background: var(--paper); border: 1.5px solid var(--line); box-sizing: border-box; z-index: 1; }
+.demo-pl-glass { position: absolute; left: 40px; top: 18px; width: 60px; height: 52px; clip-path: polygon(0 0, 100% 0, 82% 100%, 18% 100%); background: var(--line); }
+.demo-pl-inner { position: absolute; inset: 0 3px 3px; clip-path: polygon(0 0, 100% 0, 82% 100%, 18% 100%); background: var(--qg-fill); overflow: hidden; }
+.demo-pl-liquid { position: absolute; left: 0; right: 0; bottom: 0; background: var(--paper); box-shadow: 0 -2px 0 var(--line); }
+.demo-pl-line { position: absolute; left: 0; right: 0; bottom: 62%; border-top: 2px dashed var(--line); }
+.demo-cp-bubble { position: absolute; border-radius: 50%; background: var(--paper); border: 2px solid var(--line); box-sizing: border-box; }
+.demo-cp-ring { position: absolute; border-radius: 50%; border: 2px solid var(--line); box-sizing: border-box; opacity: 0; }
+.demo-fs-half { position: absolute; left: 38px; top: 2px; width: 64px; height: 68px; }
+.demo-fs-half svg { display: block; width: 64px; height: 68px; }
+.demo-fs-half polygon { fill: var(--paper); stroke: var(--line); stroke-width: 2; stroke-linejoin: round; }
+.demo-fs-knife { position: absolute; left: 69px; top: -4px; width: 3px; height: 78px; background: var(--line); border-radius: 2px; }
+.demo-tu-tray { position: absolute; left: 32px; top: 8px; width: 92px; height: 36px; border-radius: 6px; background: var(--paper); border: 2px solid var(--line); box-sizing: border-box; }
+.demo-tu-lid { position: absolute; left: 32px; top: 8px; width: 92px; height: 36px; border-radius: 6px; background: var(--line); transform-origin: 50% 0; }
+.demo-tu-coin, .demo-tu-bar, .demo-tu-tri { position: absolute; width: 20px; height: 20px; box-sizing: border-box; border: 2px solid var(--line); background: var(--qg-fill); }
+.demo-tu-coin { border-radius: 50%; }
+.demo-tu-bar { width: 20px; height: 12px; margin-top: 4px; border-radius: 3px; }
+.demo-tu-tri { border: 0; background: var(--line); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.demo-tu-tri::after { content: ""; position: absolute; inset: 3px 3px 2px; background: var(--qg-fill); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.demo-tu-slot { background: transparent; border: 1.5px dashed var(--line); opacity: 0.6; }
+.demo-tu-tri.demo-tu-slot { background: transparent; opacity: 0.35; }
+.demo-tu-tri.demo-tu-slot::after { background: var(--paper); }
+.demo-dd { position: absolute; width: 4px; height: 14px; border: 1.5px solid var(--line); border-radius: 1.5px; background: var(--paper); box-sizing: border-box; }
+.demo-dd--spare { border-width: 2.5px; }
+.demo-op-tile { position: absolute; top: 54px; width: 22px; height: 16px; border-radius: 4px; border: 2px solid var(--line); box-sizing: border-box; }
+.demo-op-bar { position: absolute; bottom: 20px; width: 14px; background: var(--line); border-radius: 3px 3px 0 0; }
+.demo-gc-bar { position: absolute; bottom: 4px; width: 10px; background: var(--paper); border: 1.5px solid var(--line); border-bottom: 0; border-radius: 2px 2px 0 0; box-sizing: border-box; }
+.demo-gc-mark { position: absolute; left: 10px; top: 12px; bottom: 4px; width: 0; border-left: 2.5px dashed var(--line); }
+.demo-bk-dot { position: absolute; left: 8px; top: 18px; width: 40px; height: 40px; border-radius: 50%; background: var(--paper); border: 2px solid var(--line); box-sizing: border-box; }
+.demo-bk-tick { position: absolute; top: 26px; width: 3px; height: 30px; margin-left: -1.5px; border-radius: 2px; background: var(--line); }
+.demo-bk-tap { position: absolute; top: 35px; width: 11px; height: 11px; margin-left: -5.5px; border-radius: 50%; background: var(--paper); border: 2px solid var(--line); box-sizing: border-box; }
+.demo-pt-tap { position: absolute; left: 6px; top: 30px; width: 18px; height: 20px; border-radius: 4px 4px 2px 2px; background: var(--line); }
+.demo-pt-cell { position: absolute; top: 26px; width: 28px; height: 28px; border: 1.5px solid var(--line); border-radius: 4px; box-sizing: border-box; background: var(--paper); }
+.demo-pt-pipe { position: absolute; left: -2px; right: -2px; top: 9px; height: 8px; border: 2px solid var(--line); border-left: 0; border-right: 0; }
+.demo-pt-plant { position: absolute; left: 114px; top: 28px; width: 20px; height: 22px; border-radius: 50% 50% 4px 4px; background: var(--line); }
+.demo-lp-laser { position: absolute; left: 10px; top: 50px; width: 18px; height: 16px; border-radius: 3px; background: var(--line); }
+.demo-lp-beam { position: absolute; background: var(--paper); border: 1.5px solid var(--line); box-sizing: border-box; }
+.demo-lp-beam--a { left: 28px; top: 55px; height: 6px; }
+.demo-lp-beam--b { left: 99px; bottom: 11px; width: 6px; }
+.demo-lp-mirror { position: absolute; left: 90px; top: 56px; width: 24px; height: 4px; border-radius: 2px; background: var(--line); }
+.demo-lp-target { position: absolute; width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--line); background: var(--qg-fill); box-sizing: border-box; }
+.demo-lp-target--lit { background: var(--paper); box-shadow: 0 0 0 3px var(--paper); }
+.demo-ps-track { position: absolute; left: 30px; top: -50px; width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--line); opacity: .25; clip-path: inset(70% 0 0 0); }
+.demo-ps-zone { position: absolute; left: 90px; top: 58px; width: 22px; height: 9px; border-radius: 5px; border: 2px solid var(--line); box-sizing: border-box; rotate: -8deg; }
+.demo-ps-rod { position: absolute; left: 89px; top: 0; width: 2px; height: 62px; background: var(--line); transform-origin: 50% 0; }
+.demo-ps-bob { position: absolute; left: -7px; bottom: -8px; width: 16px; height: 16px; border-radius: 50%; background: var(--paper); border: 2.5px solid var(--line); box-sizing: border-box; }
+.demo-sl, .demo-sl-trace-wrap { position: absolute; inset: 0; width: 140px; height: 72px; overflow: visible; }
+.demo-sl path { fill: none; stroke-linecap: round; }
+.demo-sl .demo-sl-wall { stroke: var(--line); stroke-width: 15; }
+.demo-sl .demo-sl-floor { stroke: var(--paper); stroke-width: 11; }
+.demo-sl .demo-sl-trace { stroke: var(--line); stroke-width: 2.5; stroke-dasharray: 100; stroke-dashoffset: 100; animation: demo-sl-trace 3.6s ease-in-out infinite; }
+.demo-sr-shape { position: absolute; inset: 0; }
+.demo-sr-shape svg { width: 140px; height: 72px; overflow: visible; }
+.demo-sr-shape path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.demo-sr-edge { stroke: var(--line); stroke-width: 9; }
+.demo-sr-fill { stroke: var(--paper); stroke-width: 5; }
+.demo-sr-ink { stroke: var(--line); stroke-width: 2.5; stroke-dasharray: 100; stroke-dashoffset: 100; animation: demo-sr-ink 4s ease-in-out infinite; }
+.demo-hl-card { width: 38px; height: 52px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 4px; }
+.demo-hl-bar { display: block; width: 14px; background: var(--line); border-radius: 2px; }
+.demo-hl-card .demo-hl-bar[style*="34"] { position: absolute; bottom: 4px; left: 10px; }
+.demo-hl-btn { width: 30px; height: 26px; }
+.demo-qd { position: absolute; inset: 0; width: 140px; height: 72px; overflow: visible; }
+.demo-qd path { fill: none; stroke: var(--line); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 100; stroke-dashoffset: 100; animation: demo-qd 4s ease-out infinite; }
+.demo-qd-bubble { width: 42px; height: 22px; border-radius: 10px; }
+.demo-tl-board { position: absolute; left: 20px; top: 8px; width: 108px; height: 56px; border-radius: 6px; background: var(--paper); opacity: .9; }
+.demo-tl-block { position: absolute; width: 22px; height: 22px; border-radius: 4px; background: var(--line); }
+.demo-tl-hole, .demo-tl-marble { position: absolute; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; line-height: 1; box-sizing: border-box; }
+.demo-tl-hole { border: 2px dashed var(--line); color: var(--line); }
+.demo-tl-marble { background: var(--line); color: var(--paper); }
+.demo-sp { position: absolute; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 4px; background: var(--paper); font: 700 11px/1 var(--font-mono); color: var(--line); opacity: .95; }
+.demo-sp-on { position: absolute; width: 20px; height: 20px; border-radius: 4px; background: color-mix(in srgb, var(--line) 28%, transparent); }
+.demo-lr-tile { position: absolute; width: 16px; height: 16px; border-radius: 4px; background: var(--paper); display: grid; place-items: center; font: 800 10px/1 var(--font-display); color: var(--line); text-transform: uppercase; }
+.demo-lr-letter { position: absolute; font: 700 16px/1 var(--font-mono); color: var(--line); text-transform: uppercase; }
+.demo-su-ball { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: var(--paper); border: 2.5px solid var(--line); box-sizing: border-box; }
+.demo-su-stick { position: absolute; width: 4px; height: 48px; border-radius: 2px; background: var(--line); transform-origin: 50% 100%; }
+.demo-su-streak { position: absolute; font: 800 14px/1 var(--font-body); color: var(--line); }
+.demo-hw-board { position: absolute; display: block; }
+.demo-hw-cell { position: absolute; top: 0; display: grid; place-items: center; border-radius: 2px; font: 800 11px/1 var(--font-display); color: var(--line); box-sizing: border-box; }
+.demo-hw-cell--right { background: var(--line); color: var(--paper); }
+.demo-hw-cell--elsewhere { border: 1.5px dashed var(--line); }
+.demo-hw-cell--out { background: var(--paper); opacity: .6; }
+.demo-wait { display: block; width: 140px; height: 72px; margin-top: 22px; }
+@keyframes demo-st-move {
+  0% { transform: translate(0, 0); opacity: 1 } 28% { transform: translate(70px, 0) } 46% { transform: translate(56px, 0) }
+  54% { transform: translate(56px, 14px) } 88% { transform: translate(56px, 14px); opacity: 1 } 94%, 100% { transform: translate(56px, 14px); opacity: 0 }
+}
+@keyframes demo-st-cut {
+  0%, 54% { transform: none; opacity: 1 } 78% { transform: translate(10px, 34px) rotate(55deg); opacity: 1 } 84%, 100% { transform: translate(10px, 40px) rotate(60deg); opacity: 0 }
+}
+@keyframes demo-fg-flip {
+  0%, 40% { background: var(--line); transform: none } 46% { transform: rotateY(90deg); background: var(--line) }
+  47% { background: var(--paper) } 52%, 88% { background: var(--paper); transform: none } 92% { transform: rotateY(90deg); background: var(--paper) } 93%, 100% { background: var(--line); transform: none }
+}
+@keyframes demo-tap { 0%, 30% { opacity: 0; transform: scale(1.6) } 38% { opacity: 1; transform: scale(1) } 46% { opacity: 0; transform: scale(0.7) } 100% { opacity: 0 } }
+@keyframes demo-tug-knot {
+  0% { transform: translateX(0) } 10% { transform: translateX(8px) } 20% { transform: translateX(15px) } 30% { transform: translateX(20px) }
+  40% { transform: translateX(10px) } 50% { transform: translateX(-2px) } 60% { transform: translateX(-16px) } 70%, 90% { transform: translateX(-34px) } 100% { transform: translateX(0) }
+}
+@keyframes demo-tug-b { 0%, 30% { transform: scale(1) } 5%, 15%, 25% { transform: scale(1.18) } 10%, 20% { transform: scale(0.94) } 31%, 100% { transform: scale(1) } }
+@keyframes demo-tug-a {
+  0%, 34% { transform: scale(1) } 38%, 46%, 54%, 62% { transform: scale(1.18) } 42%, 50%, 58%, 66% { transform: scale(0.94) }
+  70% { transform: scale(1) } 74% { transform: translateY(-6px) scale(1.08) } 78% { transform: none } 82% { transform: translateY(-6px) scale(1.08) } 86%, 100% { transform: none }
+}
+@keyframes demo-gp-draw { 0%, 8% { stroke-dashoffset: 100; } 78%, 100% { stroke-dashoffset: 0; } }
+@keyframes demo-sl-trace { 0%, 8% { stroke-dashoffset: 100 } 80%, 94% { stroke-dashoffset: 0 } 100% { stroke-dashoffset: 100 } }
+@keyframes demo-sr-ink { 0%, 38% { stroke-dashoffset: 100 } 64%, 100% { stroke-dashoffset: 0 } }
+@keyframes demo-qd { 0% { stroke-dashoffset: 100 } 15%, 96% { stroke-dashoffset: 0 } 100% { stroke-dashoffset: 100 } }

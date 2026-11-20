@@ -6,6 +6,7 @@ import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, recordPlay } from '../shell/stats'
 import { Score } from '../ui/components'
+import './stick-up.css'
 
 const game = getGame('stick-up')
 const H = 420

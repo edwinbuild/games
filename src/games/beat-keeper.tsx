@@ -7,6 +7,7 @@ import { feel, soundOn, tone } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { Burst, Button, Stage } from '../ui/components'
+import './beat-keeper.css'
 
 const game = getGame('beat-keeper')
 /** Within this many ms on average is great timing. */

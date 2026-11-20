@@ -7,6 +7,7 @@ import { ResultCard } from '../shell/ResultCard'
 import { getStats, recordPlay } from '../shell/stats'
 import { count } from '../shell/plural'
 import { Burst, Stage } from '../ui/components'
+import './pendulum-stop.css'
 
 const game = getGame('pendulum-stop')
 /** Pause after a good stop before the next swing starts. */

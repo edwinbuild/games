@@ -6,6 +6,7 @@ import { seededRandom } from '../shell/daily'
 import { feel, tone } from '../shell/feel'
 import { getStats, recordPlay } from '../shell/stats'
 import { Button, Score, Stage, GetReady } from '../ui/components'
+import './memory-path.css'
 
 const game = getGame('memory-path')
 const N = 4

@@ -1,0 +1,17 @@
+/* Styles for beat-keeper, loaded with its code (split out of site.css). */
+/* Beat Keeper */
+.bk-stage { min-height: 420px; display: grid; align-content: center; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+.bk-ring { position: relative; display: grid; place-items: center; width: min(42vw, 170px); aspect-ratio: 1; margin: var(--space-4) 0; }
+.bk-pulse { width: 100%; height: 100%; border-radius: 50%; background: var(--game); border: var(--border-edge) solid var(--edge); box-shadow: 0 6px 0 var(--edge); transform: scale(.8); will-change: transform; }
+.bk-ripple { position: absolute; inset: 0; border-radius: 50%; border: 3px solid var(--ink); opacity: 0; pointer-events: none; }
+.bk-ripple.is-on { animation: bk-ripple 380ms ease-out; }
+.bk-strip { width: 100%; max-width: 420px; height: auto; overflow: visible; }
+.bk-strip-mark { stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+.bk-strip-tap { fill: var(--surface); stroke: var(--ink); stroke-width: 2.5; }
+.bk-strip-tap.is-good { fill: var(--game); }
+.bk-strip-miss { fill: var(--danger); font: 800 18px var(--font-body); }
+.bk-strip-beat { animation: bk-in 300ms ease-out both; }
+@media (prefers-reduced-motion: reduce) { .bk-ripple.is-on, .bk-strip-beat { animation: none; }
+}
+@keyframes bk-ripple { from { transform: scale(.85); opacity: .9 } to { transform: scale(1.35); opacity: 0 } }
+@keyframes bk-in { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }

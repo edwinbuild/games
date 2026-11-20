@@ -7,6 +7,7 @@ import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, recordPlay } from '../shell/stats'
 import { Burst, Score, Stage } from '../ui/components'
+import './tidy-up.css'
 
 const game = getGame('tidy-up')
 const SIZE = 58 // drawn size of a thing, in world units

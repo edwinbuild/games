@@ -6,6 +6,7 @@ import { feel, tone } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { AttemptTiles, Button, Stage, type Attempt } from '../ui/components'
+import './pitch-match.css'
 
 const game = getGame('pitch-match')
 const ROUNDS = 3

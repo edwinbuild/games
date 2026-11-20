@@ -1,0 +1,20 @@
+/* Styles for garden-path, loaded with its code (split out of site.css). */
+/* Garden Path: a grid of squares, the path drawn as one thick line, stones as dots and rings. */
+.gp-stage { width: 100%; max-width: 440px; margin-inline: auto; }
+.gp-grid { position: relative; display: grid; width: 100%; touch-action: none; user-select: none; -webkit-user-select: none; background: var(--surface-sunken); }
+.gp-cell { display: grid; place-items: center; border: 1px solid var(--line); transition: background-color 120ms; }
+.gp-cell.is-on { background: color-mix(in srgb, var(--game) 45%, var(--surface)); }
+.gp-cell.is-broken { background: color-mix(in srgb, var(--danger) 35%, var(--surface)); }
+.gp-mark { position: relative; z-index: 2; font-size: clamp(18px, 6vw, 28px); line-height: 1; }
+.gp-stone { position: relative; z-index: 2; width: 34%; aspect-ratio: 1; border-radius: 50%; border: 3px solid var(--ink); }
+.gp-stone--turn { background: var(--ink); }
+.gp-stone--straight { background: var(--surface); }
+.gp-line { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+.gp-line polyline { fill: none; stroke: var(--ink); stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; stroke-width: 9px; opacity: .85; }
+.gp-grid.is-solved .gp-cell.is-on { background: var(--game); animation: gp-bloom 520ms ease-out both; }
+.gp-msg { margin: 0; color: var(--danger); }
+@media (min-width: 1000px) { .gp-stage { max-width: min(560px, calc(100dvh - 300px)); }
+}
+@media (prefers-reduced-motion: reduce) { .gp-grid.is-solved .gp-cell.is-on { animation: none; } .gp-cell { transition: none; }
+}
+@keyframes gp-bloom { 50% { filter: brightness(1.15); } }

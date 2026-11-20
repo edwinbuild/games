@@ -8,6 +8,7 @@ import { drawStroke, pointsFrom, type P } from '../shell/ink'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { Burst, Stage } from '../ui/components'
+import './steady-line.css'
 
 const game = getGame('steady-line')
 type Try = { pct: number; time: number | null }

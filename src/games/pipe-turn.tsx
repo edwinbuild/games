@@ -8,6 +8,7 @@ import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { count } from '../shell/plural'
 import { Burst, Button, Score, Stage } from '../ui/components'
+import './pipe-turn.css'
 
 const game = getGame('pipe-turn')
 

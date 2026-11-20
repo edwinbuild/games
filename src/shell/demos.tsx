@@ -3,6 +3,7 @@
 // generated here. Scenes run only while their card is on screen, and with reduced motion each
 // freezes on its key frame (`--still`). Every animation in a scene shares the scene's duration.
 import type { CSSProperties, ReactNode } from 'react'
+import './demos.css'
 
 const range = (n: number) => Array.from({ length: n }, (_, i) => i)
 const names = new Map<string, string>()

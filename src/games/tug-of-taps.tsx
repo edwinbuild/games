@@ -7,6 +7,7 @@ import { count as plural } from '../shell/plural'
 import { ResultCard } from '../shell/ResultCard'
 import { Button } from '../ui/components'
 import { PLAYERS, SplitStage } from '../ui/multiplayer'
+import './tug-of-taps.css'
 
 const game = getGame('tug-of-taps')
 /** Two keys each, to alternate like two thumbs: A/S for one player, K/L for the other. */

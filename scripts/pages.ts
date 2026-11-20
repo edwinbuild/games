@@ -7,7 +7,7 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node
 import { resolve } from 'node:path'
 import { GAMES, LISTED, SKILLS, type GameMeta } from '../src/games/registry.ts'
 import { TAGLINES } from '../src/games/taglines.ts'
-import { VERSIONS } from '../src/versions.ts'
+import { VERSION, VERSIONS } from '../src/versions.ts'
 import { HOW_TO } from '../src/games/howto.ts'
 import { SITE } from '../src/site.ts'
 
@@ -78,6 +78,19 @@ ${opts.body}
 `
 }
 
+// What the app draws first, as plain HTML inside #root: the top bar and the page's heading. It shows
+// as soon as the page arrives (before any script runs); the app then draws the same thing over it,
+// so nothing moves. Keep in step with TopBar, AccountKey, SoundToggle, GameShell and home.tsx.
+const BRAND = `<svg class="qg-brand-mark" width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><path d="M4 7h24a2 2 0 0 1 2 2v4a3 3 0 0 0 0 6v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a3 3 0 0 0 0-6V9a2 2 0 0 1 2-2z" fill="var(--primary)" stroke="var(--edge)" stroke-width="2" stroke-linejoin="round"></path><path d="M11 9.5v13" stroke="var(--edge)" stroke-width="2" stroke-dasharray="2 2.5"></path><path d="M17 12.5h7M17 16h5M17 19.5h7" stroke="var(--on-primary)" stroke-width="2" stroke-linecap="round"></path></svg>`
+const SIGN_IN = `<button type="button" class="qg-signin-key" aria-label="Sign in"><svg class="qg-signin-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2.4"></circle><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path></svg><span class="qg-signin-text">Sign in</span></button>`
+function topBar(opts: { daily?: boolean; sound?: boolean }) {
+  return `<header class="qg-topbar"><a class="qg-brand" href="/">${BRAND}${esc(SITE.name)}</a><span class="qg-topbar-right">${opts.daily ? '<span class="qg-pill">Daily</span>' : ''}<a class="site-version" href="/about/#versions" aria-label="Version ${VERSION}: what’s new">v${VERSION}</a>${SIGN_IN}${opts.sound ? '<button type="button" class="qg-chip" aria-pressed="false">Sound<span class="qg-chip-state"> off</span></button>' : ''}</span></header>`
+}
+const gameShell = (g: GameMeta) =>
+  `<div class="page page--game">${topBar({ daily: g.daily, sound: true })}<div class="game-band" aria-hidden="true" style="view-transition-name: band-${g.slug};"></div><div class="game-layout"><main class="game-main"><header class="game-head"><h1 class="game-title" style="view-transition-name: title-${g.slug};">${esc(g.title)}</h1><p class="body">${esc(g.instructions)}</p></header></main><aside class="game-aside"></aside></div></div>`
+const homeShell = (title: string, blurb?: string) =>
+  `<div class="page page--home home">${topBar({})}<div class="home-layout"><aside class="home-rail"></aside><div class="home-main"><header class="today">${blurb ? `<div class="stack" style="gap: var(--space-2);"><h1 class="site-title">${esc(title)}</h1><p class="body muted" style="margin: 0px;">${esc(blurb)} <a href="/">See every game</a>.</p></div>` : `<h1 class="site-title">${esc(title)}</h1>`}</header></div></div></div>`
+
 function gamePage(g: GameMeta) {
   const howTo = (HOW_TO[g.slug] ?? []).map((p) => `        <p>${esc(p)}</p>`).join('\n')
   return page({
@@ -87,7 +100,7 @@ function gamePage(g: GameMeta) {
     image: `/og/${g.slug}.png`,
     entry: '../../src/entries/game.tsx',
     bodyAttrs: `data-game="${g.slug}" style="--game: var(--${g.color})"`,
-    body: `    <div id="root"></div>
+    body: `    <div id="root">${gameShell(g)}</div>
     <section class="howto">
       <h2>How to play ${esc(g.title)}</h2>
 ${howTo}
@@ -106,7 +119,7 @@ function homePage() {
     path: '/',
     image: '/og/home.png',
     entry: '../src/entries/home.tsx',
-    body: `    <div id="root"></div>
+    body: `    <div id="root">${homeShell(SITE.name)}</div>
     <section class="howto">
       <h2>All games</h2>
       <ul>
@@ -129,7 +142,7 @@ function categoryPage(k: (typeof SKILLS)[number]) {
     image: '/og/home.png',
     entry: '../../../src/entries/home.tsx',
     bodyAttrs: `data-kind="${k.id}"`,
-    body: `    <div id="root"></div>
+    body: `    <div id="root">${homeShell(`${k.label} games`, k.blurb)}</div>
     <section class="howto">
       <h2>${esc(k.label)} games</h2>
       <ul>

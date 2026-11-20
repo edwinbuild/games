@@ -1,0 +1,29 @@
+/* Styles for tilt, loaded with its code (split out of site.css). */
+/* Tilt */
+.tl-stage { width: 100%; max-width: 440px; margin-inline: auto; overflow: hidden; }
+.tl-board { position: relative; width: 100%; touch-action: none; user-select: none; -webkit-user-select: none; background: var(--surface-sunken); }
+.tl-floor, .tl-block, .tl-hole, .tl-marble { position: absolute; box-sizing: border-box; }
+.tl-floor { border: 1px solid var(--line); }
+.tl-block::before { content: ''; position: absolute; inset: 7%; background: var(--ink); border-radius: 8px; }
+.tl-hole, .tl-marble { display: grid; place-items: center; }
+.tl-hole::before { content: ''; position: absolute; inset: 5%; border-radius: 50%; border: 3px dashed var(--ink); background: color-mix(in srgb, var(--m) 30%, var(--surface-sunken)); }
+.tl-hole.is-filled::before { border-style: solid; background: var(--m); }
+.tl-marble { z-index: 2; --roll: 0ms; transition: left var(--roll) cubic-bezier(.45,0,.7,1), top var(--roll) cubic-bezier(.45,0,.7,1), transform 220ms ease-in var(--roll), opacity 220ms ease-in var(--roll); }
+.tl-marble::before { content: ''; position: absolute; inset: 15%; border-radius: 50%; background: var(--m); border: 3px solid var(--edge); box-shadow: inset -4px -5px 0 rgb(0 0 0 / .18); }
+.tl-marble.is-in { transform: scale(.2); opacity: 0; }
+.tl-hole > span, .tl-marble > span { position: relative; font-size: clamp(14px, 4.6vw, 22px); line-height: 1; color: #111; }
+.tl-hole > span { opacity: .75; }
+.tl-board.is-solved .tl-hole::before { animation: tl-glow 500ms cubic-bezier(.2,.9,.3,1.4) both; }
+.tl-pad { display: grid; grid-template-columns: repeat(3, 64px); grid-template-areas: ". up ." "left down right"; gap: var(--space-2); justify-content: center; }
+.tl-key { font-size: 22px; padding-inline: 0; }
+.tl-key--up { grid-area: up; }
+.tl-key--down { grid-area: down; }
+.tl-key--left { grid-area: left; }
+.tl-key--right { grid-area: right; }
+.tl-key.is-hint { outline: 4px solid var(--focus); outline-offset: 2px; }
+.tl-msg { margin: 0; }
+@media (min-width: 1000px) { .tl-stage { max-width: min(520px, calc(100dvh - 330px)); }
+}
+@media (prefers-reduced-motion: reduce) { .tl-marble { transition: none; } .tl-board.is-solved .tl-hole::before { animation: none; }
+}
+@keyframes tl-glow { 50% { transform: scale(1.18); } }

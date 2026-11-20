@@ -7,6 +7,7 @@ import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { Burst, Stage } from '../ui/components'
+import './chain-pop.css'
 
 const game = getGame('chain-pop')
 /** Three quarters of the board in one chain is a great tap. */

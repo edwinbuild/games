@@ -1,0 +1,10 @@
+/* Styles for fair-slice, loaded with its code (split out of site.css). */
+/* Fair Slice */
+.fs-stage { position: relative; width: 100%; max-width: 460px; margin-inline: auto; touch-action: none; user-select: none; -webkit-user-select: none; overflow: hidden; cursor: crosshair; }
+.fs-canvas { display: block; width: 100%; aspect-ratio: 1; }
+.fs-kbd { position: absolute; right: var(--space-2); bottom: var(--space-2); }
+/* Desktop game pages: boards use the wider column, but never taller than the screen allows
+   (260px is roughly the top bar, title and the key under the board). */
+@media (min-width: 1000px) {
+.fs-stage { max-width: min(580px, calc(100dvh - 300px)); }
+}

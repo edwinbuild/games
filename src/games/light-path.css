@@ -1,0 +1,29 @@
+/* Styles for light-path, loaded with its code (split out of site.css). */
+/* Light Path */
+.lp-stage { padding: var(--space-3); }
+.lp-wrap { position: relative; width: 100%; max-width: 440px; margin-inline: auto; }
+.lp-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.lp-cell { aspect-ratio: 1; padding: 0; border: 1.5px solid var(--edge); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); cursor: pointer; display: grid; place-items: center; font-size: 18px; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.lp-cell:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+@media (hover: hover) and (pointer: fine) { .lp-cell[data-cursor] { outline: 2px dashed var(--edge); outline-offset: 1px; }
+}
+.lp-wall { background: repeating-linear-gradient(45deg, var(--ink) 0 3px, var(--surface-sunken) 3px 8px); cursor: default; }
+.lp-laser { background: var(--game); color: var(--on-fill); cursor: default; }
+.lp-target { width: 52%; aspect-ratio: 1; border-radius: 50%; border: 3px solid var(--ink); background: var(--surface-sunken); transition: background-color 200ms, transform 200ms; }
+.lp-cell.is-lit .lp-target { background: var(--game); transform: scale(1.15); box-shadow: 0 0 0 4px color-mix(in srgb, var(--game) 45%, transparent); }
+/* A target's cell (lp-goal); lp-target is the dot inside it. */
+.lp-goal { cursor: default; }
+.lp-mirror { width: 80%; height: 5px; border-radius: 3px; background: var(--ink); }
+.lp-m1 .lp-mirror { rotate: -45deg; }
+.lp-m2 .lp-mirror { rotate: 45deg; }
+.lp-beam { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.lp-beam polyline { fill: none; stroke: var(--game); stroke-width: 0.11; stroke-linejoin: round; stroke-linecap: round; filter: drop-shadow(0 0 0.05px var(--edge)); stroke-dasharray: 60; stroke-dashoffset: 60; animation: lp-draw 500ms ease-out forwards; }
+.lp-beam .lp-beam-edge { stroke: var(--edge); stroke-width: 0.19; }
+@media (prefers-reduced-motion: reduce) { .lp-beam polyline { animation: none; stroke-dashoffset: 0; }
+}
+/* Desktop game pages: boards use the wider column, but never taller than the screen allows
+   (260px is roughly the top bar, title and the key under the board). */
+@media (min-width: 1000px) {
+.lp-wrap { max-width: min(580px, calc(100dvh - 300px)); }
+}
+@keyframes lp-draw { to { stroke-dashoffset: 0 } }

@@ -11,6 +11,7 @@ import { useRunState } from '../shell/session'
 import { load } from '../shell/storage'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { Burst, Button, Stage } from '../ui/components'
+import './garden-path.css'
 
 const game = getGame('garden-path')
 /** The path so far, and seconds spent before this visit (the clock keeps running across a refresh). */

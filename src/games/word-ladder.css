@@ -1,0 +1,17 @@
+/* Styles for word-ladder, loaded with its code (split out of site.css). */
+/* Word Ladder: words as rows of letter tiles; the letter that changed is filled. */
+.wl-ladder { display: grid; justify-items: center; gap: 6px; }
+.wl-word { display: inline-flex; gap: 5px; animation: wl-in 260ms cubic-bezier(.2,.9,.3,1.3) both; }
+.wl-tile { display: grid; place-items: center; width: 44px; height: 44px; border-radius: var(--radius-sm); border: var(--border-edge) solid var(--edge); background: var(--surface); font: 800 22px/1 var(--font-mono); text-transform: uppercase; color: var(--ink); }
+.wl-tile.is-new { background: var(--game); color: var(--on-fill); }
+.wl-word--start .wl-tile, .wl-word--end .wl-tile { background: var(--ink); color: var(--canvas); }
+.wl-ladder--done .wl-word--end .wl-tile, .wl-word--end .wl-tile.is-new { background: var(--game); color: var(--on-fill); }
+.wl-gap { font: 800 20px/1 var(--font-body); color: var(--ink-muted); }
+.wl-entry { display: grid; gap: var(--space-2); }
+.wl-entry-row { display: grid; grid-template-columns: 1fr auto; gap: var(--space-2); }
+.wl-input { min-width: 0; width: 100%; min-height: 52px; padding: 0 var(--space-4); border: var(--border-edge) solid var(--edge); border-radius: var(--radius-md); background: var(--surface); color: var(--ink); font: 800 24px/1 var(--font-mono); letter-spacing: 0.3em; text-transform: uppercase; }
+.wl-input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.wl-msg { margin: 0; min-height: 20px; color: var(--danger); }
+@media (prefers-reduced-motion: reduce) { .wl-word { animation: none; }
+}
+@keyframes wl-in { from { opacity: 0; transform: translateY(-8px) scale(.96); } }

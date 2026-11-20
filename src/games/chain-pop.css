@@ -1,0 +1,10 @@
+/* Styles for chain-pop, loaded with its code (split out of site.css). */
+/* Chain Pop */
+.cp-stage { position: relative; width: 100%; max-width: 440px; margin-inline: auto; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; overflow: hidden; }
+.cp-canvas { display: block; width: 100%; aspect-ratio: 3 / 4; }
+.cp-kbd { position: absolute; right: var(--space-2); bottom: var(--space-2); }
+/* Desktop game pages: boards use the wider column, but never taller than the screen allows
+   (260px is roughly the top bar, title and the key under the board). */
+@media (min-width: 1000px) {
+  .cp-stage { max-width: min(520px, calc((100dvh - 300px) * 0.75)); }
+}

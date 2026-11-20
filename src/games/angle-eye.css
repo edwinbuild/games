@@ -1,0 +1,16 @@
+/* Styles for angle-eye, loaded with its code (split out of site.css). */
+/* Angle Eye */
+.ae-board { display: block; width: 100%; max-width: 520px; aspect-ratio: 1; margin: 0 auto; border-radius: var(--radius-md); background: var(--surface-sunken); touch-action: none; cursor: crosshair; }
+.ae-board:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.ae-ink { stroke: var(--ink); stroke-width: 1; stroke-linecap: round; }
+.ae-mine { stroke: var(--game); stroke-width: 1.4; stroke-linecap: round; }
+.ae-dash { stroke-dasharray: 2 1.5; }
+.ae-dot { fill: var(--ink); }
+.ae-handle { fill: var(--game); stroke: var(--ink); stroke-width: 0.6; }
+.ae-answer { fill: var(--success); }
+.ae-answer-line { stroke: var(--success); stroke-width: 0.8; stroke-dasharray: 1.5 1.5; }
+/* Desktop game pages: boards use the wider column, but never taller than the screen allows
+   (260px is roughly the top bar, title and the key under the board). */
+@media (min-width: 1000px) {
+.ae-board { max-width: min(580px, calc(100dvh - 300px)); }
+}

@@ -1,0 +1,23 @@
+/* Styles for dots-and-boxes, loaded with its code (split out of site.css). */
+/* Dots & Boxes: an SVG board of dots and lines; claimed boxes take their player's colour and shape. */
+.db-modes { display: grid; gap: var(--space-2); justify-items: center; margin-bottom: var(--space-3); }
+.db-strip .qg-player { transition: opacity 160ms, transform 160ms; }
+.db-strip[data-turn="0"] .qg-player:nth-child(2), .db-strip[data-turn="1"] .qg-player:nth-child(1) { opacity: .5; }
+.db-strip[data-turn="0"] .qg-player:nth-child(1), .db-strip[data-turn="1"] .qg-player:nth-child(2) { transform: scale(1.06); }
+.db-turn { margin: var(--space-2) 0 var(--space-3); min-height: 20px; }
+.db-stage { width: 100%; max-width: 420px; margin-inline: auto; }
+.db-board { display: block; width: 100%; height: auto; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+.db-board.is-live { cursor: pointer; }
+.db-dot { fill: var(--ink); }
+.db-free { stroke: var(--line-soft, color-mix(in srgb, var(--ink) 16%, transparent)); stroke-width: 3; stroke-dasharray: 2 7; stroke-linecap: round; }
+.db-hit { fill: transparent; outline: none; }
+.db-board.is-live .db-hit:hover, .db-hit:focus-visible { fill: color-mix(in srgb, var(--ink) 12%, transparent); }
+.db-hit:focus-visible { stroke: var(--ink); stroke-width: 2; stroke-dasharray: 4 3; }
+.db-box rect { stroke: var(--edge); stroke-width: 2; animation: db-claim 260ms cubic-bezier(.2,.9,.3,1.5); transform-box: fill-box; transform-origin: center; }
+.db-box text { font: 800 22px/1 var(--font-body); fill: #111; }
+@media (min-width: 1000px) { .db-stage { max-width: min(520px, calc(100dvh - 320px)); }
+}
+@media (prefers-reduced-motion: reduce) {
+.db-box rect { animation: none; } .db-strip .qg-player { transition: none; }
+}
+@keyframes db-claim { from { transform: scale(.4); opacity: .3; } }

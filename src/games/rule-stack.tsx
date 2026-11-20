@@ -11,6 +11,7 @@ import { useRunState } from '../shell/session'
 import { load } from '../shell/storage'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { Burst, Button, Stage } from '../ui/components'
+import './rule-stack.css'
 
 const game = getGame('rule-stack')
 /** Colours with a shape each, so the grid reads without telling colours apart. */

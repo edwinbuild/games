@@ -1,0 +1,25 @@
+/* Styles for rule-stack, loaded with its code (split out of site.css). */
+/* Rule Stack: a 4×4 grid of painted squares (each colour with its shape), a palette, the rules. */
+.rs-stage { width: 100%; max-width: 360px; margin-inline: auto; }
+.rs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.rs-cell, .rs-paint { aspect-ratio: 1; border-radius: var(--radius-md); border: var(--border-edge) solid var(--edge); background: var(--surface-sunken); display: grid; place-items: center; font: 800 22px/1 var(--font-body); color: #111; cursor: pointer; touch-action: manipulation; padding: 0; transition: transform 90ms, background-color 120ms; }
+.rs-cell:active, .rs-paint:active { transform: scale(.94); }
+.rs-cell.is-cursor { outline: 3px dashed var(--ink); outline-offset: 2px; }
+.rs-cell[data-colour="0"], .rs-paint[data-colour="0"] { background: #ff6a5c; }
+.rs-cell[data-colour="1"], .rs-paint[data-colour="1"] { background: #5bbcff; }
+.rs-cell[data-colour="2"], .rs-paint[data-colour="2"] { background: #3ed598; }
+.rs-cell[data-colour="3"], .rs-paint[data-colour="3"] { background: #ffd166; }
+.rs-cell[data-colour] { animation: rs-pop 180ms cubic-bezier(.2,.9,.3,1.5); }
+.rs-palette { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-2); max-width: 360px; margin: var(--space-3) auto 0; }
+.rs-paint { aspect-ratio: auto; min-height: 52px; box-shadow: var(--shadow-key); }
+.rs-paint[aria-checked="true"] { outline: 3px solid var(--ink); outline-offset: 3px; }
+.rs-rules { list-style: none; margin: var(--space-3) 0 0; padding: 0; display: grid; gap: 4px; }
+.rs-rule { display: grid; grid-template-columns: 28px 1fr; gap: var(--space-2); align-items: center; padding: 8px var(--space-3); border-radius: var(--radius-md); background: color-mix(in srgb, var(--danger) 14%, var(--surface)); font: 500 15px/20px var(--font-body); }
+.rs-rule.is-good { background: var(--surface-sunken); }
+.rs-rule.is-new { border: var(--border-edge) solid var(--edge); animation: rs-rule-in 360ms cubic-bezier(.2,.9,.3,1.3) both; }
+.rs-rule-mark { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; font: 800 14px/1 var(--font-body); background: var(--danger); color: #fff; }
+.rs-rule.is-good .rs-rule-mark { background: var(--success); }
+@media (prefers-reduced-motion: reduce) { .rs-cell[data-colour], .rs-rule.is-new { animation: none; } .rs-cell, .rs-paint { transition: none; }
+}
+@keyframes rs-pop { from { transform: scale(.8); } }
+@keyframes rs-rule-in { from { opacity: 0; transform: translateY(-10px) scale(.97); } }

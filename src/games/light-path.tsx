@@ -8,6 +8,7 @@ import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { count } from '../shell/plural'
 import { Burst, Button, Score, Stage } from '../ui/components'
+import './light-path.css'
 
 const game = getGame('light-path')
 type Try = { mirrors: number; moves: number }

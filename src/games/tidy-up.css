@@ -1,0 +1,30 @@
+/* Styles for tidy-up, loaded with its code (split out of site.css). */
+/* Tidy Up */
+.tu-board { position: relative; width: 100%; max-width: 400px; margin-inline: auto; aspect-ratio: 320 / 520; touch-action: none; user-select: none; -webkit-user-select: none; }
+.tu-tray { position: absolute; border-radius: var(--radius-md); background: var(--surface-sunken); border: var(--border-edge) solid var(--edge); overflow: hidden; }
+.tu-lid { position: absolute; inset: 0; background: var(--game); border-bottom: var(--border-edge) solid var(--edge); transform: scaleY(0); transform-origin: 50% 0; transition: transform 520ms cubic-bezier(.5, 0, .3, 1.25) 250ms; z-index: 2; }
+.tu-lid.is-closed { transform: scaleY(1); }
+.tu-mess-label { position: absolute; left: 0; right: 0; text-align: center; }
+.tu-item { position: absolute; padding: 0; margin: 0; border: 0; background: none; cursor: grab; touch-action: none; transition: left 240ms cubic-bezier(.3, 1.4, .5, 1), top 240ms cubic-bezier(.3, 1.4, .5, 1), rotate 180ms ease-out; -webkit-tap-highlight-color: transparent; border-radius: var(--radius-sm); }
+.tu-item:active { cursor: grabbing; }
+.tu-item svg { display: block; width: 100%; height: 100%; overflow: visible; fill: var(--qg-fill); stroke: var(--on-fill); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; filter: drop-shadow(0 2px 0 rgb(0 0 0 / .25)); }
+.tu-item svg .ti-line { fill: none; }
+.tu-item svg .ti-dot { fill: var(--on-fill); stroke: none; }
+.tu-item svg .ti-hole { fill: var(--surface-sunken); }
+.tu-item svg .ti-wire-o { fill: none; stroke-width: 6; }
+.tu-item svg .ti-wire { fill: none; stroke: var(--qg-fill); stroke-width: 3; }
+.tu-item:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.tu-item.is-placed { cursor: default; z-index: 1 !important; }
+.tu-item.is-placed svg { filter: none; }
+.tu-item.is-snap svg { animation: tu-snap 300ms cubic-bezier(.3, 1.6, .5, 1); }
+.tu-item.is-nope svg { animation: tu-nope 320ms ease-in-out; }
+.tu-item.is-wrong svg { animation: tu-nope 320ms ease-in-out; }
+@media (prefers-reduced-motion: reduce) { .tu-item { transition: none; } .tu-item svg { animation: none !important; } .tu-lid { transition: none; }
+}
+/* Desktop game pages: boards use the wider column, but never taller than the screen allows
+   (260px is roughly the top bar, title and the key under the board). */
+@media (min-width: 1000px) {
+  .tu-board { max-width: min(440px, calc((100dvh - 300px) * 0.615)); }
+}
+@keyframes tu-snap { 0% { transform: scale(1.15) } 60% { transform: scale(.94) } 100% { transform: none } }
+@keyframes tu-nope { 0%, 100% { transform: none } 25% { transform: translateX(-5px) } 75% { transform: translateX(5px) } }

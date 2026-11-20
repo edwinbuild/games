@@ -7,6 +7,7 @@ import { count } from '../shell/plural'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, recordPlay } from '../shell/stats'
 import { Score } from '../ui/components'
+import './orbit-drop.css'
 
 const game = getGame('orbit-drop')
 /** World height shown on screen (the canvas is WORLD_W wide). */

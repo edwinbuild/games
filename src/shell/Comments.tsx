@@ -73,7 +73,7 @@ export default function Comments({ game }: { game: string }) {
     void reload()
   }
 
-  if (!live || cfg.comments === 'off') return null
+  if (live === false || cfg.comments === 'off') return null
   return (
     <section ref={box} className="qg-comments" aria-label="Comments">
       <div className="between"><h2 className="card-title" style={{ margin: 0 }}>Comments</h2>
@@ -91,7 +91,7 @@ export default function Comments({ game }: { game: string }) {
         </p>
       )}
       {msg && <p className="small" role="status" style={{ margin: 0 }}>{msg}</p>}
-      {list == null ? (seen ? <p className="small muted" style={{ margin: 0 }}>Loading comments…</p> : null) : list.length === 0 ? (
+      {list == null ? <p className="small muted" style={{ margin: 0 }}>Loading comments…</p> : list.length === 0 ? (
         <p className="small muted" style={{ margin: 0 }}>No comments yet.</p>
       ) : (
         <ul className="qg-comment-list">

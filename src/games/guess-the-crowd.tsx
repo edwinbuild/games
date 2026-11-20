@@ -9,6 +9,7 @@ import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { Histogram } from '../ui/charts'
 import { Burst, Button, Stage } from '../ui/components'
 import { boardKey } from '../shell/board'
+import './guess-the-crowd.css'
 
 const game = getGame('guess-the-crowd')
 // The bonus round (and its question list) loads after the result, so the game itself stays small.

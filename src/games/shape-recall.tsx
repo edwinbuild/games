@@ -9,6 +9,7 @@ import { ResultCard } from '../shell/ResultCard'
 import { useRunState } from '../shell/session'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { AttemptTiles, Burst, Button, GetReady, Stage, type Attempt } from '../ui/components'
+import './shape-recall.css'
 
 const game = getGame('shape-recall')
 const ROUNDS = 3

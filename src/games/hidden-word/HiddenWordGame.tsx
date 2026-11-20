@@ -13,6 +13,7 @@ import { useRunState } from '../../shell/session'
 import { load } from '../../shell/storage'
 import { getStats, loadToday, recordDaily, saveToday } from '../../shell/stats'
 import { Burst, Button, Stage } from '../../ui/components'
+import '../hidden-word.css'
 
 const ROWS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm']
 const EMOJI: Record<Mark, string> = { right: '🔵', elsewhere: '🟡', out: '⚪' }

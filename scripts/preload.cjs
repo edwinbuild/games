@@ -16,7 +16,12 @@ for (const slug of games) {
   const already = new Set([...html.matchAll(/\/assets\/([\w.-]+\.js)/g)].map((m) => m[1]))
   const want = new Set([chunk])
   for (const f of want) for (const d of importsOf(f)) want.add(d)
-  const links = [...want].filter((f) => !already.has(f)).map((f) => `    <link rel="modulepreload" crossorigin href="/assets/${f}">`).join('\n')
+  // Each chunk's own stylesheet (games carry their styles since v1.6): fetched early, applied by the app.
+  const styles = [...want].map((f) => f.replace(/-[\w-]{8}\.js$/, '')).flatMap((n) => assets.filter((a) => new RegExp(`^${n}-[\\w-]{8}\\.css$`).test(a)))
+  const links = [
+    ...[...want].filter((f) => !already.has(f)).map((f) => `    <link rel="modulepreload" crossorigin href="/assets/${f}">`),
+    ...styles.filter((f) => !html.includes(`/assets/${f}`)).map((f) => `    <link rel="preload" as="style" crossorigin href="/assets/${f}">`),
+  ].join('\n')
   html = html.replace('</head>', `${links}\n  </head>`)
   fs.writeFileSync(htmlPath, html)
   pages++

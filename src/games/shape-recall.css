@@ -1,0 +1,14 @@
+/* Styles for shape-recall, loaded with its code (split out of site.css). */
+/* Shape Recall */
+.sr2-stage { width: 100%; max-width: 420px; margin-inline: auto; overflow: hidden; }
+.sr2-canvas { display: block; width: 100%; aspect-ratio: 1; touch-action: none; user-select: none; -webkit-user-select: none; cursor: crosshair; }
+.sr2-timer { position: absolute; left: 0; top: 0; height: 6px; background: var(--ink); opacity: .6; }
+.sr2-score { position: absolute; right: var(--space-3); top: var(--space-2); font: 800 28px/1 var(--font-display); animation: sr2-pop 400ms cubic-bezier(.3,1.6,.5,1); }
+@media (prefers-reduced-motion: reduce) { .sr2-score { animation: none; }
+}
+/* Desktop game pages: boards use the wider column, but never taller than the screen allows
+   (260px is roughly the top bar, title and the key under the board). */
+@media (min-width: 1000px) {
+.sr2-stage { max-width: min(580px, calc(100dvh - 300px)); }
+}
+@keyframes sr2-pop { from { transform: scale(.4); opacity: 0 } to { transform: none; opacity: 1 } }

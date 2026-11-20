@@ -13,6 +13,7 @@ import { load } from '../shell/storage'
 import { Burst, Button, Stage, TextField } from '../ui/components'
 import { Lobby, PlayerChip, PLAYERS, RoomCode, ScoreStrip } from '../ui/multiplayer'
 import { avatarOf } from '../shell/roomAvatar'
+import './letter-race.css'
 
 const game = getGame('letter-race')
 const MAX = 8

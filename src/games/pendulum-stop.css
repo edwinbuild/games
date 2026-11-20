@@ -1,0 +1,9 @@
+/* Styles for pendulum-stop, loaded with its code (split out of site.css). */
+/* Pendulum Stop */
+.ps-stage { width: 100%; max-width: 480px; margin-inline: auto; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; position: relative; overflow: hidden; }
+.ps-canvas { display: block; width: 100%; height: min(58dvh, 460px); }
+/* Desktop game pages: boards use the wider column, but never taller than the screen allows
+   (260px is roughly the top bar, title and the key under the board). */
+@media (min-width: 1000px) {
+.ps-stage { max-width: 560px; }
+}

@@ -1,0 +1,4 @@
+/* Styles for memory-path, loaded with its code (split out of site.css). */
+/* Grids of cells inside a stage (Odd One Out, Memory Path). */
+.grid { display: grid; gap: var(--space-2); }
+.mp-grid { position: relative; }

@@ -1,0 +1,9 @@
+/* Styles for odd-pick, loaded with its code (split out of site.css). */
+/* Odd Pick */
+.op-prompt { margin: 0; font: 700 26px/30px var(--font-display); }
+.op-options { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 140px), 1fr)); gap: var(--space-2); }
+.op-option { min-height: 56px; padding: var(--space-2) var(--space-3); border: var(--border-edge) solid var(--edge); border-radius: var(--radius-md); background: var(--surface); color: var(--ink); font: 700 18px/22px var(--font-body); cursor: pointer; transition: transform 120ms ease-out, background-color 120ms; overflow-wrap: anywhere; }
+.op-option:active { transform: scale(.97); }
+.op-option[aria-checked="true"] { background: var(--game); color: var(--on-fill); box-shadow: 0 4px 0 var(--edge); transform: translateY(-2px); }
+.op-option:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.op-yesterday { margin-bottom: var(--space-4); }

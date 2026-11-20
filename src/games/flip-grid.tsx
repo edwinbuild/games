@@ -8,6 +8,7 @@ import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { count } from '../shell/plural'
 import { Button, Score, Stage } from '../ui/components'
+import './flip-grid.css'
 
 const game = getGame('flip-grid')
 

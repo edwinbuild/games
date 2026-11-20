@@ -8,6 +8,7 @@ import { ResultCard } from '../shell/ResultCard'
 import { useRunState } from '../shell/session'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { AttemptTiles, Burst, Stage } from '../ui/components'
+import './fair-slice.css'
 
 const game = getGame('fair-slice')
 const ROUNDS = 5

@@ -1,0 +1,13 @@
+/* Styles for higher-lower, loaded with its code (split out of site.css). */
+/* Higher Lower Online */
+.hl-cards { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
+.hl-card { display: grid; gap: var(--space-1); align-content: center; justify-items: center; text-align: center; min-height: 110px; padding: var(--space-3) var(--space-2); border: var(--border-edge) solid var(--edge); border-radius: var(--radius-md); background: var(--surface-sunken); }
+.hl-card.is-revealed { background: var(--game); color: var(--on-fill); animation: hl-flip 420ms cubic-bezier(.3,1.4,.5,1); }
+.hl-name { font: 700 18px/22px var(--font-display); overflow-wrap: anywhere; }
+.hl-val { font: 700 15px/20px var(--font-mono); }
+.hl-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
+.hl-q { position: relative; }
+.hl-verdict.is-right { color: var(--success); }
+@media (prefers-reduced-motion: reduce) { .hl-card.is-revealed { animation: none; }
+}
+@keyframes hl-flip { 0% { transform: rotateY(90deg) } 100% { transform: none } }

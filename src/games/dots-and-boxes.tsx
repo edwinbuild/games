@@ -10,6 +10,7 @@ import { load, save } from '../shell/storage'
 import { countPlay, recordPlay } from '../shell/stats'
 import { Button, Segmented, Stage } from '../ui/components'
 import { PLAYERS, ScoreStrip } from '../ui/multiplayer'
+import './dots-and-boxes.css'
 
 const game = getGame('dots-and-boxes')
 // The online room (and the realtime client) loads only when it's picked.

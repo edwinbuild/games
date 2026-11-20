@@ -7,6 +7,7 @@ import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { Burst, Stage } from '../ui/components'
+import './pour-line.css'
 
 const game = getGame('pour-line')
 /** Seconds the surface keeps settling after the last drop lands, before the result shows. */

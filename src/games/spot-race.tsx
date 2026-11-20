@@ -12,6 +12,7 @@ import { useRoom, useStepOutIfStale } from '../shell/room'
 import { Button, Score, Stage, TextField } from '../ui/components'
 import { Lobby, PlayerChip, PLAYERS, RoomCode, ScoreStrip } from '../ui/multiplayer'
 import { avatarOf } from '../shell/roomAvatar'
+import './spot-race.css'
 
 const game = getGame('spot-race')
 /** How long to wait for other players' final scores before showing the ranking anyway. */

@@ -10,6 +10,7 @@ import { load, save } from '../shell/storage'
 import { SplitBars } from '../ui/charts'
 import { Burst, Button, Stage } from '../ui/components'
 import { boardKey } from '../shell/board'
+import './odd-pick.css'
 
 const game = getGame('odd-pick')
 /** Below this many picks, a split isn't shown: it wouldn't mean much. */

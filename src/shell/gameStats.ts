@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { rpc } from './api'
 import { load, save } from './storage'
 
-/** `live`: the database has votes and comments (until then those stay hidden). */
+/** `live`: the database has votes and comments (false hides them; undefined: not known yet, shown). */
 export type GameStats = { plays: Record<string, number>; likes: Record<string, { pct: number; n: number }>; online: number; onlineByGame: Record<string, number>; live?: boolean }
 const EMPTY: GameStats = { plays: {}, likes: {}, online: 0, onlineByGame: {}, live: false }
 let inflight: Promise<GameStats> | null = null
@@ -21,7 +21,7 @@ let shared: Promise<GameStats> | null = null
 export const shareStats = (p: Promise<GameStats>) => { shared = p; p.finally(() => { if (shared === p) shared = null }).catch(() => {}) }
 
 export function useGameStats(): GameStats {
-  const [s, setS] = useState<GameStats>(() => ({ ...EMPTY, ...load<Partial<GameStats>>('game-stats', {}) }))
+  const [s, setS] = useState<GameStats>(() => ({ ...EMPTY, live: undefined, ...load<Partial<GameStats>>('game-stats', {}) }))
   useEffect(() => {
     if (shared) { shared.then(setS, () => {}); return }
     if (!statsStale()) return

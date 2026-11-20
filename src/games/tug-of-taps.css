@@ -1,0 +1,15 @@
+/* Styles for tug-of-taps, loaded with its code (split out of site.css). */
+/* Tug of Taps: the rope from each player's own side (their side is at the bottom of their half). */
+.tug-rope { position: relative; width: min(100%, 320px); height: 24px; margin: var(--space-2) 0; }
+.tug-rope::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 4px; transform: translateY(-50%); background: var(--on-fill); opacity: 0.35; border-radius: 2px; }
+.tug-rope::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--on-fill); opacity: 0.5; }
+.tug-marker { position: absolute; top: 50%; width: 22px; height: 22px; border-radius: 50%; background: var(--on-fill); transform: translate(-50%, -50%); transition: left 60ms linear; }
+.tug-line--me { position: absolute; right: 0; top: -4px; bottom: -4px; width: 4px; background: var(--on-fill); border-radius: 2px; }
+@media (prefers-reduced-motion: reduce) { .tug-marker { transition: none; }
+}
+/* Tug of Taps: two thumb pads per player; the one to tap next lights up. */
+.tug-pads { display: flex; gap: var(--space-6); }
+.tug-pad { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 2.5px solid var(--on-fill); font: 800 14px/1 var(--font-body); color: var(--on-fill); opacity: .45; transition: opacity 80ms, transform 80ms; }
+.tug-pad[data-next] { opacity: 1; transform: scale(1.12); background: color-mix(in srgb, var(--on-fill) 14%, transparent); }
+@media (prefers-reduced-motion: reduce) { .tug-pad { transition: none; }
+}

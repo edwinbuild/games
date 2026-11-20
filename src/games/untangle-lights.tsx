@@ -11,6 +11,7 @@ import { useRunState } from '../shell/session'
 import { load } from '../shell/storage'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { Burst, Button, Stage } from '../ui/components'
+import './untangle-lights.css'
 
 const game = getGame('untangle-lights')
 type Run = { pos: P[]; moves: number }

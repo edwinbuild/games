@@ -11,6 +11,7 @@ import { count } from '../shell/plural'
 import { Burst, Button, Stage, TextField } from '../ui/components'
 import { Lobby, PlayerChip, PLAYERS, RoomCode, ScoreStrip } from '../ui/multiplayer'
 import { avatarOf } from '../shell/roomAvatar'
+import './higher-lower.css'
 
 const game = getGame('higher-lower')
 const MAX = 8

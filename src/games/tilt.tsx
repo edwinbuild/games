@@ -11,6 +11,7 @@ import { useRunState } from '../shell/session'
 import { load } from '../shell/storage'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { Burst, Button, Stage } from '../ui/components'
+import './tilt.css'
 
 const game = getGame('tilt')
 /** Each marble's colour token and shape (so the colours never have to be told apart). */

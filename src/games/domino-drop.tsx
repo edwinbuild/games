@@ -7,6 +7,7 @@ import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { Burst, Button, Stage } from '../ui/components'
+import './domino-drop.css'
 
 const game = getGame('domino-drop')
 const TOTAL = 40

@@ -11,6 +11,7 @@ import { useRunState } from '../shell/session'
 import { load } from '../shell/storage'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { Burst, Button, Stage } from '../ui/components'
+import './word-ladder.css'
 
 const game = getGame('word-ladder')
 /** A finished try: the words between start and end, in order (end included). */

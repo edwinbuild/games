@@ -1,0 +1,18 @@
+/* Styles for untangle-lights, loaded with its code (split out of site.css). */
+/* Untangle Lights: wires and lights on a night-sky board; crossing wires glow red. */
+.ul-stage { width: 100%; max-width: 480px; margin-inline: auto; overflow: hidden; }
+.ul-svg { display: block; width: 100%; aspect-ratio: 1; touch-action: none; user-select: none; -webkit-user-select: none; background: var(--surface-sunken); }
+.ul-wire { stroke: var(--ink); stroke-width: 3; stroke-linecap: round; transition: stroke 140ms; }
+.ul-wire.is-crossed { stroke: var(--danger); stroke-dasharray: 7 5; }
+.ul-bulb { fill: var(--surface); stroke: var(--edge); stroke-width: 3; pointer-events: none; transition: fill 160ms; }
+.ul-hit { fill: transparent; cursor: grab; outline: none; }
+.ul-hit:focus-visible + .ul-bulb { stroke: var(--focus); stroke-width: 5; }
+.ul-light:active .ul-bulb { fill: var(--game); }
+.ul-svg.is-solved .ul-bulb { animation: ul-glow 600ms cubic-bezier(.2,.9,.3,1.4) both; animation-delay: inherit; }
+.ul-svg.is-solved .ul-light { animation-delay: inherit; }
+.ul-svg.is-solved .ul-wire { stroke: var(--ink); animation: ul-wire 500ms ease-out both; }
+@media (min-width: 1000px) { .ul-stage { max-width: min(580px, calc(100dvh - 300px)); }
+}
+@media (prefers-reduced-motion: reduce) { .ul-svg.is-solved .ul-bulb, .ul-svg.is-solved .ul-wire { animation: none; fill: var(--game); } .ul-wire, .ul-bulb { transition: none; }
+}
+@keyframes ul-glow { 0% { fill: var(--surface); } 50% { fill: var(--game); transform: scale(1.35); } 100% { fill: var(--game); transform: none; } }

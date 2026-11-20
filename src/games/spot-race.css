@@ -1,0 +1,7 @@
+/* Styles for spot-race, loaded with its code (split out of site.css). */
+/* Spot Race Online */
+.sr-count { animation: sr-pop 900ms var(--ease-out, ease-out) both; }
+@media (prefers-reduced-motion: reduce) {
+.sr-count { animation: none; }
+}
+@keyframes sr-pop { 0% { transform: scale(1.6); opacity: 0 } 30% { transform: scale(1); opacity: 1 } 100% { transform: scale(0.9); opacity: 0.6 } }

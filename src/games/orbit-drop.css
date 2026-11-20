@@ -1,0 +1,9 @@
+/* Styles for orbit-drop, loaded with its code (split out of site.css). */
+/* Orbit Drop: a tall window onto space; tap anywhere to let go. */
+.od-stage { width: 100%; max-width: 420px; margin-inline: auto; padding: 0; overflow: hidden; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+.od-canvas { display: block; width: 100%; aspect-ratio: 300 / 440; }
+/* Desktop game pages: boards use the wider column, but never taller than the screen allows
+   (260px is roughly the top bar, title and the key under the board). */
+@media (min-width: 1000px) {
+  .od-stage { max-width: min(480px, calc((100dvh - 280px) * 0.68)); }
+}

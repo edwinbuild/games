@@ -13,6 +13,7 @@ import { count } from '../shell/plural'
 import { Burst, Button, Stage, TextField } from '../ui/components'
 import { Lobby, PlayerChip, PLAYERS, RoomCode, ScoreStrip } from '../ui/multiplayer'
 import { avatarOf } from '../shell/roomAvatar'
+import './quick-draw.css'
 
 const game = getGame('quick-draw')
 const MAX = 8

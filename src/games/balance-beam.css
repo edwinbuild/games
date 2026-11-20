@@ -1,0 +1,41 @@
+/* Styles for balance-beam, loaded with its code (split out of site.css). */
+/* Balance Beam: an SVG seesaw; fixed weights in ink, yours in the game colour. */
+.bb-stage { width: 100%; max-width: 480px; margin-inline: auto; overflow: hidden; }
+.bb-svg { display: block; width: 100%; height: auto; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+.bb-pivot { fill: var(--surface-sunken); stroke: var(--edge); stroke-width: 2.5; stroke-linejoin: round; }
+.bb-ground { stroke: var(--line); stroke-width: 2; stroke-linecap: round; }
+.bb-bar { fill: var(--surface); stroke: var(--edge); stroke-width: 2.5; }
+.bb-peg { fill: var(--ink-muted); }
+.bb-hub { fill: var(--edge); }
+.bb-weight rect { stroke: var(--edge); stroke-width: 2.5; }
+.bb-weight text { font: 800 13px var(--font-mono); }
+.bb-weight--small text { font-size: 10px; }
+.bb-weight rect { stroke-width: 2; }
+.bb-weight--fixed rect { fill: var(--ink); }
+.bb-weight--fixed text { fill: var(--canvas); }
+.bb-weight--mine rect { fill: var(--game); }
+.bb-weight--mine text { fill: var(--on-fill); }
+.bb-weight--mine { animation: bb-drop 260ms cubic-bezier(.2,.9,.3,1.4); transform-box: fill-box; transform-origin: 50% 100%; }
+.bb-hit { fill: transparent; cursor: pointer; outline: none; }
+.bb-hit:focus-visible { stroke: var(--focus); stroke-width: 2; stroke-dasharray: 4 3; }
+@media (hover: hover) and (pointer: fine) { .bb-hit:hover { fill: color-mix(in srgb, var(--game) 18%, transparent); }
+}
+.bb-state { margin: var(--space-2) 0 0; min-height: 24px; }
+.bb-tray { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-2); }
+.bb-pick:disabled { opacity: .4; cursor: default; }
+.bb-pick-left { position: absolute; right: 5px; top: 3px; font: 700 11px/1 var(--font-mono); color: var(--ink-muted); }
+.bb-hook { fill: var(--surface); stroke: var(--edge); stroke-width: 2; }
+.bb-string { stroke: var(--edge); stroke-width: 2; }
+.bb-pick { position: relative; display: grid; place-items: center; min-height: 60px; border: var(--border-edge) solid var(--edge); border-radius: var(--radius-md); background: var(--surface); box-shadow: var(--shadow-key); cursor: pointer; touch-action: manipulation; }
+.bb-pick[aria-checked="true"] { background: color-mix(in srgb, var(--game) 35%, var(--surface)); outline: 3px solid var(--edge); outline-offset: -6px; }
+.bb-pick:active { transform: translateY(4px); box-shadow: var(--shadow-key-pressed); }
+.bb-pick:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.bb-pick-box { display: grid; place-items: center; border-radius: 4px; background: var(--game); color: var(--on-fill); border: 2.5px solid var(--edge); font: 800 14px/1 var(--font-mono); }
+@media (prefers-reduced-motion: reduce) { .bb-weight--mine { animation: none; }
+}
+/* Desktop game pages: boards use the wider column, but never taller than the screen allows
+   (260px is roughly the top bar, title and the key under the board). */
+@media (min-width: 1000px) {
+  .bb-stage { max-width: 640px; }
+}
+@keyframes bb-drop { from { transform: translateY(-14px) scale(.8); opacity: 0; } }

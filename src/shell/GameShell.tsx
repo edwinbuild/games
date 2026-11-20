@@ -17,8 +17,11 @@ import { lazy, Suspense } from 'react'
 const Comments = lazy(() => import('./Comments').catch(() => ({ default: () => null })))
 import { SoundToggle } from './SoundToggle'
 
+/** The comments section's height before it has loaded (its empty state), kept so nothing below it moves. */
+const COMMENTS_MIN = 170 // 150 px section + its 20 px top margin
+
 /** Renders its children only once the reader scrolls near (the comments sit below the game). */
-function WhenNear({ children }: { children: ReactNode }) {
+function WhenNear({ children, reserve = 1 }: { children: ReactNode; reserve?: number }) {
   const at = useRef<HTMLDivElement>(null)
   const [near, setNear] = useState(false)
   useEffect(() => {
@@ -29,7 +32,7 @@ function WhenNear({ children }: { children: ReactNode }) {
     io.observe(el)
     return () => io.disconnect()
   }, [near])
-  return near ? <>{children}</> : <div ref={at} aria-hidden="true" style={{ height: 1 }} />
+  return near ? <>{children}</> : <div ref={at} aria-hidden="true" style={{ height: reserve }} />
 }
 import { track } from './track'
 
@@ -108,7 +111,7 @@ export function GameShell({ game, children }: { game: GameMeta; children: ReactN
               <>
                 {banner && <ChallengeBanner text={banner} color={game.color} />}
                 {children}
-                <WhenNear><Suspense fallback={null}><Comments game={game.slug} /></Suspense></WhenNear>
+                <WhenNear reserve={gs.live !== false && cfg.comments !== 'off' ? COMMENTS_MIN : 1}><Suspense fallback={gs.live !== false && cfg.comments !== 'off' ? <div aria-hidden="true" style={{ height: COMMENTS_MIN }} /> : null}><Comments game={game.slug} /></Suspense></WhenNear>
               </>
             )}
           </main>
