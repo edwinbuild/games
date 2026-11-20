@@ -205,7 +205,8 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
     return (
       <Stage>
         <div className="stack">
-          {room.status === 'connecting' ? <p className="body muted" style={{ margin: 0 }}>Joining room {code}…</p> : <RoomCode code={code} url={url} />}
+          <RoomCode code={code} url={url} />
+          {room.status === 'connecting' && <p className="small muted" role="status" style={{ margin: 0 }}>Connecting to the room…</p>}
           <Lobby players={room.members.map((m, i) => ({ name: m.name || PLAYERS[i % PLAYERS.length].name, ready: m.ready, avatar: avatarOf(m), me: m.id === room.me, host: i === 0 }))} max={MAX} />
           {failed && <p className="small center" role="status" style={{ margin: 0 }}>Couldn’t load the word list. Check your connection and reload.</p>}
           {!me?.ready && <TextField id="lr-name" label="Your name (optional)" value={name} onChange={setName} maxLength={16} placeholder="Shown to the other players" />}

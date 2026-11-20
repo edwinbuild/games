@@ -103,7 +103,8 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
     return (
       <Stage>
         <div className="stack">
-          {room.status === 'connecting' ? <p className="body muted" style={{ margin: 0 }}>Joining room {code}…</p> : <RoomCode code={code} url={url} />}
+          <RoomCode code={code} url={url} />
+          {room.status === 'connecting' && <p className="small muted" role="status" style={{ margin: 0 }}>Connecting to the room…</p>}
           <Lobby players={room.members.map((m, i) => ({ name: m.name || PLAYERS[i].name, ready: m.ready, avatar: avatarOf(m), me: m.id === room.me, host: i === 0 }))} max={MAX} />
           {!me?.ready && <TextField id="dots-name" label="Your name (optional)" value={name} onChange={setName} maxLength={16} placeholder="Shown to your opponent" />}
           <Button size="lg" block color={game.color} onClick={() => { setMyName(name); room.update({ name, ready: !me?.ready }) }} disabled={room.status !== 'open'} variant={me?.ready ? 'secondary' : 'primary'}>
