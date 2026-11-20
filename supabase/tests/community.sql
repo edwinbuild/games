@@ -18,7 +18,7 @@ begin
   update app.game_votes set at = now() - interval '1 minute';
   perform public.vote_game('word-ladder', repeat('1', 32), -1);
   if (select count(*) from app.game_votes where game = 'word-ladder' and voter = encode(extensions.digest(repeat('1', 32), 'sha256'), 'hex')) <> 1 then raise exception 'FAIL one vote'; end if;
-  if (public.game_stats()->'likes') ? 'word-ladder' then raise exception 'FAIL likes shown under 20'; end if;
+  if (public.game_stats()->'likes')::jsonb ? 'word-ladder' then raise exception 'FAIL likes shown under 20'; end if;
   for i in 1..19 loop perform public.vote_game('word-ladder', lpad(to_hex(i), 32, 'a'), 1); end loop;
   j := public.game_stats()->'likes'->'word-ladder';
   if (j->>'n')::int <> 20 or (j->>'pct')::int <> 95 then raise exception 'FAIL likes %', j; end if;
