@@ -7,7 +7,7 @@ import type { Profile } from './account'
 import { refreshProfile } from './account'
 import { dateKey } from './daily'
 import { GAMES } from '../games/registry'
-import { Button, TextField } from '../ui'
+import { Button, TextField } from '../ui/components'
 import { Avatar } from '../ui/icons'
 import { FriendRow } from '../ui/FriendRow'
 

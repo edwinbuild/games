@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
 import { LISTED, type GameMeta } from '../games/registry'
 import { SITE } from '../site'
-import { Burst, Button, ChallengeBoard, Countdown, PlayNext, ResultTicket, TextField } from '../ui'
+import { Burst, Button, ChallengeBoard, Countdown, PlayNext, ResultTicket, TextField } from '../ui/components'
 import { challengeUrl, displayName, mergeRow, myId, myName, readChallenge, setMyName } from './challenge'
 import { BOARD_GAMES } from './board'
 import { dateKey, puzzleLabel } from './daily'
@@ -37,6 +37,7 @@ type Props = {
 
 // Today's board loads on its own, after the ticket.
 const DailyBoard = lazy(() => import('./DailyBoard'))
+const Vote = lazy(() => import('./Vote'))
 
 /** Pick one other game to suggest; rotates by day. */
 function nextGame(current: string) {
@@ -149,6 +150,7 @@ export function ResultCard(p: Props) {
           </p>
         )}
       </ResultTicket>
+      <Suspense fallback={null}><Vote game={p.game.slug} /></Suspense>
       {/* Daily games: today's board (not for another day's puzzle from a challenge link, nor a spilled day). */}
       {p.game.daily && BOARD_GAMES.has(p.game.slug) && p.challenge.seed === dateKey() && p.challenge.text !== 'Spilled' && (
         <Suspense fallback={null}>

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import type { GameMeta } from '../games/registry'
 import { cleanCode, isRoomCode, newRoomCode } from './room'
 import { siteConfig } from './config'
-import { Button, Stage, TextField } from '../ui'
+import { Button, Stage, TextField } from '../ui/components'
 
 export function roomFromUrl(): string | null {
   if (!siteConfig().rooms) return null

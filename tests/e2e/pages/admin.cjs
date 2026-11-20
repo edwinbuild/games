@@ -30,6 +30,8 @@ async function run({ page, B, browser }, at) {
       case 'admin_reports': return json([{ username: 'Robin', reports: 1, last: '2026-11-20T09:00:00Z', banned: false }])
       case 'admin_words': return json({ blocked: ['badword'], reserved: ['admin'] })
       case 'admin_errors': return json([])
+      case 'admin_community': return json({ votes: { 'word-ladder': { up: 9, down: 1 } }, commentsPending: 2, commentsReported: 0, online: 3, onlineByGame: { 'word-ladder': 1 } })
+      case 'admin_comments': return json([{ id: 5, game: 'word-ladder', username: 'Kai', body: 'Nice one', status: 'pending', likes: 0, reports: 0, created_at: '2026-11-20T10:00:00Z' }])
       case 'admin_security': return json({ attempts: [{ ok: true, at: '2026-11-20T10:00:00Z', mine: true }], sessions: 1, log: [{ action: 'unlocked', detail: null, at: '2026-11-20T10:00:00Z' }] })
       default: return json(true)
     }
@@ -118,6 +120,10 @@ async function run({ page, B, browser }, at) {
   if (await p.getByText('New game: Dots & Boxes!').count()) throw new Error('a dismissed banner came back')
   await p.goto(B + '/rule-stack/')
   await p.getByText('Back soon').waitFor()
+  // Votes and comments stay hidden while the database doesn't have them (this stand-in answers null).
+  await p.goto(B + '/word-ladder/')
+  await p.waitForTimeout(1200)
+  if (await p.getByRole('region', { name: 'Comments' }).count()) throw new Error('comments shown without the database')
   await p.goto(B + '/dots-and-boxes/?room=K7MQ2')
   await p.getByRole('button', { name: 'Online', exact: true }).click()
   await p.getByText(/Online rooms are taking a short break/).waitFor()

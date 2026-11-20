@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Segmented } from '../ui'
+import { Segmented } from '../ui/components'
 import { load, save } from './storage'
 
 type Theme = 'auto' | 'light' | 'dark'

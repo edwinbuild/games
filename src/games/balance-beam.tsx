@@ -8,7 +8,7 @@ import { count } from '../shell/plural'
 import { ResultCard } from '../shell/ResultCard'
 import { useRunState } from '../shell/session'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
-import { Burst, Button, Stage } from '../ui'
+import { Burst, Button, Stage } from '../ui/components'
 
 const game = getGame('balance-beam')
 /** A finished try: the weights you placed (fewer is better). */

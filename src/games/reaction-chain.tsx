@@ -6,7 +6,7 @@ import { seededRandom } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { countPlay, getStats, recordPlay } from '../shell/stats'
 import { MIN_CLEAN, PENALTY, ROUNDS, summarize, type Tap } from './reaction-chain/score'
-import { AttemptTiles, Score, Stage, type Attempt } from '../ui'
+import { AttemptTiles, Score, Stage, type Attempt } from '../ui/components'
 
 const game = getGame('reaction-chain')
 /** Faster than this is a guess, not a reaction. */

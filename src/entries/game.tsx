@@ -5,6 +5,7 @@ import { GameShell } from '../shell/GameShell'
 import '../shell/styles'
 import '../shell/errors'
 import '../shell/sw-register'
+import '../shell/heartbeat'
 
 // Each game lives in src/games/<slug>.tsx and is loaded only on its own page.
 const modules = import.meta.glob<{ default: ComponentType }>('../games/*.tsx')

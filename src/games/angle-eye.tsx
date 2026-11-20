@@ -6,7 +6,7 @@ import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, recordPlay } from '../shell/stats'
 import { useRunState } from '../shell/session'
-import { AttemptTiles, Button, Score, Stage, type Attempt } from '../ui'
+import { AttemptTiles, Button, Score, Stage, type Attempt } from '../ui/components'
 
 const game = getGame('angle-eye')
 const grade = (s: number): Attempt => (s >= 8 ? 'hit' : s >= 5 ? 'near' : 'miss')

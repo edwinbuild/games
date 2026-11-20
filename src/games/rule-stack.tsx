@@ -9,7 +9,7 @@ import { ResultCard } from '../shell/ResultCard'
 import { useRunState } from '../shell/session'
 import { load } from '../shell/storage'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
-import { Burst, Button, Stage } from '../ui'
+import { Burst, Button, Stage } from '../ui/components'
 
 const game = getGame('rule-stack')
 /** Colours with a shape each, so the grid reads without telling colours apart. */

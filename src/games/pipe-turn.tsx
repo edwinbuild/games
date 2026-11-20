@@ -7,7 +7,7 @@ import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { count } from '../shell/plural'
-import { Burst, Button, Score, Stage } from '../ui'
+import { Burst, Button, Score, Stage } from '../ui/components'
 
 const game = getGame('pipe-turn')
 

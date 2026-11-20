@@ -6,7 +6,7 @@ import { dailyDayFor, dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
-import { Burst, Stage } from '../ui'
+import { Burst, Stage } from '../ui/components'
 
 const game = getGame('chain-pop')
 /** Three quarters of the board in one chain is a great tap. */

@@ -1,4 +1,4 @@
-import { Segmented } from '../ui'
+import { Segmented } from '../ui/components'
 
 /** Reaction Duel comes in two modes, each its own page: two players on this phone, or online. */
 export function DuelModes({ current }: { current: 'phone' | 'online' }) {

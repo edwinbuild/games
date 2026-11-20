@@ -8,7 +8,7 @@ import { count } from '../shell/plural'
 import { ResultCard } from '../shell/ResultCard'
 import { useRunState } from '../shell/session'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
-import { AttemptTiles, Burst, Button, Stage, type Attempt } from '../ui'
+import { AttemptTiles, Burst, Button, Stage, type Attempt } from '../ui/components'
 
 const game = getGame('paint-mix')
 /** A finished day: the try it was (each try has its own five colours), each colour's score and your mixes. */

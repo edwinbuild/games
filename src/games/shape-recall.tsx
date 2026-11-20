@@ -8,7 +8,7 @@ import { drawStroke, length, pointsFrom, type P } from '../shell/ink'
 import { ResultCard } from '../shell/ResultCard'
 import { useRunState } from '../shell/session'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
-import { AttemptTiles, Burst, Button, GetReady, Stage, type Attempt } from '../ui'
+import { AttemptTiles, Burst, Button, GetReady, Stage, type Attempt } from '../ui/components'
 
 const game = getGame('shape-recall')
 const ROUNDS = 3

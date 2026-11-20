@@ -1,5 +1,5 @@
 import { SITE } from '../site'
-import { Footer } from '../ui'
+import { Footer } from '../ui/components'
 import { ThemeSwitch } from './ThemeSwitch'
 
 export const FOOTER_LINKS = [

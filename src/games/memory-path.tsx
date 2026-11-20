@@ -5,7 +5,7 @@ import { newSeed, readChallenge } from '../shell/challenge'
 import { seededRandom } from '../shell/daily'
 import { feel, tone } from '../shell/feel'
 import { getStats, recordPlay } from '../shell/stats'
-import { Button, Score, Stage, GetReady } from '../ui'
+import { Button, Score, Stage, GetReady } from '../ui/components'
 
 const game = getGame('memory-path')
 const N = 4

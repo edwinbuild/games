@@ -23,10 +23,10 @@ for (const entry of existsSync(siteDir) ? readdirSync(siteDir) : []) {
 
 const CORE = [
   /node_modules\/(react|react-dom|scheduler)\//,
-  /\/src\/ui\/(components|index)\.tsx?$/,
+  /\/src\/ui\/(components|util)\.tsx?$/,
   /\/src\/games\/registry\.ts$/,
   /\/src\/site\.ts$/,
-  /\/src\/shell\/(api|auth|storage|stats|daily|SiteFooter|AccountKey|errors|sw-register|mount|live|config|SiteNotice)\.tsx?$/,
+  /\/src\/shell\/(api|auth|storage|stats|daily|SiteFooter|AccountKey|errors|sw-register|mount|live|config|SiteNotice|gameStats|heartbeat)\.tsx?$/,
 ]
 
 export default defineConfig({

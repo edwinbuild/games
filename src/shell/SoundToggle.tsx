@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ToggleChip } from '../ui'
+import { ToggleChip } from '../ui/components'
 import { onSoundChange, setSound, soundOn } from './feel'
 
 /** The site-wide sound switch, remembered across games. */

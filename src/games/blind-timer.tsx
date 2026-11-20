@@ -5,7 +5,7 @@ import { dailyDayFor, dailyRandom, dateKey, puzzleLabel } from '../shell/daily'
 import { ResultCard } from '../shell/ResultCard'
 import { feel } from '../shell/feel'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
-import { AttemptTiles, Button, Score, Stage, type Attempt } from '../ui'
+import { AttemptTiles, Button, Score, Stage, type Attempt } from '../ui/components'
 
 const game = getGame('blind-timer')
 const VISIBLE_MS = 1000

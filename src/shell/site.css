@@ -931,3 +931,6 @@ button { font: inherit; }
 .admin-words { display: flex; flex-wrap: wrap; gap: 6px; }
 .admin-word { font: 600 13px/1 var(--font-mono); padding: 6px 10px; border-radius: var(--radius-pill); border: 1.5px solid var(--line); background: var(--surface-sunken); color: var(--ink); cursor: pointer; }
 .admin-player { padding: var(--space-3); border-radius: var(--radius-md); background: var(--surface-sunken); }
+.live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--success); margin-right: 2px; vertical-align: middle; animation: live-pulse 2s ease-in-out infinite; }
+@keyframes live-pulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }

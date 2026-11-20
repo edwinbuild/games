@@ -7,7 +7,7 @@ import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { count } from '../shell/plural'
-import { Stage } from '../ui'
+import { Stage } from '../ui/components'
 
 const game = getGame('stack-tower')
 type Try = { h: number; perfect: number }

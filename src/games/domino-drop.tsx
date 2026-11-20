@@ -6,7 +6,7 @@ import { dailyDayFor, dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
-import { Burst, Button, Stage } from '../ui'
+import { Burst, Button, Stage } from '../ui/components'
 
 const game = getGame('domino-drop')
 const TOTAL = 40

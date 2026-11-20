@@ -7,7 +7,7 @@ import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { useRunState } from '../shell/session'
-import { AttemptTiles, Button, Score, Stage, type Attempt, GetReady } from '../ui'
+import { AttemptTiles, Button, Score, Stage, type Attempt, GetReady } from '../ui/components'
 
 const game = getGame('color-recall')
 const ROUNDS = 3

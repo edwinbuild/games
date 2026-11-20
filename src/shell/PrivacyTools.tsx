@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { rpc } from './api'
 import { load } from './storage'
-import { Button } from '../ui'
+import { Button } from '../ui/components'
 
 const PREFIX = 'qg:'
 function keys(store: Storage): string[] {

@@ -5,7 +5,7 @@ import { newSeed, readChallenge } from '../shell/challenge'
 import { seededRandom } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { getStats, recordPlay } from '../shell/stats'
-import { Score, Stage } from '../ui'
+import { Score, Stage } from '../ui/components'
 import { levelSetup } from './shared/odd-grid'
 import { OddGrid } from './shared/OddGrid'
 

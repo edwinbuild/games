@@ -6,7 +6,7 @@ import { dailyDayFor, dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
-import { Burst, Stage } from '../ui'
+import { Burst, Stage } from '../ui/components'
 
 const game = getGame('pour-line')
 /** Seconds the surface keeps settling after the last drop lands, before the result shows. */

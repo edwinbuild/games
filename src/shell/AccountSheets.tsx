@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { sendSignInLink } from './auth-actions'
 import { cachedProfile, checkUsername, claimThisDevice, problemOf, refreshProfile, setIcon, setUsername, USERNAME_PROBLEM, type Profile } from './account'
 import { syncNow } from './sync'
-import { Button, TextField } from '../ui'
+import { Button, TextField } from '../ui/components'
 import { Avatar, EARNED_ICONS, ICON_COLOURS, OPEN_ICONS } from '../ui/icons'
 import { Sheet } from '../ui/Sheet'
 

@@ -8,7 +8,7 @@ import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
 import { useRunState } from '../shell/session'
-import { AttemptTiles, Button, Stage, type Attempt, GetReady } from '../ui'
+import { AttemptTiles, Button, Stage, type Attempt, GetReady } from '../ui/components'
 
 const game = getGame('count-flash')
 const FLASH_MS = 800

@@ -7,7 +7,7 @@ import { dateKey } from '../../shell/daily'
 import { feel } from '../../shell/feel'
 import { formatCount } from '../../shell/live'
 import { loadToday, saveToday } from '../../shell/stats'
-import { Button, Score, Stage } from '../../ui'
+import { Button, Score, Stage } from '../../ui/components'
 import { boardKey } from '../../shell/board'
 
 /** Kept under the old game's name, so a vote cast before the merge still counts as today's. */

@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import type { GameMeta } from '../games/registry'
 import { SITE } from '../site'
-import { ChallengeBanner, TopBar } from '../ui'
+import { ChallengeBanner, TopBar } from '../ui/components'
 import { displayName, myId, readChallenge } from './challenge'
 import { dateKey, parseDateKey } from './daily'
 import { GameInfo } from './GameInfo'
@@ -11,6 +11,9 @@ import { SiteFooter } from './SiteFooter'
 import { AccountKey } from './AccountKey'
 import { useSiteConfig } from './config'
 import { SiteNotice } from './SiteNotice'
+import { gameLine, useGameStats } from './gameStats'
+import { lazy, Suspense } from 'react'
+const Comments = lazy(() => import('./Comments'))
 import { SoundToggle } from './SoundToggle'
 import { track } from './track'
 
@@ -40,7 +43,11 @@ export function GameShell({ game, children }: { game: GameMeta; children: ReactN
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  const off = useSiteConfig().disabled.includes(game.slug)
+  const cfg = useSiteConfig()
+  const off = cfg.disabled.includes(game.slug)
+  const gs = useGameStats()
+  const here = gs.onlineByGame[game.slug] ?? 0
+  const numbers = [here >= cfg.counters.gameOnline ? `${here} playing now` : '', gameLine(game.slug, gs, cfg.counters.plays)].filter(Boolean).join(' · ')
   const recent = useRecentPlays()
   const playsHere = recent?.[game.slug] ?? 0
   const challenge = readChallenge(game.slug)
@@ -71,6 +78,7 @@ export function GameShell({ game, children }: { game: GameMeta; children: ReactN
               <h1 className="game-title" style={{ viewTransitionName: `title-${game.slug}` }}>{game.title}</h1>
               <p className="body">{game.instructions}</p>
               {playsHere >= SHOW_FROM && <p className="small muted live-count">{formatCount(playsHere)} games finished in the last 24 hours</p>}
+              {numbers && <p className="small muted live-count">{numbers}</p>}
             </header>
             {off ? (
               <div className="qg-stage back-soon" role="status">
@@ -81,6 +89,7 @@ export function GameShell({ game, children }: { game: GameMeta; children: ReactN
               <>
                 {banner && <ChallengeBanner text={banner} color={game.color} />}
                 {children}
+                <Suspense fallback={null}><Comments game={game.slug} /></Suspense>
               </>
             )}
           </main>

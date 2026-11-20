@@ -9,7 +9,7 @@ import { ResultCard } from '../shell/ResultCard'
 import { useRunState } from '../shell/session'
 import { load } from '../shell/storage'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
-import { Burst, Button, Stage } from '../ui'
+import { Burst, Button, Stage } from '../ui/components'
 
 const game = getGame('untangle-lights')
 type Run = { pos: P[]; moves: number }

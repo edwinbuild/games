@@ -12,7 +12,7 @@ import { dateKey } from '../shell/daily'
 import { mount, ready } from '../shell/mount'
 import { load, save } from '../shell/storage'
 import { BOARD_GAMES } from '../shell/board'
-import { Button, Segmented, TextField, TopBar } from '../ui'
+import { Button, Segmented, TextField, TopBar } from '../ui/components'
 import '../shell/styles'
 import '../shell/errors'
 
@@ -68,16 +68,22 @@ function Spark({ values }: { values: number[] }) {
   return <svg className="admin-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true"><polyline points={pts} /></svg>
 }
 
+type Community = { votes: Record<string, { up: number; down: number }>; commentsPending: number; commentsReported: number; online: number; onlineByGame: Record<string, number> }
 function Overview({ token }: { token: string }) {
   const [d, setD] = useState<Dash | null>(null)
+  const [c, setC] = useState<Community | null>(null)
   const [err, setErr] = useState('')
-  useEffect(() => { rpc<Dash>('admin_dashboard', { p_token: token, p_days: 14 }).then(setD, (e) => setErr(errText(e))) }, [token])
+  useEffect(() => {
+    rpc<Dash>('admin_dashboard', { p_token: token, p_days: 14 }).then(setD, (e) => setErr(errText(e)))
+    rpc<Community>('admin_community', { p_token: token }).then((x) => setC(x && typeof x === 'object' ? x : null), () => {})
+  }, [token])
   if (err) return <p className="acct-error">{err}</p>
   if (!d) return <p className="muted">Loading…</p>
   const kpi: [string, ReactNode][] = [
     ['Started today', d.today.starts], ['Finished today', d.today.finishes], ['Finished, all time', d.finishesAll],
     ['Accounts', `${d.accounts} (+${d.accounts7} this week)`], ['With a username', d.named], ['Friendships', d.friendships],
     ['Errors, 7 days', d.errors7], ['Reports waiting', d.reports], ['Banned', d.banned],
+    ...(c ? ([['Playing now', c.online], ['Comments to check', c.commentsPending], ['Reported comments', c.commentsReported]] as [string, ReactNode][]) : []),
   ]
   return (
     <div className="stack">
@@ -85,13 +91,14 @@ function Overview({ token }: { token: string }) {
       <h2 className="card-title">Games, last 14 days</h2>
       <div className="table-wrap">
         <table className="stats-table">
-          <thead><tr><th>Game</th><th>Started</th><th>Finished</th><th>Finish rate</th><th>Shared</th><th>All time</th><th>On today’s board</th><th>14 days</th></tr></thead>
+          <thead><tr><th>Game</th><th>Started</th><th>Finished</th><th>Finish rate</th><th>Shared</th><th>All time</th><th>On today’s board</th><th>👍 / 👎</th><th>Now</th><th>14 days</th></tr></thead>
           <tbody>
             {d.games.map((g) => (
               <tr key={g.game}>
                 <td>{title(g.game)}</td><td>{g.starts}</td><td>{g.finishes}</td>
                 <td>{g.starts ? `${Math.round((g.finishes / g.starts) * 100)}%` : '–'}</td>
                 <td>{g.shares}</td><td>{g.finishes_all}</td><td>{d.boardsToday[g.game] ?? '–'}</td>
+                <td>{c?.votes?.[g.game] ? `${c.votes[g.game].up} / ${c.votes[g.game].down}` : '–'}</td><td>{c?.onlineByGame?.[g.game] ?? 0}</td>
                 <td><Spark values={g.daily ?? []} /></td>
               </tr>
             ))}
@@ -233,6 +240,7 @@ function Moderation({ token }: { token: string }) {
   return (
     <div className="stack">
       {msg && <p className="small" role="status" style={{ margin: 0 }}>{msg}</p>}
+      <CommentQueue token={token} />
       <h2 className="card-title">Reported usernames</h2>
       {!reports ? <p className="muted">Loading…</p> : reports.length === 0 ? <p className="muted">No reports waiting.</p> : (
         <ul className="qg-friends">
@@ -262,6 +270,40 @@ function Moderation({ token }: { token: string }) {
       {errors.length === 0 ? <p className="muted">None. 🎉</p> : (
         <div className="table-wrap"><table className="stats-table"><thead><tr><th>Day</th><th>Page</th><th>Message</th><th>Count</th></tr></thead>
           <tbody>{errors.map((e, i) => <tr key={i}><td>{e.day}</td><td>{e.page}</td><td>{e.message}</td><td>{e.count}</td></tr>)}</tbody></table></div>
+      )}
+    </div>
+  )
+}
+
+type AdminComment = { id: number; game: string; username: string | null; body: string; status: string; likes: number; reports: number; created_at: string }
+function CommentQueue({ token }: { token: string }) {
+  const [which, setWhich] = useState<'pending' | 'reported' | 'visible' | 'hidden'>('pending')
+  const [list, setList] = useState<AdminComment[] | null>(null)
+  const load = () => rpc<AdminComment[]>('admin_comments', { p_token: token, p_status: which }).then(setList, () => setList([]))
+  useEffect(() => { void load() }, [which]) // eslint-disable-line react-hooks/exhaustive-deps
+  async function set(id: number, status: string) {
+    setList((l) => l?.filter((x) => x.id !== id) ?? null)
+    await rpc('admin_set_comment', { p_token: token, p_id: id, p_status: status }).catch(() => {})
+    void load()
+  }
+  return (
+    <div className="stack">
+      <div className="between"><h2 className="card-title" style={{ margin: 0 }}>Comments</h2>
+        <Segmented label="Which comments" value={which} onChange={setWhich} options={[{ value: 'pending', label: 'To check' }, { value: 'reported', label: 'Reported' }, { value: 'visible', label: 'Shown' }, { value: 'hidden', label: 'Hidden' }]} />
+      </div>
+      {!list ? <p className="muted">Loading…</p> : list.length === 0 ? <p className="muted">Nothing here.</p> : (
+        <ul className="qg-friends">
+          {list.map((c) => (
+            <li key={c.id} className="qg-friend" style={{ gridTemplateColumns: '1fr auto' }}>
+              <span className="qg-friend-text" style={{ whiteSpace: 'normal' }}><span className="small muted">{c.username ?? 'player'} on {title(c.game)} · {c.created_at.slice(0, 16).replace('T', ' ')}{c.reports ? ` · ${c.reports} reports` : ''}</span><span className="body">{c.body}</span></span>
+              <span className="qg-friend-actions">
+                {c.status !== 'visible' && <Button onClick={() => void set(c.id, 'visible')}>Approve</Button>}
+                {c.status !== 'hidden' && <Button variant="secondary" onClick={() => void set(c.id, 'hidden')}>Hide</Button>}
+                <Button variant="ghost" onClick={() => void set(c.id, 'removed')}>Remove</Button>
+              </span>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   )

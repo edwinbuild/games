@@ -8,10 +8,13 @@ import { DEMOS } from '../shell/demos'
 import { SiteFooter } from '../shell/SiteFooter'
 import { AccountKey } from '../shell/AccountKey'
 import { siteConfig, useSiteConfig } from '../shell/config'
+import { gameLine, useGameStats, type GameStats } from '../shell/gameStats'
+import '../shell/heartbeat'
 import { SiteNotice } from '../shell/SiteNotice'
 import { getStats, todaysDaily, todaysDailyText } from '../shell/stats'
 import { load, save } from '../shell/storage'
-import { Countdown, FilterChips, GameCard, ProgressRing, TopBar } from '../ui'
+import { Countdown, TopBar } from '../ui/components'
+import { FilterChips, GameCard, ProgressRing } from '../ui/home'
 import '../shell/styles'
 import '../shell/errors'
 import '../shell/sw-register'
@@ -35,7 +38,7 @@ function status(g: GameMeta): { text?: string; done?: boolean } {
   return {}
 }
 
-function Card({ g, i }: { g: GameMeta; i: number }) {
+function Card({ g, i, gs }: { g: GameMeta; i: number; gs: GameStats }) {
   const st = status(g)
   const sc = score(g)
   const Demo = DEMOS[g.slug]
@@ -55,6 +58,7 @@ function Card({ g, i }: { g: GameMeta; i: number }) {
         transitionName={g.slug}
         tag={[siteConfig().new.includes(g.slug) && 'New', playersLabel(g)].filter(Boolean).join(' · ') || undefined}
         demo={Demo ? <Demo /> : undefined}
+        meta={gameLine(g.slug, gs, siteConfig().counters.plays) || undefined}
       />
     </li>
   )
@@ -100,6 +104,7 @@ function Home() {
   const cfg = useSiteConfig()
   const GAMES = ALL_GAMES.filter((g) => !cfg.disabled.includes(g.slug))
   const featured = GAMES.filter((g) => cfg.featured.includes(g.slug))
+  const gs = useGameStats()
   const forcedKind = document.body.dataset.kind as Skill | undefined
   const [filter, setFilterState] = useState<Filter>(initialFilter)
   const setFilter = (f: Filter) => { setFilterState(f); save('home-filter', f) }
@@ -188,6 +193,7 @@ function Home() {
                 <p className="body muted">{leftText}</p>
                 <Countdown label="New daily games in" />
                 {total >= SHOW_FROM && <p className="small muted live-count">{formatCount(total)} games finished here in the last 24 hours</p>}
+                {gs.online >= cfg.counters.online && <p className="small muted live-count"><span className="live-dot" aria-hidden="true" /> {formatCount(gs.online)} playing now</p>}
               </div>
             </div>
           </header>
@@ -200,7 +206,7 @@ function Home() {
           {sections.filter((sec) => sec.games.length).map((sec) => (
             <section key={sec.id} aria-labelledby={`${sec.id}-title`}>
               <h2 id={`${sec.id}-title`} className="section-title card-title">{sec.title}</h2>
-              <ul className={sec.daily ? 'cards cards--daily' : 'cards'}>{sec.games.map((g, i) => <Card key={g.slug} g={g} i={i} />)}</ul>
+              <ul className={sec.daily ? 'cards cards--daily' : 'cards'}>{sec.games.map((g, i) => <Card key={g.slug} g={g} i={i} gs={gs} />)}</ul>
             </section>
           ))}
           {sections.every((sec) => !sec.games.length) && <p className="body muted home-empty">No games match both filters yet. <button type="button" className="linkish" onClick={() => setFilter({ when: 'all', kind: 'all' })}>Show every game</button></p>}

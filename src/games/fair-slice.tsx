@@ -7,7 +7,7 @@ import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { useRunState } from '../shell/session'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
-import { AttemptTiles, Burst, Stage } from '../ui'
+import { AttemptTiles, Burst, Stage } from '../ui/components'
 
 const game = getGame('fair-slice')
 const ROUNDS = 5

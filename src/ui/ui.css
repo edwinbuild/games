@@ -439,3 +439,15 @@
 /* The site's version in the top bar's top-right corner, in the space above the buttons. */
 .site-version { position: absolute; top: 0; right: 0; font: 700 10px/12px var(--font-mono); letter-spacing: .02em; color: var(--ink-muted); text-decoration: none; padding: 0 2px; }
 .site-version:hover { color: var(--ink); text-decoration: underline; }
+/* ---------- Votes and comments ---------- */
+.qg-vote { display: flex; align-items: center; justify-content: center; gap: var(--space-2); }
+.qg-vote-key { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--surface); font-size: 20px; cursor: pointer; }
+.qg-vote-key[aria-pressed="true"] { border: var(--border-edge) solid var(--edge); background: var(--surface-sunken); transform: scale(1.06); }
+.qg-comments { display: grid; gap: var(--space-3); margin-top: var(--space-5); }
+.qg-comment-input { width: 100%; box-sizing: border-box; min-height: 64px; padding: 10px 12px; border-radius: var(--radius-md); border: var(--border-edge) solid var(--edge); background: var(--surface); color: var(--ink); font: 500 16px/22px var(--font-body); resize: vertical; }
+.qg-comment-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+.qg-comment-list li { display: grid; grid-template-columns: 32px 1fr; gap: var(--space-2); }
+.qg-comment-list li.is-pending { opacity: .7; }
+.qg-comment-main { display: grid; gap: 4px; min-width: 0; overflow-wrap: anywhere; }
+.qg-comment-actions { display: flex; align-items: center; gap: var(--space-3); }
+.qg-card-meta { font: 600 12px/16px var(--font-body); color: var(--ink-muted); }

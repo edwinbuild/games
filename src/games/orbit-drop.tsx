@@ -6,7 +6,7 @@ import { feel } from '../shell/feel'
 import { count } from '../shell/plural'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, recordPlay } from '../shell/stats'
-import { Score } from '../ui'
+import { Score } from '../ui/components'
 
 const game = getGame('orbit-drop')
 /** World height shown on screen (the canvas is WORLD_W wide). */

@@ -5,7 +5,7 @@ import { dailyDayFor, dailyRandom, dateKey, puzzleLabel } from '../shell/daily'
 import { feel, tone } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
-import { AttemptTiles, Button, Stage, type Attempt } from '../ui'
+import { AttemptTiles, Button, Stage, type Attempt } from '../ui/components'
 
 const game = getGame('pitch-match')
 const ROUNDS = 3
