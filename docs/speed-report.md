@@ -79,3 +79,36 @@ Already good, no change needed: page HTML comes from Vercel's edge cache (30 ms 
 2. **Fonts (#2) and home demos (#3):** the two things phone users notice most. Home goes from 78 to ~92.
 3. **CSS split (#4) and core trim (#8).**
 4. **Pre-rendering (#1):** the biggest single gain, and the most work.
+
+## After the fixes (live, 2026-11-20, v1.6)
+
+Same Lighthouse settings (mobile: mid-range phone, slow 4G), on the live site.
+
+| Page | Score before → after | Largest paint before → after | Main thread blocked before → after | Layout shift before → after |
+|---|---|---|---|---|
+| Home | 78 → **94** | 2.4 → 2.7 s | **662 → 145 ms** | 0.017 → 0.017 |
+| Category (Logic) | 94 → **98** | 2.3 → 2.2 s | 150 → 37 ms | 0.015 → 0.015 |
+| Word Ladder | 88 → **95** | **3.5 → 2.8 s** | 77 → 45 ms | 0.023 → 0 |
+| Letter Race | 86 → **94** | **3.8 → 2.8 s** | 85 → 30 ms | 0.030 → 0 |
+| Higher Lower | 85 → **94** | **3.8 → 2.9 s** | 87 → 51 ms | 0.034 → 0 |
+| Blind Timer | 94 → **98** | 2.4 → 2.1 s | 109 → 39 ms | 0.051 → 0 |
+| Chain Pop | 94 → **98** | 2.5 → 2.0 s | 98 → 77 ms | 0.015 → 0 |
+| Tilt | 95 → **98** | 2.5 → 2.2 s | 81 → 45 ms | 0 → 0 |
+| Archive | 96 → **99** | 2.3 → 1.7 s | 54 → 74 ms | 0 → 0 |
+| About | 91 → **99** | 2.8 → 1.8 s | 0 → 4 ms | 0 → 0 |
+
+First paint went from ~2.3 s to 1.5–1.9 s on every page. Data downloaded per page went from 243–290 KB to 188–236 KB.
+
+What was done (rows from the table above):
+- **#1 Pages show before their scripts run:** each page carries a plain-HTML copy of its top bar and heading. Until the app starts, that copy uses the system fonts, so the font files don't compete with the app's code (with the fonts loading early, games became playable ~0.5 s later on a slow connection; measured and fixed).
+- **#2 Fonts from the site itself**, Latin only and only the weights used: 129 → 86 KB.
+- **#3 Home demos** mount only near the screen, with one shared stylesheet: main thread blocked 662 → ~145 ms.
+- **#4 Styles split:** the stylesheet every page waits for went from 107 → 52 KB (20 → 10 KB compressed); each game's styles load with its code. Checked with before/after screenshots of all 50 pages.
+- **#5 Game code preloaded**, **#6a database connection opened early**, **#6b one call** for settings and numbers, **#7 room code shown at once** (Create a room → code: 4.4 → 1.1–1.5 s), **#9 comments load near the bottom** (and keep their space: no more jumping footer), **#10 online games import less**, **#11 word lists cached a day**.
+- **The offline download** (service worker) now waits until the page has settled, so it doesn't compete with the next tap.
+
+Not done, and why:
+- **#8 Trimming the core script:** measured it — 86% of it is React itself; the site's own code in it is ~10 KB compressed, so trimming would save 3–5 KB. The real lever is replacing React with Preact (a small drop-in, about 50 KB less on every page), but that touches every game and needs a full re-test; it's a decision for Edwin.
+- **#6c A database nearer the players:** needs a new Supabase project and moving the data; worth it only if most players turn out to be far from Japan.
+
+Time until a game can be played (same build served locally, slow-phone settings, before vs after): 1.56 s vs 1.56 s — the pages show sooner without the game becoming playable any later.
