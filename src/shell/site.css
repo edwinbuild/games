@@ -1088,3 +1088,4 @@ button { font: inherit; }
 .demo-hw-cell--right { background: var(--line); color: var(--paper); }
 .demo-hw-cell--elsewhere { border: 1.5px dashed var(--line); }
 .demo-hw-cell--out { background: var(--paper); opacity: .6; }
+.demo-wait { display: block; width: 140px; height: 72px; margin-top: 22px; }

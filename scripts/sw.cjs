@@ -7,7 +7,7 @@ const root = path.resolve(__dirname, '..'), dist = path.join(root, 'dist')
 const games = JSON.parse(execSync(`node -e "import('./src/games/registry.ts').then(m=>console.log(JSON.stringify(m.LISTED)))"`, { cwd: root }).toString())
 const offline = games.filter((g) => !g.daily && !String(g.players ?? '').startsWith('online')).map((g) => g.slug)
 const assets = fs.readdirSync(path.join(dist, 'assets'))
-const urls = new Set(['/', '/manifest.webmanifest', '/favicon.svg', '/icons/icon-192.png'])
+const urls = new Set(['/', '/manifest.webmanifest', '/favicon.svg', '/icons/icon-192.png', '/fonts/bricolage-grotesque.woff2', '/fonts/figtree.woff2', '/fonts/jetbrains-mono.woff2'])
 const addPage = (p, slug) => {
   const html = fs.readFileSync(path.join(dist, p, 'index.html'), 'utf8')
   urls.add(p ? `/${p}/` : '/')

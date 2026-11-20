@@ -1,4 +1,4 @@
-import { StrictMode, useEffect, useState, type ComponentType, type CSSProperties } from 'react'
+import { StrictMode, useEffect, useRef, useState, type ComponentType, type CSSProperties } from 'react'
 import { mount, ready } from '../shell/mount'
 import { TAGLINES } from '../games/taglines'
 import { LISTED as ALL_GAMES, playersLabel, SKILLS, type GameMeta, type Skill } from '../games/registry'
@@ -43,11 +43,25 @@ function status(g: GameMeta): { text?: string; done?: boolean } {
 type Demos = Record<string, ComponentType>
 let demos: Demos | null = null
 const demosReady = import('../shell/demos').then((m) => (demos = m.DEMOS)).catch(() => null)
+/** A card's demo mounts only once the card comes near the screen (39 at once made home slow to start). */
+const nearObserver = typeof IntersectionObserver === 'undefined' ? null : new IntersectionObserver((es) => {
+  for (const e of es) if (e.isIntersecting) { nearObserver?.unobserve(e.target); wake.get(e.target)?.() }
+}, { rootMargin: '200px 0px' })
+const wake = new WeakMap<Element, () => void>()
 function LazyDemo({ slug }: { slug: string }) {
   const [all, setAll] = useState(demos)
+  const [near, setNear] = useState(!nearObserver)
+  const at = useRef<HTMLSpanElement>(null)
   useEffect(() => { if (!all) void demosReady.then((d) => d && setAll(d)) }, [all])
-  const Demo = all?.[slug]
-  return Demo ? <Demo /> : null
+  useEffect(() => {
+    const el = at.current
+    if (near || !el || !nearObserver) return
+    wake.set(el, () => setNear(true))
+    nearObserver.observe(el)
+    return () => nearObserver.unobserve(el)
+  }, [near])
+  const Demo = near ? all?.[slug] : undefined
+  return Demo ? <Demo /> : <span ref={at} className="demo-wait" />
 }
 
 function Card({ g, i, gs }: { g: GameMeta; i: number; gs: GameStats }) {

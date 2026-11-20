@@ -7,16 +7,24 @@ import type { CSSProperties, ReactNode } from 'react'
 const range = (n: number) => Array.from({ length: n }, (_, i) => i)
 const names = new Map<string, string>()
 
+// Every scene's keyframes go into one shared stylesheet, each written once (a <style> per animated
+// piece made the home page slow to start).
+let sheet: CSSStyleSheet | null = null
+function keyframes(k: string): string {
+  let name = names.get(k)
+  if (name) return name
+  names.set(k, (name = `dk${names.size}`))
+  if (typeof document !== 'undefined') {
+    if (!sheet) { const el = document.createElement('style'); el.dataset.demos = ''; document.head.append(el); sheet = el.sheet }
+    try { sheet?.insertRule(`@keyframes ${name}{${k}}`, sheet.cssRules.length) } catch { /* a rule the browser can't read: the piece just doesn't move */ }
+  }
+  return name
+}
+
 /** A span animated by the given keyframe body, looping every `d` seconds. */
 function A({ d, k, ease = 'linear', className, style, children }: { d: number; k: string; ease?: string; className?: string; style?: CSSProperties; children?: ReactNode }) {
-  let name = names.get(k)
-  if (!name) names.set(k, (name = `dk${names.size}`))
-  return (
-    <>
-      <style>{`@keyframes ${name}{${k}}`}</style>
-      <span className={className} style={{ ...style, animation: `${name} ${d}s ${ease} infinite` }}>{children}</span>
-    </>
-  )
+  const name = keyframes(k)
+  return <span className={className} style={{ ...style, animation: `${name} ${d}s ${ease} infinite` }}>{children}</span>
 }
 
 /** Keyframes that show an element only inside the given windows (percent of the loop). */

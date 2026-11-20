@@ -56,9 +56,10 @@ function page(opts: {
     <meta name="theme-color" content="#0b0b0b" media="(prefers-color-scheme: dark)" />
     <!-- The database: opening the connection early saves a round trip on the first call (boards, settings). -->
     <link rel="preconnect" href="${SITE.api.url}" crossorigin />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" />
+    <!-- Fonts from this site (OFL; see /fonts/), Latin letters and only the weights used. -->
+    <link rel="preload" href="/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin />
+    <style>@font-face{font-family:"Bricolage Grotesque";src:url(/fonts/bricolage-grotesque.woff2) format("woff2");font-weight:700 800;font-display:swap}@font-face{font-family:Figtree;src:url(/fonts/figtree.woff2) format("woff2");font-weight:400 800;font-display:swap}@font-face{font-family:"JetBrains Mono";src:url(/fonts/jetbrains-mono.woff2) format("woff2");font-weight:500 700;font-display:swap}</style>
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="${esc(SITE.name)}" />
     <meta property="og:title" content="${esc(opts.title)}" />
