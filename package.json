@@ -1,7 +1,7 @@
 {
   "name": "quick-games",
   "private": true,
-  "version": "1.8.1",
+  "version": "1.8.2",
   "type": "module",
   "scripts": {
     "pages": "node --experimental-strip-types design-system/build.ts && node --experimental-strip-types scripts/pages.ts",

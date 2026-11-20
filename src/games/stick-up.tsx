@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { getGame } from './registry'
-import { EDGE, fallen, forceOf, G, gustsFor, LEN, startState, step, W, windAt, type State } from './stick-up/physics'
+import { EDGE, fallen, forceOf, G, gustsFor, LEN, PIVOT_H, settled, startState, STEP, step, stepFallen, W, windAt, type State } from './stick-up/physics'
 import { newSeed, readChallenge } from '../shell/challenge'
 import { feel } from '../shell/feel'
 import { ResultCard } from '../shell/ResultCard'
@@ -12,7 +12,6 @@ const game = getGame('stick-up')
 const H = 420
 const GROUND = 400
 const BALL = 22
-const STEP = 1 / 240
 /** Arrow keys move the ball this fast (stage units a second). */
 const KEY_SPEED = 380
 const STREAKS = 14
@@ -33,11 +32,11 @@ export default function StickUp() {
   const streaks = useRef<(SVGLineElement | null)[]>([])
   const gustLabel = useRef<HTMLSpanElement>(null)
   // Everything the frame loop needs lives in one ref, so a frame never waits for React.
-  const live = useRef({ phase: 'ready' as Phase, s: startState(0), target: W / 2, keys: 0, run: gustsFor(seed), last: 0, fallT: 0, streakX: Array.from({ length: STREAKS }, (_, i) => (i * 61) % W) })
+  const live = useRef({ phase: 'ready' as Phase, s: startState(0), target: W / 2, keys: 0, run: gustsFor(seed), last: 0, fallT: 0, acc: 0, landed: false, streakX: Array.from({ length: STREAKS }, (_, i) => (i * 61) % W) })
 
   function reset(nextSeed: string) {
     const run = gustsFor(nextSeed)
-    Object.assign(live.current, { phase: 'ready', s: startState(0), target: W / 2, keys: 0, run, fallT: 0 })
+    Object.assign(live.current, { phase: 'ready', s: startState(0), target: W / 2, keys: 0, run, fallT: 0, acc: 0, landed: false })
     setSeed(nextSeed)
     setResult(null)
     setShown(0)
@@ -64,22 +63,28 @@ export default function StickUp() {
       const dt = Math.min(0.05, (now - (L.last || now)) / 1000)
       L.last = now
       let wind = 0
+      // A fixed physics step, whatever the screen's frame rate (leftover time carries over).
+      L.acc += dt
       if (L.phase === 'up') {
         L.target = Math.max(EDGE, Math.min(W - EDGE, L.target + L.keys * KEY_SPEED * dt))
-        for (let t = 0; t < dt; t += STEP) {
+        while (L.acc >= STEP) {
+          L.acc -= STEP
           wind = windAt(L.run.gusts, L.s.t)
           L.s = step(L.s, L.target, wind, STEP)
           if (fallen(L.s)) { fall(); break }
         }
         if (++tick % 6 === 0) setShown(L.s.t)
       } else if (L.phase === 'falling') {
-        // Finish the fall to the ground, then the result.
+        // The stick slid off: you've let go, it drops to the ground and bounces, the ball rolls on.
         L.fallT += dt
-        const s = L.s
-        s.om += Math.sign(s.th) * 9 * dt
-        s.th = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, s.th + s.om * dt))
-        if (L.fallT > 0.7) { L.phase = 'done'; setPhase('done') }
-      }
+        while (L.acc >= STEP) {
+          L.acc -= STEP
+          const was = L.s.om
+          L.s = stepFallen(L.s, STEP)
+          if (!L.landed && Math.sign(L.s.om) !== Math.sign(was) && was !== 0) { L.landed = true; feel.thud() }
+        }
+        if ((settled(L.s) && L.fallT > 0.5) || L.fallT > 1.8) { L.phase = 'done'; setPhase('done') }
+      } else L.acc = 0
       draw(L.s, L.phase === 'up' ? windAt(L.run.gusts, L.s.t) : wind, dt)
     }
     raf = requestAnimationFrame(frame)
@@ -96,14 +101,14 @@ export default function StickUp() {
     setResult({ t, force })
     setShown(t)
     setPhase('falling')
-    feel.thud()
+    feel.light()
   }
 
   function draw(s: State, wind: number, dt: number) {
     const L = live.current
     const bx = s.x
     ball.current?.setAttribute('transform', `translate(${bx} ${GROUND - BALL}) rotate(${(bx / BALL) * 57.3})`)
-    stick.current?.setAttribute('transform', `translate(${bx} ${GROUND - 2 * BALL + 4}) rotate(${(s.th * 180) / Math.PI})`)
+    stick.current?.setAttribute('transform', `translate(${bx} ${GROUND - PIVOT_H}) rotate(${(s.th * 180) / Math.PI})`)
     // Wind streaks drift with the wind; stronger wind, faster and darker.
     const strength = Math.min(1, Math.abs(wind) / (G * 0.6))
     streaks.current.forEach((el, i) => {
@@ -186,7 +191,7 @@ export default function StickUp() {
         <svg ref={svg} className="su-svg" viewBox={`0 0 ${W} ${H}`} aria-hidden="true" data-phase={phase}>
           {Array.from({ length: STREAKS }, (_, i) => <line key={i} ref={(el) => { streaks.current[i] = el }} className="su-streak" />)}
           <line className="su-ground" x1="0" x2={W} y1={GROUND} y2={GROUND} />
-          <g ref={stick} transform={`translate(${W / 2} ${GROUND - 2 * BALL + 4})`}>
+          <g ref={stick} transform={`translate(${W / 2} ${GROUND - PIVOT_H})`}>
             <line className="su-stick-edge" x1="0" y1="0" x2="0" y2={-LEN} />
             <line className="su-stick" x1="0" y1="0" x2="0" y2={-LEN} />
             <circle className="su-tip" cx="0" cy={-LEN} r="7" />

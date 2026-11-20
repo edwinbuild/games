@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DAMP as D, fallen, forceOf, G, gustsFor, LEN, startState, step, W, windAt, type State } from './physics'
+import { DAMP as D, FALLEN, fallen, forceOf, G, gustsFor, LEN, settled, startState, step, stepFallen, W, windAt, type State } from './physics'
 
 const DT = 1 / 240
 /** Runs a game with a "player" that picks where to put the ball from what it sees. */
@@ -49,5 +49,26 @@ describe('stick up', () => {
     let s = startState(0)
     for (let i = 0; i < 480; i++) s = step(s, -500, 0, DT)
     expect(s.x).toBeGreaterThanOrEqual(30)
+  })
+  it('a tipping stick pushes a free ball the other way (the two bodies push on each other)', () => {
+    let s = startState(0.3)
+    for (let i = 0; i < 72; i++) s = step(s, null, 0, DT)
+    expect(s.th).toBeGreaterThan(0.3)
+    expect(s.v).toBeLessThan(0)
+  })
+  it('steady wind on a held, upright stick leans it into the wind, like the old model', () => {
+    // Hold the ball still and push the stick to the lean that balances the wind: it stays there.
+    const w = G * 0.3, lean = -Math.atan(w / G)
+    let s = { ...startState(lean) }
+    for (let i = 0; i < 240; i++) s = step(s, W / 2, w, DT)
+    expect(Math.abs(s.th - lean)).toBeLessThan(0.02)
+  })
+  it('the run ends past horizontal; then the stick lands on the ground and settles', () => {
+    let s = { ...startState(FALLEN + 0.01), om: 2 }
+    expect(fallen(s)).toBe(true)
+    let t = 0
+    while (!settled(s) && t < 4) { s = stepFallen(s, DT); t += DT }
+    expect(settled(s)).toBe(true)
+    expect(t).toBeLessThan(3)
   })
 })
