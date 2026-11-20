@@ -83,7 +83,7 @@ Each meets the satisfying bar and adds Challenge where we're thin. Original desi
 4. **Garden Path** (daily): draw one path through every square of the garden; numbered stones say how many times the path turns next to them. Generated with exactly one solution (solver-checked), easy on Monday, hard by Sunday.
 5. **Untangle Lights** (daily): drag the lights until no wires cross; fewest moves vs par. The generator starts from a planar layout and scrambles it, so it is always solvable.
 
-## Part E: accounts, usernames, profile icons, friends
+## Part E: accounts, usernames, profile icons, friends (done 2026-11-20: email link now, Google coming soon; no QR yet)
 
 Built on Supabase Auth (already the database). Everything still works as a guest.
 

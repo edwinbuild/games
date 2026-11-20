@@ -1,0 +1,12 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>preview</title><style>body{margin:0;padding:16px;background:var(--canvas);color:var(--ink);font-family:var(--font-body)}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var Q = window.QuickGames, h = React.createElement;
+  function Demo(){ var s=React.useState(false); return h('div',null,h(Q.Button,{onClick:function(){s[1](true)}},'Open the sheet'),h(Q.Sheet,{open:s[0],onClose:function(){s[1](false)},title:'Sign in'},h('p',{className:'body',style:{margin:0}},'Keep your streaks on every device.'),h(Q.TextField,{id:'e',label:'Your email',value:'',onChange:function(){},placeholder:'you@example.com'}),h(Q.Button,{size:'lg',block:true},'Email me a sign-in link'))); }
+  ReactDOM.createRoot(document.getElementById('root')).render(h(Demo));
+</script>
+</body>
+</html>

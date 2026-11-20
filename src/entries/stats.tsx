@@ -7,6 +7,7 @@ import { load, save } from '../shell/storage'
 import { Button, TextField, TopBar } from '../ui'
 import '../shell/styles'
 
+type ReportRow = { username: string; reports: number; last: string }
 type ErrorRow = { day: string; page: string; message: string; count: number }
 type Row = { day: string; game: string; starts: number; finishes: number; shares: number; play_next: number }
 const DAYS = 14
@@ -24,6 +25,7 @@ function Stats() {
   const [rows, setRows] = useState<Row[] | null>(null)
   const [error, setError] = useState('')
   const [errors, setErrors] = useState<ErrorRow[]>([])
+  const [reports, setReports] = useState<ReportRow[]>([])
 
   useEffect(() => {
     if (!key) return
@@ -32,6 +34,7 @@ function Stats() {
         setRows(r.map((x) => ({ ...x, starts: +x.starts, finishes: +x.finishes, shares: +x.shares, play_next: +x.play_next })))
         setError('')
         save('statsKey', key)
+        rpc<ReportRow[]>('reported_usernames', { p_key: key }).then((r) => setReports(r.map((x) => ({ ...x, reports: +x.reports })))).catch(() => setReports([]))
         rpc<ErrorRow[]>('error_stats', { p_key: key, p_days: 7 }).then((e) => setErrors(e.map((x) => ({ ...x, count: +x.count })))).catch(() => setErrors([]))
         if (location.hash) history.replaceState(null, '', location.pathname) // keep the key out of the address bar
       })
@@ -122,6 +125,15 @@ function Stats() {
                   <tbody>
                     {errors.map((e, i) => <tr key={i}><td>{e.day}</td><td>{e.page}</td><td>{e.message}</td><td>{e.count}</td></tr>)}
                   </tbody>
+                </table>
+              </div>
+            )}
+            <h2 className="card-title">Reported usernames</h2>
+            {reports.length === 0 ? <p className="body muted">No reports.</p> : (
+              <div className="table-wrap">
+                <table className="stats-table">
+                  <thead><tr><th>Username</th><th>Reports</th><th>Last report</th></tr></thead>
+                  <tbody>{reports.map((r) => <tr key={r.username}><td>{r.username}</td><td>{r.reports}</td><td>{r.last.slice(0, 16).replace('T', ' ')}</td></tr>)}</tbody>
                 </table>
               </div>
             )}

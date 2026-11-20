@@ -4,6 +4,7 @@ import { lazy, Suspense, useEffect, useReducer, useState } from 'react'
 import { captureRedirect, onAuthChange, signedIn, takeAuthNotice } from './auth'
 import type { SheetMode } from './AccountSheets'
 import { load } from './storage'
+import { SignInKey } from '../ui/SignInKey'
 
 const AccountSheets = lazy(() => import('./AccountSheets'))
 const Avatar = lazy(() => import('../ui/icons').then((m) => ({ default: m.Avatar })))
@@ -50,10 +51,7 @@ export function AccountKey() {
           {badge > 0 && <span className="qg-account-badge" aria-hidden="true">{badge}</span>}
         </a>
       ) : (
-        <button type="button" className="qg-signin-key" aria-label="Sign in" onClick={() => setSheet({ kind: 'sign-in' })}>
-          <svg className="qg-signin-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" strokeWidth="2.4" /><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" /></svg>
-          <span className="qg-signin-text">Sign in</span>
-        </button>
+        <SignInKey onClick={() => setSheet({ kind: 'sign-in' })} />
       )}
       {sheet && (
         <Suspense fallback={null}>

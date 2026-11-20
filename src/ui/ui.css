@@ -410,3 +410,28 @@
 }
 @media (prefers-reduced-motion: reduce) { .qg-sheet[open] .qg-sheet-panel { animation: none; } }
 .qg-lobby li > .qg-avatar + .qg-player { margin-right: auto; }
+
+/* ---------- Account: sign-in key, account chip, friends, reactions ---------- */
+.qg-signin-key { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font: 800 13px/1 var(--font-body); letter-spacing: .04em; text-transform: uppercase; padding: 10px 14px; min-height: 40px; border-radius: var(--radius-pill); border: var(--border-edge) solid var(--edge); background: var(--surface); color: var(--ink); cursor: pointer; }
+.qg-signin-icon { display: none; }
+/* Narrow phones: just the person icon, so the top bar keeps to one row. */
+@media (max-width: 479px) { .qg-signin-key { padding: 0; width: 40px; justify-content: center; } .qg-signin-text { display: none; } .qg-signin-icon { display: block; } }
+.qg-signin-key:hover { background: var(--surface-sunken); }
+.qg-account { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; }
+.qg-account:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.qg-account-dot { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--edge); }
+.qg-account-badge { position: absolute; top: -2px; right: -4px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: var(--danger); color: #fff; font: 800 11px/18px var(--font-body); text-align: center; border: 2px solid var(--canvas); box-sizing: content-box; }
+.qg-friends { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.qg-friend { display: grid; grid-template-columns: 40px 1fr auto; gap: var(--space-3); align-items: center; padding: 8px var(--space-3); border-radius: var(--radius-md); background: var(--surface); border: 1.5px solid var(--line); }
+.qg-friend-text { display: grid; min-width: 0; }
+.qg-friend-text strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qg-friend-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.qg-friend-more { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--edge); background: var(--surface-sunken); color: var(--ink); font: 800 18px/1 var(--font-body); cursor: pointer; }
+.qg-friend-menu { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: flex-end; width: 100%; }
+.qg-friend:has(.qg-friend-menu) .qg-friend-actions { grid-column: 1 / -1; }
+.qg-btn-link { font: 800 14px/1 var(--font-body); padding: 10px 16px; border-radius: var(--radius-pill); background: var(--ink); color: var(--canvas); text-decoration: none; }
+.qg-reactions { display: flex; gap: 4px; grid-column: 1 / -1; justify-content: flex-end; }
+.qg-reaction { min-width: 36px; height: 32px; padding: 0 6px; border-radius: var(--radius-pill); border: 1.5px solid var(--line); background: var(--surface); font: 600 14px/1 var(--font-body); color: var(--ink); cursor: pointer; }
+.qg-reaction[aria-pressed="true"] { border-color: var(--ink); background: var(--surface-sunken); }
+.qg-reaction.is-static { cursor: default; border-color: transparent; }
+.qg-friends-today .qg-board-list li { grid-template-columns: 28px 1fr auto; row-gap: 4px; }

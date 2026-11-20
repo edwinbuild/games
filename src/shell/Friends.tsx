@@ -9,6 +9,7 @@ import { dateKey } from './daily'
 import { GAMES } from '../games/registry'
 import { Button, TextField } from '../ui'
 import { Avatar } from '../ui/icons'
+import { FriendRow } from '../ui/FriendRow'
 
 export type Friend = { username: string; icon: string; colour: string; status: 'friend' | 'incoming' | 'outgoing'; played_today: number; streak: number }
 type Inbox = {
@@ -29,15 +30,6 @@ const WHY: Record<string, string> = {
 const titleOf = (slug: string) => GAMES.find((g) => g.slug === slug)?.title ?? slug
 const why = (e: unknown) => WHY[String((e as Error)?.message ?? e)] ?? 'Something went wrong. Try again.'
 
-export function FriendRow({ f, children }: { f: Pick<Friend, 'username' | 'icon' | 'colour'> & { detail?: string }; children?: React.ReactNode }) {
-  return (
-    <li className="qg-friend">
-      <Avatar icon={f.icon} colour={f.colour} size={40} />
-      <span className="qg-friend-text"><strong>{f.username}</strong>{f.detail && <span className="small muted">{f.detail}</span>}</span>
-      {children && <span className="qg-friend-actions">{children}</span>}
-    </li>
-  )
-}
 
 export default function Friends({ profile }: { profile: Profile | null }) {
   const [list, setList] = useState<Friend[] | null>(null)

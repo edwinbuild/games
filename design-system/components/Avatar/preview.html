@@ -1,0 +1,12 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>preview</title><style>body{margin:0;padding:16px;background:var(--canvas);color:var(--ink);font-family:var(--font-body)}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var Q = window.QuickGames, h = React.createElement;
+  var ids=['ticket','cat','dog','fox','bear','frog','owl','penguin','rabbit','whale','octopus','snail','bee','apple','cherry','pear','lemon','donut','cupcake','pizza','cactus','mushroom','kite','rocket','planet','flame','crown','trophy','comet','balloons','medal'], cs=['tangerine','mint','grape','sky','bubblegum','lagoon','peach','honey','lime','salmon'];
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div',{style:{display:'flex',flexWrap:'wrap',gap:8}}, ids.map(function(id,i){return h(Q.Avatar,{key:id,icon:id,colour:cs[i%cs.length],size:40,label:id})})));
+</script>
+</body>
+</html>

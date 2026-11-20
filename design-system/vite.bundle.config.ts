@@ -17,7 +17,7 @@ export default defineConfig({
     emptyOutDir: true,
     minify: true,
     lib: {
-      entry: resolve(here, '../src/ui/index.ts'),
+      entry: resolve(here, 'entry.ts'),
       name: 'QuickGames',
       formats: ['iife'],
       fileName: () => 'bundle.js',

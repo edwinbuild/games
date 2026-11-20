@@ -164,9 +164,9 @@ const aboutPage = () =>
       <h2>Daily games</h2>
       <p>Daily games give everyone the same puzzle on the same date. A new one starts at midnight in your own time zone.</p>
       <h2>What we keep</h2>
-      <p>There are no accounts and no cookies. Your scores, best results and streaks are saved in this browser on this device; clearing your browser data removes them.</p>
+      <p>Every game works without signing in: your scores, best results and streaks are saved in this browser on this device. Signing in (with an email link; you need to be 13 or older) keeps them on every device and gives you a username, an icon and friends. There are no ads and no cookies.</p>
       <h2>Today's boards</h2>
-      <p>When you finish a daily game, your best result for the day goes to that day's board, so you can see your rank. It's stored with a random key made by your browser (only a scrambled form of it is kept, so it can't be traced back to you) and the name you chose for challenges, if any; names with rude words are left off. Nothing else about you is sent. Boards are per day; results come from players' browsers, so treat the very top with a pinch of salt.</p>
+      <p>When you finish a daily game, your best result for the day goes to that day's board, so you can see your rank. Signed in, it shows your username and icon. As a guest, it's stored with a random key made by your browser (only a scrambled form of it is kept, so it can't be traced back to you) and the name you chose for challenges, if any; names with rude words are left off. Nothing else about you is sent. Boards are per day; results come from players' browsers, so treat the very top with a pinch of salt.</p>
       <p>The site also counts how many games are started and finished, and keeps the answers to the crowd games (never who gave them). Everything kept, and how to download or delete it, is on the <a href="/privacy/">privacy page</a>.</p>
       <h2>Sound</h2>
       <p>Sound is off until you turn it on with the switch at the top of each game, and the setting is remembered. Pitch Match always plays its tones, because listening is the game.</p>`,
@@ -179,7 +179,7 @@ const privacyPage = () =>
     path: '/privacy/',
     entry: '../../src/entries/static.tsx',
     body: `      <h1 class="game-title">Privacy</h1>
-      <p>${esc(SITE.name)} has no accounts, no ads, no cookies and no trackers. Here is everything it keeps.</p>
+      <p>${esc(SITE.name)} has no ads, no cookies and no trackers. Accounts are optional: every game works as a guest. Here is everything it keeps.</p>
       <h2>On this device</h2>
       <p>Your scores, best results, streaks, today's tries, settings (sound, theme, filters, computer level) and the name you typed for challenges are saved in this browser's storage. A game in progress is kept until you close the tab, so a refresh doesn't lose it. Two random codes are made by your browser: one marks your challenge results, one your board results and crowd answers. None of this leaves your device except as described below.</p>
       <h2>In our database</h2>
@@ -189,9 +189,18 @@ const privacyPage = () =>
         <li><strong>Counts:</strong> how many games are started, finished and shared each hour, per game.</li>
         <li><strong>Errors:</strong> when a page breaks, the page's name and the first line of the error message, counted per hour.</li>
       </ul>
+      <h2>If you sign in</h2>
+      <ul>
+        <li><strong>Your email:</strong> kept by the sign-in service (Supabase) only to send sign-in links. It's never shown to anyone, other players included.</li>
+        <li><strong>Your profile:</strong> your username, icon and colour. Other players see them on boards and in rooms; friends also see your daily results, streak and how many games you played today.</li>
+        <li><strong>Your progress:</strong> each game's scores, streaks and today's tries, so they're the same on every device. Only you see them.</li>
+        <li><strong>Friends:</strong> who you're friends with, requests, blocks, the reactions you send (only 👏 🔥 😮 😂, no messages) and game invites (shown for 30 minutes). A player you block can't find you, add you or see you on boards.</li>
+        <li><strong>Reports:</strong> if you report a username, who reported it and when; Edwin reviews reports.</li>
+      </ul>
+      <p>Your session is kept in this browser's storage, not a cookie. Signing out leaves your progress on this device as a guest. Deleting your account (on <a href="/me/">your profile</a>) removes your profile, progress, friends, reactions and board results; your username is then held for 30 days so nobody can pretend to be you, and then it's free.</p>
       <p>Online rooms pass your name and moves to the other players while you play; nothing from a room is stored. The site's hosts (Vercel for the pages, Supabase for the database) keep standard server logs, as every host does.</p>
       <h2>Download or delete</h2>
-      <p>Download everything this browser keeps for ${esc(SITE.name)}, or delete it all: that also removes your board results from the database. Results already deleted can't be brought back.</p>
+      <p>Download everything this browser keeps for ${esc(SITE.name)}, or delete it all: that also removes this device's guest board results from the database. Results already deleted can't be brought back. Signed in, <a href="/me/">your profile</a> also downloads your account's data and can delete the account.</p>
       <div id="privacy-tools"></div>
       <p>Clearing this site's data in your browser settings removes what's on the device too, but leaves your board results in the database, where nothing links them to you any more. Use the button above to remove them too.</p>`,
   })

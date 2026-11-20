@@ -121,7 +121,7 @@ export interface BoardRow { name: string; score: string; me?: boolean }
 export declare function ChallengeBoard(props: { rows: BoardRow[] }): JSX.Element
 
 /** A labelled single-line text field (the optional challenge nickname). */
-export interface TextFieldProps { id: string; label: string; value: string; onChange: (v: string) => void; placeholder?: string; maxLength?: number }
+export interface TextFieldProps { id: string; label: string; value: string; onChange: (v: string) => void; placeholder?: string; maxLength?: number; /** Input type, text by default ("email" for sign-in). */ type?: string; /** Browser autofill hint, "nickname" by default. */ autoComplete?: string }
 export declare function TextField(props: TextFieldProps): JSX.Element
 
 /** A small set of mutually exclusive choices, such as the theme (Auto, Light, Dark). */
@@ -144,7 +144,7 @@ export interface RoomCodeProps { code: string; url: string; onShare?: (via: Shar
 export declare function RoomCode(props: RoomCodeProps): JSX.Element
 
 /** Who is in an online room and whether they are ready. */
-export interface LobbyPlayer { name: string; ready: boolean; me?: boolean; host?: boolean }
+export interface LobbyPlayer { name: string; ready: boolean; me?: boolean; host?: boolean; /** A signed-in player's Avatar, shown before their name. */ avatar?: ReactNode }
 export declare function Lobby(props: { players: LobbyPlayer[]; max: number }): JSX.Element
 
 /** Every player's score in a row during play. */
@@ -167,3 +167,19 @@ export declare function FilterChips<T extends string>(props: { label: string; op
 
 /** A ring filled to value/max with the count in the middle; drawn in on load. */
 export declare function ProgressRing(props: { value: number; max: number; label: string; color?: string; size?: number }): JSX.Element
+
+/** A player's icon on a disc of their colour. 25 open icons and 6 earned ones (flame, crown, trophy, comet, balloons, medal). */
+export interface AvatarProps { icon?: string | null; colour?: string | null; size?: number; label?: string }
+export declare function Avatar(props: AvatarProps): JSX.Element
+
+/** A bottom sheet on phones, a centred dialog from 760px (built on <dialog>). */
+export interface SheetProps { open: boolean; onClose: () => void; title: string; children: ReactNode }
+export declare function Sheet(props: SheetProps): JSX.Element
+
+/** A player in a friends list: icon, username, a detail line, actions on the right. */
+export interface FriendRowProps { f: { username: string; icon?: string | null; colour?: string | null; detail?: string }; children?: ReactNode }
+export declare function FriendRow(props: FriendRowProps): JSX.Element
+
+/** The top bar's Sign in key (a person icon below 480px). */
+export interface SignInKeyProps { onClick: () => void }
+export declare function SignInKey(props: SignInKeyProps): JSX.Element

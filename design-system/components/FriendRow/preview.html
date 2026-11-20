@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>preview</title><style>body{margin:0;padding:16px;background:var(--canvas);color:var(--ink);font-family:var(--font-body)}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var Q = window.QuickGames, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('ul',{className:'qg-friends'},
+    h(Q.FriendRow,{f:{username:'Robin',icon:'owl',colour:'mint',detail:'wants to be friends'}},h(Q.Button,null,'Accept'),h(Q.Button,{variant:'ghost'},'Decline')),
+    h(Q.FriendRow,{f:{username:'Kai',icon:'frog',colour:'sky',detail:'2 played today · 6 day streak'}},h(Q.Button,{variant:'secondary'},'Play'))));
+</script>
+</body>
+</html>
