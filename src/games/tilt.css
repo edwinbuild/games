@@ -27,3 +27,6 @@
 @media (prefers-reduced-motion: reduce) { .tl-marble { transition: none; } .tl-board.is-solved .tl-hole::before { animation: none; }
 }
 @keyframes tl-glow { 50% { transform: scale(1.18); } }
+
+/* Desktop: the board grows to fit the screen's height (and the column's width). */
+@media (min-width: 1000px) { .tl-stage { max-width: min(100%, calc((100dvh - 330px) * 1.0)); } }

@@ -342,3 +342,17 @@ button { font: inherit; }
 }
 .qg-comments { min-height: 150px; align-content: start; }
 
+/* Big screens: pages grow with the screen instead of stopping at a laptop's width. */
+@media (min-width: 1440px) {
+  .page--game { max-width: min(1680px, calc(100vw - 96px)); }
+  .game-layout { grid-template-columns: minmax(0, 1fr) minmax(360px, 420px); }
+}
+@media (min-width: 1760px) {
+  .page.page--home { max-width: min(1760px, calc(100vw - 96px)); }
+  .home .cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (min-width: 2300px) {
+  .page.page--home { max-width: min(2240px, calc(100vw - 96px)); }
+  .home .cards { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+

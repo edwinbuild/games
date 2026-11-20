@@ -7,3 +7,6 @@
 @media (min-width: 1000px) {
   .od-stage { max-width: min(480px, calc((100dvh - 280px) * 0.68)); }
 }
+
+/* Desktop: the board grows to fit the screen's height (and the column's width). */
+@media (min-width: 1000px) { .od-stage { max-width: min(100%, calc((100dvh - 280px) * 0.684)); } }

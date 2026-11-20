@@ -18,3 +18,6 @@
 @media (prefers-reduced-motion: reduce) { .gp-grid.is-solved .gp-cell.is-on { animation: none; } .gp-cell { transition: none; }
 }
 @keyframes gp-bloom { 50% { filter: brightness(1.15); } }
+
+/* Desktop: the board grows to fit the screen's height (and the column's width). */
+@media (min-width: 1000px) { .gp-stage { max-width: min(100%, calc((100dvh - 300px) * 1.0)); } }

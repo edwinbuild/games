@@ -40,3 +40,8 @@
 .hw-row.is-shake { animation: none; }
 }
 @keyframes hw-shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+/* Computers: sized to fill the space (see useFit): this many boards across, squares this big. */
+.hw-boards.is-fit { grid-template-columns: repeat(var(--cols), auto); justify-content: center; gap: 12px; }
+.hw-boards.is-fit .hw-row { grid-template-columns: repeat(5, var(--cell)); }
+.hw-boards.is-fit .hw-cell { width: var(--cell); height: var(--cell); font-size: calc(var(--cell) * .5); border-width: max(1.5px, calc(var(--cell) / 24)); }
+@media (min-width: 1000px) { .hw-key { max-width: 56px; height: 58px; font-size: 18px; } .hw-key--wide { max-width: 84px; } }

@@ -23,3 +23,6 @@
 }
 @keyframes sp-pop { 50% { transform: scale(1.18); } }
 @keyframes sp-glow { 50% { background: var(--game); } }
+
+/* Desktop: the board grows to fit the screen's height (and the column's width). */
+@media (min-width: 1000px) { .sp-stage { max-width: min(100%, calc((100dvh - 360px) * 1.0)); } }

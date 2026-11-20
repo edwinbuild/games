@@ -28,3 +28,6 @@
 }
 @keyframes tu-snap { 0% { transform: scale(1.15) } 60% { transform: scale(.94) } 100% { transform: none } }
 @keyframes tu-nope { 0%, 100% { transform: none } 25% { transform: translateX(-5px) } 75% { transform: translateX(5px) } }
+
+/* Desktop: the board grows to fit the screen's height (and the column's width). */
+@media (min-width: 1000px) { .tu-board { max-width: min(100%, calc((100dvh - 260px) * 0.615)); } }

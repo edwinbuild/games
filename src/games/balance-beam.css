@@ -39,3 +39,6 @@
   .bb-stage { max-width: 640px; }
 }
 @keyframes bb-drop { from { transform: translateY(-14px) scale(.8); opacity: 0; } }
+
+/* Desktop: the board grows to fit the screen's height (and the column's width). */
+@media (min-width: 1000px) { .bb-stage { max-width: min(100%, calc((100dvh - 330px) * 1.413)); } }

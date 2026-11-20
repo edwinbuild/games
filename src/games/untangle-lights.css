@@ -16,3 +16,6 @@
 @media (prefers-reduced-motion: reduce) { .ul-svg.is-solved .ul-bulb, .ul-svg.is-solved .ul-wire { animation: none; fill: var(--game); } .ul-wire, .ul-bulb { transition: none; }
 }
 @keyframes ul-glow { 0% { fill: var(--surface); } 50% { fill: var(--game); transform: scale(1.35); } 100% { fill: var(--game); transform: none; } }
+
+/* Desktop: the board grows to fit the screen's height (and the column's width). */
+@media (min-width: 1000px) { .ul-stage { max-width: min(100%, calc((100dvh - 300px) * 1.0)); } }

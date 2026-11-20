@@ -8,3 +8,6 @@
 @media (min-width: 1000px) {
   .cp-stage { max-width: min(520px, calc((100dvh - 300px) * 0.75)); }
 }
+
+/* Desktop: the board grows to fit the screen's height (and the column's width). */
+@media (min-width: 1000px) { .cp-stage { max-width: min(100%, calc((100dvh - 300px) * 0.76)); } }

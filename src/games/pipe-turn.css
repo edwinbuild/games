@@ -24,3 +24,6 @@
 .pt-board { max-width: min(580px, calc(100dvh - 300px)); }
 }
 @keyframes pt-bloom { 0% { transform: scale(.6) } 60% { transform: scale(1.4) } 100% { transform: none } }
+
+/* Desktop: the board grows to fit the screen's height (and the column's width). */
+@media (min-width: 1000px) { .pt-board { max-width: min(100%, calc((100dvh - 300px) * 1.133)); } }

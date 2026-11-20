@@ -23,3 +23,6 @@
 }
 @keyframes rs-pop { from { transform: scale(.8); } }
 @keyframes rs-rule-in { from { opacity: 0; transform: translateY(-10px) scale(.97); } }
+
+/* Desktop: the board grows to fit the screen's height (and the column's width). */
+@media (min-width: 1000px) { .rs-stage { max-width: min(100%, calc((100dvh - 420px) * 1.0)); } }
