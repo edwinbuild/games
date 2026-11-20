@@ -1,12 +1,14 @@
 import { StrictMode, useEffect, useState, type CSSProperties } from 'react'
 import { mount, ready } from '../shell/mount'
 import { TAGLINES } from '../games/taglines'
-import { LISTED as GAMES, playersLabel, SKILLS, type GameMeta, type Skill } from '../games/registry'
+import { LISTED as ALL_GAMES, playersLabel, SKILLS, type GameMeta, type Skill } from '../games/registry'
 import { SITE } from '../site'
 import { formatCount, SHOW_FROM, useRecentPlays } from '../shell/live'
 import { DEMOS } from '../shell/demos'
 import { SiteFooter } from '../shell/SiteFooter'
 import { AccountKey } from '../shell/AccountKey'
+import { siteConfig, useSiteConfig } from '../shell/config'
+import { SiteNotice } from '../shell/SiteNotice'
 import { getStats, todaysDaily, todaysDailyText } from '../shell/stats'
 import { load, save } from '../shell/storage'
 import { Countdown, FilterChips, GameCard, ProgressRing, TopBar } from '../ui'
@@ -51,7 +53,7 @@ function Card({ g, i }: { g: GameMeta; i: number }) {
         status={st.text}
         done={st.done}
         transitionName={g.slug}
-        tag={playersLabel(g) ?? undefined}
+        tag={[siteConfig().new.includes(g.slug) && 'New', playersLabel(g)].filter(Boolean).join(' · ') || undefined}
         demo={Demo ? <Demo /> : undefined}
       />
     </li>
@@ -94,6 +96,10 @@ const fitsKind = (g: GameMeta, k: Kind) => k === 'all' || g.skill === k
 
 function Home() {
   usePlayOnScreen()
+  // Games the admin switched off are left out; Featured ones get their own row at the top.
+  const cfg = useSiteConfig()
+  const GAMES = ALL_GAMES.filter((g) => !cfg.disabled.includes(g.slug))
+  const featured = GAMES.filter((g) => cfg.featured.includes(g.slug))
   const forcedKind = document.body.dataset.kind as Skill | undefined
   const [filter, setFilterState] = useState<Filter>(initialFilter)
   const setFilter = (f: Filter) => { setFilterState(f); save('home-filter', f) }
@@ -121,6 +127,7 @@ function Home() {
   const sections: { id: string; title: string; games: GameMeta[]; daily?: boolean }[] =
     filter.kind === 'all'
       ? [
+          ...(featured.length && filter.when === 'all' ? [{ id: 'featured', title: 'Featured', games: featured }] : []),
           { id: 'daily', title: 'Today’s puzzles', games: order(shown(daily)), daily: true },
           { id: 'any', title: 'Play any time', games: shown(GAMES.filter((g) => !g.daily && solo(g))) },
           { id: 'friends', title: 'Play with friends', games: shown(GAMES.filter((g) => !solo(g))) },
@@ -138,6 +145,7 @@ function Home() {
   return (
     <div className="page page--home home">
       <TopBar siteName={SITE.name} right={<AccountKey />} />
+      <SiteNotice />
       <div className="home-layout">
         {/* Wide screens: a sticky rail with today's progress, the filters as lists, and your streaks. */}
         <aside className="home-rail" aria-label="Browse games">

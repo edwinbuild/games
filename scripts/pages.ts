@@ -210,13 +210,14 @@ const privacyPage = () =>
       <p>Clearing this site's data in your browser settings removes what's on the device too, but leaves your board results in the database, where nothing links them to you any more. Use the button above to remove them too.</p>`,
   })
 
-const statsPage = () =>
+// The admin page: not linked anywhere and kept out of search; locked to the admin account and PIN.
+const adminPage = () =>
   page({
-    title: `Stats | ${SITE.name}`,
-    description: 'Private stats.',
-    path: '/stats/',
+    title: `Admin | ${SITE.name}`,
+    description: 'Admin.',
+    path: '/admin/',
     image: '/og/home.png',
-    entry: '../../src/entries/stats.tsx',
+    entry: '../../src/entries/admin.tsx',
     body: `    <div id="root"></div>`,
   }).replace('<meta name="description"', '<meta name="robots" content="noindex, nofollow" />\n    <meta name="description"')
 
@@ -251,8 +252,8 @@ mkdirSync(resolve(site, 'privacy'), { recursive: true })
 writeFileSync(resolve(site, 'privacy', 'index.html'), privacyPage())
 mkdirSync(resolve(site, 'me'), { recursive: true })
 writeFileSync(resolve(site, 'me', 'index.html'), mePage())
-mkdirSync(resolve(site, 'stats'), { recursive: true })
-writeFileSync(resolve(site, 'stats', 'index.html'), statsPage())
+mkdirSync(resolve(site, 'admin'), { recursive: true })
+writeFileSync(resolve(site, 'admin', 'index.html'), adminPage())
 for (const k of CATEGORIES) {
   mkdirSync(resolve(site, 'c', k.id), { recursive: true })
   writeFileSync(resolve(site, 'c', k.id, 'index.html'), categoryPage(k))
@@ -267,5 +268,5 @@ writeFileSync(
   resolve(root, 'public/sitemap.xml'),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${BASE_URL}${u}</loc></url>`).join('\n')}\n</urlset>\n`,
 )
-writeFileSync(resolve(root, 'public/robots.txt'), `User-agent: *\nAllow: /\nDisallow: /stats/\nDisallow: /me/\nSitemap: ${BASE_URL}/sitemap.xml\n`)
+writeFileSync(resolve(root, 'public/robots.txt'), `User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /me/\nSitemap: ${BASE_URL}/sitemap.xml\n`)
 console.log(`Generated ${GAMES.length + CATEGORIES.length + 5} pages in site/`)

@@ -2,9 +2,11 @@
 import { useState } from 'react'
 import type { GameMeta } from '../games/registry'
 import { cleanCode, isRoomCode, newRoomCode } from './room'
+import { siteConfig } from './config'
 import { Button, Stage, TextField } from '../ui'
 
 export function roomFromUrl(): string | null {
+  if (!siteConfig().rooms) return null
   const c = cleanCode(new URLSearchParams(location.search).get('room') ?? '')
   return isRoomCode(c) ? c : null
 }
@@ -15,6 +17,9 @@ export function goToRoom(code: string | null) {
 export function RoomLanding({ game, intro, onRoom }: { game: GameMeta; intro: string; onRoom: (code: string) => void }) {
   const [typed, setTyped] = useState('')
   const valid = isRoomCode(cleanCode(typed))
+  if (!siteConfig().rooms) {
+    return <Stage><p className="body" style={{ margin: 0 }}>Online rooms are taking a short break. Try again a little later, or play on one phone.</p></Stage>
+  }
   return (
     <Stage>
       <div className="stack">

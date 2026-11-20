@@ -5,6 +5,8 @@ const fs = require('node:fs'), path = require('node:path'), zlib = require('node
 const dist = path.resolve(__dirname, '../dist')
 const gz = (f) => zlib.gzipSync(fs.readFileSync(path.join(dist, f))).length
 const ONLINE = /^(reaction-online|spot-race|higher-lower|quick-draw)$/
+// The admin page is only ever loaded by the admin: 10 KB of room.
+const ADMIN = /^admin$/
 let fail = false
 const pages = ['', ...fs.readdirSync(dist).filter((d) => fs.existsSync(path.join(dist, d, 'index.html')))]
 for (const p of pages) {
@@ -15,7 +17,7 @@ for (const p of pages) {
   const gameKb = game.reduce((s, f) => s + gz('assets/' + f), 0) / 1024
   const limit = ONLINE.test(p) ? 45 : 25
   const total = initialKb + gameKb
-  const bad = total > 92 + (ONLINE.test(p) ? 45 : 0) || gameKb > limit
+  const bad = total > 92 + (ONLINE.test(p) ? 45 : 0) + (ADMIN.test(p) ? 10 : 0) || gameKb > limit
   if (bad) fail = true
   console.log(`${bad ? 'OVER' : 'ok  '} /${p}  initial ${initialKb.toFixed(1)} KB + game ${gameKb.toFixed(1)} KB = ${total.toFixed(1)} KB`)
 }

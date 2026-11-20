@@ -906,3 +906,28 @@ button { font: inherit; }
 .me-earn li:not(.is-earned) .qg-avatar { filter: grayscale(1); opacity: .45; }
 .me-add { align-items: flex-end; }
 .me-add .qg-field { flex: 1; min-width: 0; }
+
+/* Admin announcement and maintenance note, under the top bar. */
+.site-notice { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin: 0 0 var(--space-3); padding: 10px var(--space-3); border-radius: var(--radius-md); border: var(--border-edge) solid var(--edge); background: var(--highlight, var(--surface-sunken)); color: var(--ink); font: 600 15px/20px var(--font-body); }
+.site-notice a { color: inherit; }
+.site-notice--maintenance { background: var(--surface-sunken); }
+.site-notice-close { flex: none; width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--edge); background: var(--surface); color: var(--ink); cursor: pointer; }
+.back-soon { display: grid; gap: var(--space-2); padding: var(--space-5); text-align: center; }
+
+/* ---------- Admin page ---------- */
+.admin { display: grid; gap: var(--space-4); padding-bottom: var(--space-6, 32px); }
+.admin-lock { max-width: 360px; }
+.admin-lock input, .admin .qg-field select, .admin .qg-field input[type="datetime-local"] { font: 700 18px/1 var(--font-mono); letter-spacing: .2em; padding: 12px; border-radius: var(--radius-md); border: var(--border-edge) solid var(--edge); background: var(--surface); color: var(--ink); }
+.admin .qg-field select, .admin .qg-field input[type="datetime-local"] { font: 500 15px/1.2 var(--font-body); letter-spacing: 0; }
+.admin-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.admin-tabs button { font: 800 13px/1 var(--font-body); letter-spacing: .04em; text-transform: uppercase; padding: 10px 14px; border-radius: var(--radius-pill); border: var(--border-edge) solid var(--edge); background: var(--surface); color: var(--ink); cursor: pointer; }
+.admin-tabs button[aria-current="page"] { background: var(--ink); color: var(--canvas); }
+.admin-kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-2); }
+.admin-spark { width: 90px; height: 28px; }
+.admin-spark polyline { fill: none; stroke: var(--ink); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.admin-games input[type="checkbox"], .admin-flag input { width: 22px; height: 22px; accent-color: var(--ink); }
+.admin-flag { display: flex; align-items: center; gap: var(--space-2); font: 600 15px/20px var(--font-body); }
+.admin-links { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.admin-words { display: flex; flex-wrap: wrap; gap: 6px; }
+.admin-word { font: 600 13px/1 var(--font-mono); padding: 6px 10px; border-radius: var(--radius-pill); border: 1.5px solid var(--line); background: var(--surface-sunken); color: var(--ink); cursor: pointer; }
+.admin-player { padding: var(--space-3); border-radius: var(--radius-md); background: var(--surface-sunken); }

@@ -26,7 +26,7 @@ const CORE = [
   /\/src\/ui\/(components|index)\.tsx?$/,
   /\/src\/games\/registry\.ts$/,
   /\/src\/site\.ts$/,
-  /\/src\/shell\/(api|auth|storage|stats|daily|SiteFooter|AccountKey|errors|sw-register|mount|live)\.tsx?$/,
+  /\/src\/shell\/(api|auth|storage|stats|daily|SiteFooter|AccountKey|errors|sw-register|mount|live|config|SiteNotice)\.tsx?$/,
 ]
 
 export default defineConfig({

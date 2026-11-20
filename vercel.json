@@ -48,6 +48,11 @@
       "source": "/this-or-that/",
       "destination": "/guess-the-crowd/",
       "permanent": true
+    },
+    {
+      "source": "/stats/",
+      "destination": "/admin/",
+      "permanent": false
     }
   ]
 }

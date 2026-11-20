@@ -9,6 +9,8 @@ import { formatCount, SHOW_FROM, useRecentPlays } from './live'
 import { AsideContext } from './layout'
 import { SiteFooter } from './SiteFooter'
 import { AccountKey } from './AccountKey'
+import { useSiteConfig } from './config'
+import { SiteNotice } from './SiteNotice'
 import { SoundToggle } from './SoundToggle'
 import { track } from './track'
 
@@ -38,6 +40,7 @@ export function GameShell({ game, children }: { game: GameMeta; children: ReactN
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
+  const off = useSiteConfig().disabled.includes(game.slug)
   const recent = useRecentPlays()
   const playsHere = recent?.[game.slug] ?? 0
   const challenge = readChallenge(game.slug)
@@ -60,6 +63,7 @@ export function GameShell({ game, children }: { game: GameMeta; children: ReactN
     <AsideContext.Provider value={aside}>
       <div className="page page--game">
         <TopBar siteName={SITE.name} daily={game.daily} right={<><AccountKey /><SoundToggle /></>} />
+        <SiteNotice />
         <div className="game-band" style={{ viewTransitionName: `band-${game.slug}` }} aria-hidden="true" />
         <div className="game-layout">
           <main className="game-main">
@@ -68,8 +72,17 @@ export function GameShell({ game, children }: { game: GameMeta; children: ReactN
               <p className="body">{game.instructions}</p>
               {playsHere >= SHOW_FROM && <p className="small muted live-count">{formatCount(playsHere)} games finished in the last 24 hours</p>}
             </header>
-            {banner && <ChallengeBanner text={banner} color={game.color} />}
-            {children}
+            {off ? (
+              <div className="qg-stage back-soon" role="status">
+                <p className="card-title" style={{ margin: 0 }}>Back soon</p>
+                <p className="body" style={{ margin: 0 }}>{game.title} is having a short break. <a href="/">Pick another game</a>.</p>
+              </div>
+            ) : (
+              <>
+                {banner && <ChallengeBanner text={banner} color={game.color} />}
+                {children}
+              </>
+            )}
           </main>
           <aside className="game-aside" ref={setAside} aria-label="Result and how to play">
             <GameInfo game={game} />

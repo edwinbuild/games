@@ -39,8 +39,12 @@ function hashString(s: string): number {
 }
 
 /** mulberry32: small, fast, good enough for game puzzles. Returns floats in [0, 1). */
+/** Turns a puzzle's seed into the one actually used (the site settings add re-rolls; see config.ts). */
+let seedHook = (seed: string) => seed
+export const setSeedHook = (f: (seed: string) => string) => { seedHook = f }
+
 export function seededRandom(seed: string): () => number {
-  let a = hashString(seed)
+  let a = hashString(seedHook(seed))
   return () => {
     a = (a + 0x6d2b79f5) >>> 0
     let t = a

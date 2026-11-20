@@ -8,6 +8,7 @@ import { cachedProfile, deleteAccount, refreshProfile, type Profile } from '../s
 import { getSession, onAuthChange, openSignIn, signedIn } from '../shell/auth'
 import { signOut } from '../shell/auth-actions'
 import { AccountKey } from '../shell/AccountKey'
+import { SiteNotice } from '../shell/SiteNotice'
 import { rpc } from '../shell/api'
 import { mount, ready } from '../shell/mount'
 import { SiteFooter } from '../shell/SiteFooter'
@@ -48,6 +49,7 @@ function Me() {
   return (
     <div className="page">
       <TopBar siteName={SITE.name} right={<AccountKey />} />
+      <SiteNotice />
       <main className="me">
         {me ? (
           <section className="me-head">
