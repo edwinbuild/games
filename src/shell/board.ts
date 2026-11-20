@@ -7,7 +7,7 @@ import { load, save } from './storage'
 export const BOARD_GAMES = new Set([
   'blind-timer', 'pitch-match', 'color-recall', 'count-flash', 'flip-grid', 'stack-tower', 'pour-line', 'chain-pop',
   'fair-slice', 'domino-drop', 'beat-keeper', 'pipe-turn', 'light-path', 'steady-line', 'shape-recall', 'paint-mix', 'balance-beam',
-  'untangle-lights', 'word-ladder', 'garden-path', 'rule-stack', 'tilt', 'sum-path',
+  'untangle-lights', 'word-ladder', 'garden-path', 'rule-stack', 'tilt', 'sum-path', 'hidden-word', 'two-words', 'four-words', 'eight-words',
 ])
 
 export type Rank = { rank: number | null; total: number; better_than: number | null }

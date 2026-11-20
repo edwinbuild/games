@@ -660,6 +660,28 @@ function UntangleDemo() {
   )
 }
 
+/** Hidden Word (and its bigger versions): a guess lands and its letters turn over one by one. */
+const HW_MARKS = ['out', 'elsewhere', 'right', 'out', 'right']
+function hiddenWordDemo(boards: number) {
+  return function HiddenWordDemo() {
+    const d = 4
+    const cols = boards <= 2 ? boards : boards === 4 ? 2 : 4
+    const size = boards === 1 ? 20 : boards <= 4 ? 11 : 7
+    const bw = size * 5 + 4
+    return (
+      <Scene still={3.4}>
+        {Array.from({ length: boards }, (_, b) => (
+          <span key={b} className="demo-hw-board" style={{ left: 8 + (b % cols) * (bw + 6), top: 6 + Math.floor(b / cols) * (size + 6) }}>
+            {HW_MARKS.map((_, i) => {
+              const mm = HW_MARKS[(i + b) % 5]
+              return <A key={i} d={d} className={`demo-hw-cell demo-hw-cell--${mm}`} style={{ width: size, height: size, left: i * (size + 1) }} k={`0%,${10 + i * 8}%{transform:scaleY(1);opacity:.35}${14 + i * 8}%{transform:scaleY(0)}${18 + i * 8}%,90%{transform:scaleY(1);opacity:1}100%{opacity:.35}`}>{boards === 1 ? 'CRANE'[i] : ''}</A>
+            })}
+          </span>
+        ))}
+      </Scene>
+    )
+  }
+}
 /** Stick Up: the ball slides under a leaning stick and catches it; wind streaks blow past. */
 function StickUpDemo() {
   const d = 4
@@ -823,6 +845,10 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'word-ladder': WordLadderDemo,
   'garden-path': GardenPathDemo,
   'rule-stack': RuleStackDemo,
+  'hidden-word': hiddenWordDemo(1),
+  'two-words': hiddenWordDemo(2),
+  'four-words': hiddenWordDemo(4),
+  'eight-words': hiddenWordDemo(8),
   'stick-up': StickUpDemo,
   'tilt': TiltDemo,
   'sum-path': SumPathDemo,
