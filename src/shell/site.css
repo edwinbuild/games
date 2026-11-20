@@ -1015,3 +1015,23 @@ button { font: inherit; }
 @media (prefers-reduced-motion: reduce) { .lr-tile { transition: none; } }
 .demo-lr-tile { position: absolute; width: 16px; height: 16px; border-radius: 4px; background: var(--paper); display: grid; place-items: center; font: 800 10px/1 var(--font-display); color: var(--line); text-transform: uppercase; }
 .demo-lr-letter { position: absolute; font: 700 16px/1 var(--font-mono); color: var(--line); text-transform: uppercase; }
+
+/* Stick Up */
+.su-stage { position: relative; padding: 0; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; cursor: ew-resize; }
+.su-svg { display: block; width: 100%; max-height: min(62dvh, 520px); background: var(--surface-sunken); }
+.su-ground { stroke: var(--ink); stroke-width: 3; }
+.su-stick-edge { stroke: var(--edge); stroke-width: 13; stroke-linecap: round; }
+.su-stick { stroke: var(--game); stroke-width: 7; stroke-linecap: round; }
+.su-tip { fill: var(--surface); stroke: var(--edge); stroke-width: 3; }
+.su-ball { fill: var(--surface); stroke: var(--edge); stroke-width: 3.5; }
+.su-ball-mark { fill: none; stroke: var(--ink-muted); stroke-width: 2.5; stroke-linecap: round; }
+.su-streak { stroke: var(--ink-muted); stroke-width: 2.5; stroke-linecap: round; opacity: .08; }
+.su-start { position: absolute; left: 50%; top: 20%; transform: translate(-50%, -50%); text-align: center; font: 800 20px/1.3 var(--font-display); pointer-events: none; }
+.su-wind { font-family: var(--font-mono); white-space: nowrap; }
+.demo-su-ball { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: var(--paper); border: 2.5px solid var(--line); box-sizing: border-box; }
+.demo-su-stick { position: absolute; width: 4px; height: 48px; border-radius: 2px; background: var(--line); transform-origin: 50% 100%; }
+.demo-su-streak { position: absolute; font: 800 14px/1 var(--font-body); color: var(--line); }
+
+/* Game pages swap the result ticket and the game in place; without this the browser's scroll
+   anchoring can jump to the comments below when the ticket goes away (Try again on a phone). */
+.page--game { overflow-anchor: none; }

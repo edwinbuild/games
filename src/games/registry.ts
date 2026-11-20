@@ -389,6 +389,16 @@ export const GAMES: GameMeta[] = [
     skill: 'logic',
   },
   {
+    slug: 'stick-up',
+    title: 'Stick Up',
+    emoji: '🥢',
+    instructions: 'A stick stands on a ball you move. Keep it from falling while the wind picks up.',
+    daily: false,
+    color: 'lagoon',
+    sample: '18.4 s',
+    skill: 'timing',
+  },
+  {
     slug: 'tilt',
     title: 'Tilt',
     emoji: '🎱',

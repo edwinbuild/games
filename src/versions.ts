@@ -2,6 +2,7 @@
 // corner and on the About page); package.json carries the same number. Plain Node reads this file
 // too (scripts/pages.ts), so keep it free of imports.
 export const VERSIONS: { v: string; date: string; notes: string }[] = [
+  { v: '1.5.0', date: '2026-11-20', notes: 'New game: Stick Up (balance a stick on a ball while the wind picks up).' },
   { v: '1.4.0', date: '2026-11-20', notes: 'Three new games: Tilt (roll every marble into its hole), Sum Path (corner to corner, add up to the target) and Letter Race (seven letters, one minute, up to eight friends).' },
   { v: '1.3.0', date: '2026-11-20', notes: 'Play all of today’s puzzles in one go, arcade games start again by themselves, an archive of past dailies, hints for the logic games, a weekly streak freeze ❄️ and sharing your result as a picture.' },
   { v: '1.2.0', date: '2026-11-20', notes: 'Votes, comments, play counts and players online (they appear once the database for them is switched on).' },

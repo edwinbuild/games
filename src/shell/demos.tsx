@@ -660,6 +660,21 @@ function UntangleDemo() {
   )
 }
 
+/** Stick Up: the ball slides under a leaning stick and catches it; wind streaks blow past. */
+function StickUpDemo() {
+  const d = 4
+  const ball = '0%,10%{transform:translateX(0)}35%{transform:translateX(26px)}60%{transform:translateX(10px)}85%,100%{transform:translateX(0)}'
+  const stick = '0%,10%{transform:translateX(0) rotate(8deg)}35%{transform:translateX(26px) rotate(-6deg)}60%{transform:translateX(10px) rotate(-12deg)}85%,100%{transform:translateX(0) rotate(8deg)}'
+  return (
+    <Scene still={1.4}>
+      <A d={d} className="demo-su-streak" style={{ left: 20, top: 16 }} k="0%{transform:translateX(0);opacity:0}20%{opacity:.8}60%{transform:translateX(-40px);opacity:0}100%{opacity:0}">―</A>
+      <A d={d} className="demo-su-streak" style={{ left: 40, top: 34 }} k="0%,30%{transform:translateX(0);opacity:0}50%{opacity:.8}90%{transform:translateX(-40px);opacity:0}100%{opacity:0}">―</A>
+      <A d={d} className="demo-su-stick" style={{ left: 84, top: 4 }} ease="ease-in-out" k={stick} />
+      <A d={d} className="demo-su-ball" style={{ left: 76, top: 50 }} ease="ease-in-out" k={ball} />
+    </Scene>
+  )
+}
+
 /** Tilt: the board tips right, the marble rolls to the wall, then down into its hole. */
 function TiltDemo() {
   const d = 4
@@ -808,6 +823,7 @@ export const DEMOS: Record<string, () => ReactNode> = {
   'word-ladder': WordLadderDemo,
   'garden-path': GardenPathDemo,
   'rule-stack': RuleStackDemo,
+  'stick-up': StickUpDemo,
   'tilt': TiltDemo,
   'sum-path': SumPathDemo,
   'dots-and-boxes': DotsDemo,

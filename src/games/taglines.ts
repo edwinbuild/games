@@ -33,6 +33,7 @@ export const TAGLINES: Record<string, string> = {
   'orbit-drop': 'A ball circles a planet. Let go at the right moment to fly to the next one. How far can you get?',
   'balance-beam': 'Level a tipped seesaw with as few weights as you can. Later in the week a second beam hangs from it.',
   'untangle-lights': 'A tangle of lights and wires. Drag them apart until nothing crosses. A new tangle every day.',
+  'stick-up': 'Balance a stick on a ball with your finger while the wind picks up. How long can you keep it standing?',
   'tilt': 'Marbles roll until something stops them. Tilt the board to sink each one in its own hole. A new board every day.',
   'sum-path': 'Corner to corner, the numbers must add up to exactly the target. Fewest squares wins. A new grid every day.',
   'word-ladder': 'COLD to WARM, one letter at a time, every step a real word. A new ladder every day.',

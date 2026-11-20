@@ -8,7 +8,7 @@ export const autoPrefs = (): AutoPrefs => ({ run: true, replay: true, ...load<Pa
 export const setAutoPrefs = (p: AutoPrefs) => save('autoplay', p)
 
 /** Any-time solo games that are quick to replay. */
-export const ARCADE = new Set(['reaction-chain', 'odd-one-out', 'memory-path', 'angle-eye', 'tidy-up', 'pendulum-stop', 'orbit-drop'])
+export const ARCADE = new Set(['reaction-chain', 'odd-one-out', 'memory-path', 'angle-eye', 'tidy-up', 'pendulum-stop', 'orbit-drop', 'stick-up'])
 export const replayOn = (slug: string) => ARCADE.has(slug) && autoPrefs().replay && siteConfig().autoplay.replay
 
 /** Today's run: the games still to play, kept for this tab. */

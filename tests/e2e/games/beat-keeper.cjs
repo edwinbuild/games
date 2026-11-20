@@ -47,6 +47,7 @@ module.exports = async ({ page, B, browser }) => {
     await sp.clock.runFor(1500)
     await sp.locator('.qg-ticket').getByRole('button', { name: 'Try again' }).tap()
     await sp.clock.runFor(1000)
+    await sp.waitForTimeout(800) // the page's own smooth scroll back to the game runs in real time
     await assertFullyVisible(sp, '.bk-stage', 'the beat circle after Try again')
   } finally { await ctx.close() }
 }

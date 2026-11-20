@@ -134,6 +134,10 @@ export const HOW_TO: Record<string, string[]> = {
     'Draw one path from the seedling to the flower that visits every square of the garden exactly once, moving up, down, left or right. Drag through the squares; drag back to undo a step, or tap a square on the path to cut it back to there.',
     'Stones tell you what the path does on their square: on a filled stone (●) it turns, on a hollow stone (○) it goes straight through. Every garden has exactly one answer; your time counts, and the clock keeps going if you leave and come back. 5×5 early in the week, 6×6 at the weekend. On a keyboard, the arrows step the path.',
   ],
+  'stick-up': [
+    'A stick stands on a ball. Move the ball left and right under it, by dragging your finger, moving the mouse or holding the arrow keys, to keep the stick from falling. It starts with a slight lean, so move straight away: the ball has to go the way the stick leans, a little further than you’d think.',
+    'After three seconds the wind starts gusting, shown by the streaks and the wind meter. A gust pushes the top of the stick, so lean it into the wind to hold it steady. Each gust is a little stronger, so every run ends sooner or later; your score is how long the stick stayed up. A challenge link gives your friends the same wind.',
+  ],
   'tilt': [
     'Tilt the board up, down, left or right by swiping, with the arrow buttons or with the arrow keys. Every marble rolls in a straight line until it hits the edge, a black block or another marble. A marble that rolls onto the hole with its own shape (● ▲ ■) drops in; any other hole is just floor to it.',
     'Get every marble into its hole in as few tilts as you can. Par is the fewest possible, found by trying every way. Monday has a small board and two marbles; by the weekend it’s bigger, with three. You can undo, and if there’s no way left to finish the game says so. One board a day, the same for everyone; your best try counts.',
