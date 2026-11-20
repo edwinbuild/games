@@ -2,8 +2,7 @@
 // game are merged (best of both, never lost) with the copy in their account. Loaded only when
 // signed in.
 import { rpc } from './api'
-import { previousDateKey, parseDateKey } from './daily'
-import type { Stats } from './stats'
+import { streakEnding, type Stats } from './stats'
 import { load, save } from './storage'
 
 type Today = { date: string; value: unknown }
@@ -14,17 +13,6 @@ const better = (a: number | null, b: number | null, low?: boolean) => {
   return low ? Math.min(a, b) : Math.max(a, b)
 }
 
-/** The run of days in a row ending on `last`, from a daily map. */
-function runEnding(daily: Record<string, unknown>, last: string): number {
-  let n = 0
-  for (let d = last; d in daily; ) {
-    n++
-    const date = parseDateKey(d)
-    if (!date) break
-    d = previousDateKey(date)
-  }
-  return n
-}
 
 /** Two copies of one game's stats as one: every day played, the better result each day, the best best. */
 export function mergeStats(a: Stats, b: Stats): Stats {
@@ -37,7 +25,9 @@ export function mergeStats(a: Stats, b: Stats): Stats {
     if (pick !== daily[d] && pick === v) { daily[d] = v; if (a.dailyText?.[d]) dailyText[d] = a.dailyText[d] }
   }
   const lastDaily = [a.lastDaily, b.lastDaily].filter(Boolean).sort().pop() ?? null
-  const streak = lastDaily ? runEnding(daily, lastDaily) : 0
+  const run = lastDaily ? streakEnding(new Set(Object.keys(daily)), lastDaily) : { streak: 0, frozen: [] }
+  const streak = run.streak
+  const frozen = [...new Set([...(a.frozen ?? []), ...(b.frozen ?? []), ...run.frozen])].sort().slice(-8)
   const bestOf = better(a.best, b.best, low)
   const bestText = bestOf == null ? undefined : bestOf === a.best ? a.bestText ?? b.bestText : b.bestText ?? a.bestText
   return {
@@ -50,6 +40,7 @@ export function mergeStats(a: Stats, b: Stats): Stats {
     daily,
     ...(Object.keys(dailyText).length ? { dailyText } : {}),
     ...(low != null ? { low } : {}),
+    ...(frozen.length ? { frozen } : {}),
   }
 }
 

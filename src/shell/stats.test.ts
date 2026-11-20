@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { countPlay, getStats, loadToday, recordDaily, recordPlay, saveToday, takeNewBest, todaysDaily, todaysDailyText } from './stats'
+import { countPlay, getStats, loadToday, recordDaily, recordPlay, saveToday, streakEnding, takeFreeze, takeNewBest, todaysDaily, todaysDailyText } from './stats'
 
 beforeEach(() => {
   const store = new Map<string, string>()
@@ -70,7 +70,7 @@ describe('stats', () => {
     expect(takeNewBest('sp')).toBe(true)
   })
 
-  it('carries streaks across month and year ends, and breaks on a skipped day', () => {
+  it('carries streaks across month and year ends, and breaks on two skipped days (one is frozen)', () => {
     recordDaily('m', 1, new Date(2027, 0, 31, 23, 59))
     recordDaily('m', 1, new Date(2027, 1, 1, 0, 1))
     recordDaily('m', 1, new Date(2027, 1, 2))
@@ -78,7 +78,7 @@ describe('stats', () => {
     recordDaily('y2', 1, new Date(2027, 11, 31, 22))
     recordDaily('y2', 1, new Date(2028, 0, 1, 8))
     expect(getStats('y2').streak).toBe(2)
-    recordDaily('y2', 1, new Date(2028, 0, 3))
+    recordDaily('y2', 1, new Date(2028, 0, 4))
     expect(getStats('y2')).toMatchObject({ streak: 1, maxStreak: 2 })
   })
 
@@ -102,5 +102,32 @@ describe('stats', () => {
     } as unknown as Storage
     expect(() => recordPlay('y', 1)).not.toThrow()
     expect(getStats('y').plays).toBe(0)
+  })
+})
+
+describe('streak freeze', () => {
+  it('covers one missed day a week, not two', () => {
+    recordDaily('fz', 1, new Date(2027, 0, 1))
+    recordDaily('fz', 1, new Date(2027, 0, 2))
+    // Missed Jan 3: frozen.
+    expect(recordDaily('fz', 1, new Date(2027, 0, 4)).streak).toBe(3)
+    expect(takeFreeze('fz')).toBe(true)
+    expect(getStats('fz').frozen).toEqual(['2027-01-03'])
+    // Missed Jan 6, within a week of the last freeze: the streak starts again.
+    expect(recordDaily('fz', 1, new Date(2027, 0, 7)).streak).toBe(1)
+    expect(takeFreeze('fz')).toBe(false)
+  })
+  it('never covers two missed days in a row', () => {
+    recordDaily('fy', 1, new Date(2027, 0, 1))
+    expect(recordDaily('fy', 1, new Date(2027, 0, 4)).streak).toBe(1)
+  })
+  it('a week later, a freeze is there again', () => {
+    for (const d of [1, 2, 4, 5, 6, 7, 8, 9, 10]) recordDaily('fw', 1, new Date(2027, 0, d))
+    expect(recordDaily('fw', 1, new Date(2027, 0, 12)).streak).toBe(10)
+  })
+  it('the same rule when merging devices', () => {
+    const played = new Set(['2027-01-01', '2027-01-02', '2027-01-04', '2027-01-06'])
+    expect(streakEnding(played, '2027-01-06')).toEqual({ streak: 2, frozen: ['2027-01-05'] })
+    expect(streakEnding(new Set(['2027-01-01', '2027-01-02', '2027-01-04']), '2027-01-04')).toEqual({ streak: 3, frozen: ['2027-01-03'] })
   })
 })

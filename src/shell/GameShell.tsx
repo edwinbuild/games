@@ -13,7 +13,8 @@ import { useSiteConfig } from './config'
 import { SiteNotice } from './SiteNotice'
 import { gameLine, useGameStats } from './gameStats'
 import { lazy, Suspense } from 'react'
-const Comments = lazy(() => import('./Comments'))
+// Optional extras: if the piece can't load (offline), the page simply goes without it.
+const Comments = lazy(() => import('./Comments').catch(() => ({ default: () => null })))
 import { SoundToggle } from './SoundToggle'
 import { track } from './track'
 
@@ -64,6 +65,9 @@ export function GameShell({ game, children }: { game: GameMeta; children: ReactN
       others.length === 1
         ? `${displayName(best, me)} got ${best.t}. Same puzzle${when}, your turn.`
         : `${others.length} friends have played. Best so far: ${displayName(best, me)}, ${best.t}. Same puzzle${when}, your turn.`
+  } else if (challenge && game.daily && challenge.s !== dateKey()) {
+    const day = parseDateKey(challenge.s)
+    if (day) banner = `From the archive: the puzzle from ${day.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}. Just for fun: no board, no streak.`
   }
 
   return (

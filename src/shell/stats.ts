@@ -1,5 +1,5 @@
 // Per-game stats kept in the browser: plays, best score, daily streaks.
-import { dateKey, previousDateKey } from './daily'
+import { dateKey, parseDateKey, previousDateKey } from './daily'
 import { signedIn } from './auth'
 import { load, save } from './storage'
 
@@ -18,7 +18,37 @@ export type Stats = {
   dailyText?: Record<string, string>
   /** Whether a lower score is better (kept so two devices' results can be merged). */
   low?: boolean
+  /** Missed days a streak freeze covered (❄️): at most one a week. */
+  frozen?: string[]
 }
+
+/** Days from date key `a` to date key `b` (b later is positive). */
+const daysBetween = (a: string, b: string) => Math.round((Date.UTC(...ymd(b)) - Date.UTC(...ymd(a))) / 86_400_000)
+const ymd = (k: string): [number, number, number] => { const [y, m, d] = k.split('-').map(Number); return [y, m - 1, d] }
+
+/** A streak freeze can cover `day` if no other freeze is within a week of it. */
+export const canFreeze = (frozen: string[] | undefined, day: string) => !(frozen ?? []).some((f) => f !== day && Math.abs(daysBetween(f, day)) < 7)
+
+/**
+ * The streak ending on `last`: days played in a row, where a single missed day is bridged by a
+ * freeze, one a week at most. Returns the length (played days only) and the days frozen.
+ */
+export function streakEnding(played: Set<string>, last: string): { streak: number; frozen: string[] } {
+  let n = 0
+  const frozen: string[] = []
+  for (let d: string | null = last; d; ) {
+    if (played.has(d)) { n++; d = prev(d); continue }
+    const before = prev(d)
+    if (n > 0 && before && played.has(before) && canFreeze(frozen, d)) { frozen.push(d); d = before; continue }
+    break
+  }
+  return { streak: n, frozen }
+}
+const prev = (k: string) => { const d = parseDateKey(k); return d ? previousDateKey(d) : null }
+
+// Games whose latest result was saved by a streak freeze (read once by the ticket).
+const freezes = new Set<string>()
+export const takeFreeze = (game: string) => freezes.delete(game)
 
 // Games whose latest recorded result beat the player's earlier best (read once by the ticket).
 const newBests = new Set<string>()
@@ -77,7 +107,14 @@ export function recordDaily(game: string, score: number | null, now = new Date()
   const current = s.daily[today] ?? null
   if (score != null && before != null && beats(score, before) && (current == null || beats(score, current))) newBests.add(game)
   if (s.lastDaily !== today) {
-    s.streak = s.lastDaily === previousDateKey(now) ? s.streak + 1 : 1
+    const yesterday = previousDateKey(now)
+    const dayBefore = previousDateKey(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1))
+    if (s.lastDaily === yesterday) s.streak += 1
+    else if (s.lastDaily === dayBefore && s.streak > 0 && canFreeze(s.frozen, yesterday)) {
+      s.streak += 1
+      s.frozen = [...(s.frozen ?? []), yesterday].slice(-8)
+      freezes.add(game)
+    } else s.streak = 1
     s.maxStreak = Math.max(s.maxStreak, s.streak)
     s.lastDaily = today
   }

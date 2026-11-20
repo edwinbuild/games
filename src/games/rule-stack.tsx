@@ -6,6 +6,7 @@ import { dailyDayFor, dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { count } from '../shell/plural'
 import { ResultCard } from '../shell/ResultCard'
+import { HintButton, hintUsed } from '../shell/Hint'
 import { useRunState } from '../shell/session'
 import { load } from '../shell/storage'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
@@ -14,6 +15,8 @@ import { Burst, Button, Stage } from '../ui/components'
 const game = getGame('rule-stack')
 /** Colours with a shape each, so the grid reads without telling colours apart. */
 const GLYPH = ['●', '▲', '■', '◆']
+/** Rule text with each colour's shape after its name, so the rules read without telling colours apart. */
+const withShapes = (text: string) => text.replace(new RegExp(`\\b(${COLOURS.join('|')})\\b`, 'g'), (m) => `${m} ${GLYPH[COLOURS.indexOf(m as (typeof COLOURS)[number])]}`)
 /** A finished try: levels cleared (out of 12) and seconds taken. */
 type Try = { levels: number; secs: number }
 type Run = { level: number; grid: Grid; secs: number }
@@ -111,6 +114,19 @@ export default function RuleStack() {
     return () => window.removeEventListener('keydown', onKey)
   })
 
+  /** A hint: paint one square the way a grid that keeps every rule has it (empty squares first). */
+  function hint() {
+    const differs = run.grid.map((c, i) => (c !== hidden[i] ? i : -1)).filter((i) => i >= 0)
+    const i = differs.find((j) => run.grid[j] == null) ?? differs[0]
+    if (i == null || finished) return false
+    const g = [...run.grid]
+    g[i] = hidden[i]
+    setCursor(i)
+    setPaint(hidden[i] as Colour)
+    setRun({ ...run, grid: g })
+    feel.light()
+  }
+
   function seeResult() {
     setTries([...tries, finished!])
     setDone(true)
@@ -135,6 +151,7 @@ export default function RuleStack() {
         finishData={{ levels: best.levels, secs: best.secs, tries: tries.length }}
         trackFinish={fresh}
         challenge={{ seed, score: rank(best), text: label(best), lowerIsBetter: false }}
+        hinted={!oneOff && hintUsed(game.slug)}
         onReplay={again}
         replayLabel="Try again (twelve new rules)"
       />
@@ -176,7 +193,7 @@ export default function RuleStack() {
           return (
             <li key={rule.id} className={`rs-rule${good ? ' is-good' : ''}${i === run.level - 1 ? ' is-new' : ''}`}>
               <span className="rs-rule-mark" aria-label={good ? 'holds' : 'broken'}>{good ? '✓' : '✗'}</span>
-              <span>{rule.text}</span>
+              <span>{withShapes(rule.text)}</span>
             </li>
           )
         })}
@@ -186,7 +203,10 @@ export default function RuleStack() {
           <Button size="lg" block color={game.color} onClick={seeResult} data-primary="click" hint="Space">See my result ({label(finished)})</Button>
         ) : (
           <>
-            <Button variant="ghost" onClick={() => finish(run.level - 1)} disabled={run.level === 1}>Stop here ({run.level - 1} of 12 cleared)</Button>
+            <div className="row">
+              <Button variant="ghost" onClick={() => finish(run.level - 1)} disabled={run.level === 1}>Stop here ({run.level - 1} of 12 cleared)</Button>
+              <HintButton game={game.slug} oneOff={oneOff} onHint={hint} />
+            </div>
             <p className="small muted center" style={{ margin: 0 }}>Pick a colour and tap squares to paint them (tap again to clear). When every rule holds, a new one arrives, and it may break your grid. Clear all twelve as fast as you can.</p>
           </>
         )}

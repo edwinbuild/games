@@ -28,6 +28,10 @@ const DAILY = new Set([...registry.matchAll(/slug: '([a-z-]+)'[\s\S]*?(?=slug: '
  * some scripts pause a fake clock).
  */
 const entered = (p) => p.waitForFunction(() => document.getAnimations().filter((a) => a.animationName === 'game-in').every((a) => a.playState === 'finished'), null, { timeout: 4000 }).catch(() => {})
+// Auto play (today's run, arcade replays) is off in tests unless a script turns it on.
+const NO_AUTOPLAY = () => { try { if (!localStorage.getItem('qg:autoplay')) localStorage.setItem('qg:autoplay', JSON.stringify({ run: false, replay: false })) } catch {} }
+async function quiet(ctx) { await ctx.addInitScript(NO_AUTOPLAY); return ctx }
+
 function settle(p) {
   const goto = p.goto.bind(p), reload = p.reload.bind(p)
   p.goto = async (...a) => { const r = await goto(...a); await entered(p); return r }
@@ -37,7 +41,7 @@ function settle(p) {
 /** The browser as scripts see it: pages in contexts they create settle too. */
 const withSettle = (browser) => new Proxy(browser, {
   get(target, prop) {
-    if (prop === 'newContext') return async (...a) => { const ctx = await target.newContext(...a); ctx.on('page', settle); return ctx }
+    if (prop === 'newContext') return async (...a) => { const ctx = await quiet(await target.newContext(...a)); ctx.on('page', settle); return ctx }
     const v = target[prop]
     return typeof v === 'function' ? v.bind(target) : v
   },
@@ -86,7 +90,7 @@ async function waitForServer() {
     // Every page at each width; the widths run side by side.
     await Promise.all(WIDTHS.map(async (width) => {
       // 1440 runs in dark mode, so the accessibility check (412 and 1440) sees both themes.
-      const ctx = await browser.newContext({ viewport: { width, height: 900 }, isMobile: width < 900, hasTouch: width < 900, colorScheme: width === 1440 ? 'dark' : 'light' })
+      const ctx = await quiet(await browser.newContext({ viewport: { width, height: 900 }, isMobile: width < 900, hasTouch: width < 900, colorScheme: width === 1440 ? 'dark' : 'light' }))
       const page = await ctx.newPage()
       for (const p of pages) {
         if (only.length && !only.some((o) => p.includes(o))) continue
@@ -113,7 +117,7 @@ async function waitForServer() {
     for (const f of fs.readdirSync(path.join(__dirname, 'pages')).filter((f) => f.endsWith('.cjs'))) {
       const name = f.replace(/\.cjs$/, '')
       if (only.length && !only.includes(name)) continue
-      const ctx = await browser.newContext({ viewport: { width: 412, height: 915 }, isMobile: true, hasTouch: true })
+      const ctx = await quiet(await browser.newContext({ viewport: { width: 412, height: 915 }, isMobile: true, hasTouch: true }))
       const page = await ctx.newPage()
       const errors = []
       // Errors a script throws on purpose (the error-report test) say "e2e test error".
@@ -130,7 +134,7 @@ async function waitForServer() {
       return only.length && !only.includes(slug) ? [] : ['light', 'dark'].map((scheme) => ({ f, slug, scheme }))
     })
     async function runJob({ f, slug, scheme }) {
-      const ctx = await browser.newContext({ viewport: { width: 412, height: 915 }, isMobile: true, hasTouch: true, colorScheme: scheme })
+      const ctx = await quiet(await browser.newContext({ viewport: { width: 412, height: 915 }, isMobile: true, hasTouch: true, colorScheme: scheme }))
       const page = await ctx.newPage()
       const errors = []
       page.on('pageerror', (e) => errors.push(e.message))

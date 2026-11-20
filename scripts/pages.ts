@@ -164,6 +164,8 @@ const aboutPage = () =>
       <p>${esc(SITE.name)} is a small collection of original browser games. Each one takes a minute or two, works on a phone, and ends with a result you can share.</p>
       <h2>Daily games</h2>
       <p>Daily games give everyone the same puzzle on the same date. A new one starts at midnight in your own time zone.</p>
+      <h2>Streaks, hints and the archive</h2>
+      <p>Play a daily game on days in a row to build a streak. Miss a single day and a streak freeze ❄️ keeps it going, once a week. The logic games have hints: one shows a right next step, and a result with a hint stays off that day's board. The <a href="/archive/">archive</a> has every daily puzzle since launch, just for fun.</p>
       <h2>What we keep</h2>
       <p>Every game works without signing in: your scores, best results and streaks are saved in this browser on this device. Signing in (with an email link; you need to be 13 or older) keeps them on every device and gives you a username, an icon and friends. There are no ads and no cookies.</p>
       <h2>Today's boards</h2>
@@ -186,13 +188,15 @@ const privacyPage = () =>
     body: `      <h1 class="game-title">Privacy</h1>
       <p>${esc(SITE.name)} has no ads, no cookies and no trackers. Accounts are optional: every game works as a guest. Here is everything it keeps.</p>
       <h2>On this device</h2>
-      <p>Your scores, best results, streaks, today's tries, settings (sound, theme, filters, computer level) and the name you typed for challenges are saved in this browser's storage. A game in progress is kept until you close the tab, so a refresh doesn't lose it. Two random codes are made by your browser: one marks your challenge results, one your board results and crowd answers. None of this leaves your device except as described below.</p>
+      <p>Your scores, best results, streaks (and the days a streak freeze covered), today's tries, hints used today, settings (sound, theme, filters, computer level, auto play) and the name you typed for challenges are saved in this browser's storage. A game in progress is kept until you close the tab, so a refresh doesn't lose it. Two random codes are made by your browser: one marks your challenge results, one your board results and crowd answers. None of this leaves your device except as described below.</p>
       <h2>In our database</h2>
       <ul>
         <li><strong>Daily boards:</strong> your best result for each daily game and day, the name you chose (if any), and a scrambled form of your board code. Others see the name and the result on that day's board.</li>
         <li><strong>Crowd games:</strong> how many people gave each answer, never who gave it. To count one answer per device, a scrambled form of your board code is kept with the question for two days.</li>
         <li><strong>Counts:</strong> how many games are started, finished and shared each hour, per game.</li>
         <li><strong>Errors:</strong> when a page breaks, the page's name and the first line of the error message, counted per hour.</li>
+        <li><strong>Votes:</strong> your 👍 or 👎 for each game, with your account or (as a guest) a scrambled form of your board code, so each player votes once. Others only ever see the share of 👍, once a game has 20 votes.</li>
+        <li><strong>Who's playing now:</strong> each open page says "still here" once a minute with a random code made for that tab and the game it's on. Nothing else is sent, and each one is forgotten after three minutes. Only the totals are shown.</li>
       </ul>
       <h2>If you sign in</h2>
       <ul>
@@ -200,9 +204,10 @@ const privacyPage = () =>
         <li><strong>Your profile:</strong> your username, icon and colour. Other players see them on boards and in rooms; friends also see your daily results, streak and how many games you played today.</li>
         <li><strong>Your progress:</strong> each game's scores, streaks and today's tries, so they're the same on every device. Only you see them.</li>
         <li><strong>Friends:</strong> who you're friends with, requests, blocks, the reactions you send (only 👏 🔥 😮 😂, no messages) and game invites (shown for 30 minutes). A player you block can't find you, add you or see you on boards.</li>
-        <li><strong>Reports:</strong> if you report a username, who reported it and when; Edwin reviews reports.</li>
+        <li><strong>Comments:</strong> what you write under a game, when, its likes, and reports of it. Others see your username and icon with it. Comments may wait for review before they show; Edwin can hide or remove any of them, and you can delete your own.</li>
+        <li><strong>Reports:</strong> if you report a username or a comment, who reported it and when; Edwin reviews reports.</li>
       </ul>
-      <p>Your session is kept in this browser's storage, not a cookie. Signing out leaves your progress on this device as a guest. Deleting your account (on <a href="/me/">your profile</a>) removes your profile, progress, friends, reactions and board results; your username is then held for 30 days so nobody can pretend to be you, and then it's free.</p>
+      <p>Your session is kept in this browser's storage, not a cookie. Signing out leaves your progress on this device as a guest. Deleting your account (on <a href="/me/">your profile</a>) removes your profile, progress, friends, reactions, comments and board results (votes stay in the totals, linked to nothing); your username is then held for 30 days so nobody can pretend to be you, and then it's free.</p>
       <p>Online rooms pass your name and moves to the other players while you play; nothing from a room is stored. The site's hosts (Vercel for the pages, Supabase for the database) keep standard server logs, as every host does.</p>
       <h2>Download or delete</h2>
       <p>Download everything this browser keeps for ${esc(SITE.name)}, or delete it all: that also removes this device's guest board results from the database. Results already deleted can't be brought back. Signed in, <a href="/me/">your profile</a> also downloads your account's data and can delete the account.</p>
@@ -220,6 +225,17 @@ const adminPage = () =>
     entry: '../../src/entries/admin.tsx',
     body: `    <div id="root"></div>`,
   }).replace('<meta name="description"', '<meta name="robots" content="noindex, nofollow" />\n    <meta name="description"')
+
+// The archive: past daily puzzles, played as one-offs.
+const archivePage = () =>
+  page({
+    title: `Archive: past daily puzzles | ${SITE.name}`,
+    description: 'Play any past daily puzzle. Just for fun: no boards, no streaks.',
+    path: '/archive/',
+    image: '/og/home.png',
+    entry: '../../src/entries/archive.tsx',
+    body: `    <div id="root"></div>\n    <div id="footer"></div>`,
+  })
 
 // The profile page: personal, so search engines are kept out.
 const mePage = () =>
@@ -250,6 +266,8 @@ mkdirSync(resolve(site, 'about'), { recursive: true })
 writeFileSync(resolve(site, 'about', 'index.html'), aboutPage())
 mkdirSync(resolve(site, 'privacy'), { recursive: true })
 writeFileSync(resolve(site, 'privacy', 'index.html'), privacyPage())
+mkdirSync(resolve(site, 'archive'), { recursive: true })
+writeFileSync(resolve(site, 'archive', 'index.html'), archivePage())
 mkdirSync(resolve(site, 'me'), { recursive: true })
 writeFileSync(resolve(site, 'me', 'index.html'), mePage())
 mkdirSync(resolve(site, 'admin'), { recursive: true })
@@ -263,10 +281,10 @@ for (const g of GAMES) {
   writeFileSync(resolve(site, g.slug, 'index.html'), gamePage(g))
 }
 // Sitemap and robots.txt for search engines.
-const urls = ['/', ...CATEGORIES.map((k) => `/c/${k.id}/`), ...LISTED.map((g) => `/${g.slug}/`), '/about/', '/privacy/']
+const urls = ['/', ...CATEGORIES.map((k) => `/c/${k.id}/`), ...LISTED.map((g) => `/${g.slug}/`), '/archive/', '/about/', '/privacy/']
 writeFileSync(
   resolve(root, 'public/sitemap.xml'),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${BASE_URL}${u}</loc></url>`).join('\n')}\n</urlset>\n`,
 )
 writeFileSync(resolve(root, 'public/robots.txt'), `User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /me/\nSitemap: ${BASE_URL}/sitemap.xml\n`)
-console.log(`Generated ${GAMES.length + CATEGORIES.length + 5} pages in site/`)
+console.log(`Generated ${GAMES.length + CATEGORIES.length + 6} pages in site/`)

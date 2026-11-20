@@ -5,7 +5,7 @@ import { Burst, Button, ChallengeBoard, Countdown, PlayNext, ResultTicket, TextF
 import { challengeUrl, displayName, mergeRow, myId, myName, readChallenge, setMyName } from './challenge'
 import { BOARD_GAMES } from './board'
 import { dateKey, puzzleLabel } from './daily'
-import { countPlay, getStats, takeNewBest, todaysDailyText } from './stats'
+import { countPlay, getStats, takeFreeze, takeNewBest, todaysDailyText } from './stats'
 import { CountUp } from './CountUp'
 import { feel } from './feel'
 import { bringGameIntoView, ResultSlot } from './layout'
@@ -33,17 +33,44 @@ type Props = {
   challenge: { seed: string; score: number; text: string; lowerIsBetter: boolean }
   /** Online games: share a plain link to the game instead of a challenge (no board, no name field). */
   plainLink?: boolean
+  /** A hint was used: the ticket says so and the result stays off today's board. */
+  hinted?: boolean
 }
 
 // Today's board loads on its own, after the ticket.
 const DailyBoard = lazy(() => import('./DailyBoard'))
-const Vote = lazy(() => import('./Vote'))
+const Vote = lazy(() => import('./Vote').catch(() => ({ default: () => null })))
+const AutoNext = lazy(() => import('./AutoNext').catch(() => ({ default: () => null })))
 
 /** Pick one other game to suggest; rotates by day. */
 function nextGame(current: string) {
   const others = LISTED.filter((g) => g.slug !== current)
   const day = Math.floor(Date.now() / 86_400_000)
   return others[(day + current.length) % others.length]
+}
+
+/** Share the ticket as a picture (the drawing code loads on the first tap). */
+function PictureKey({ p }: { p: Props }) {
+  const [note, setNote] = useState('')
+  async function go() {
+    setNote('')
+    try {
+      const m = await import('./ticketImage')
+      const lines = `${p.shareText}${p.hinted ? ' (with a hint)' : ''}`.split('\n').slice(1)
+      const how = await m.sharePicture(
+        { game: p.game.title, stamp: p.game.daily ? puzzleLabel() : undefined, color: p.game.color, headline: p.headline, lines, site: new URL(SITE.url).host },
+        `${p.game.slug}.png`,
+      )
+      track('share', p.game.slug, { via: 'picture' })
+      if (how === 'saved') setNote('Picture saved.')
+    } catch { setNote('Couldn’t make the picture on this device.') }
+  }
+  return (
+    <div className="row">
+      <Button variant="secondary" onClick={() => void go()}>🖼️ Share as a picture</Button>
+      {note && <span className="small muted" role="status">{note}</span>}
+    </div>
+  )
 }
 
 /** The end of every game: the design system's ticket, wired to sharing and tracking. */
@@ -66,9 +93,11 @@ export function ResultCard(p: Props) {
   // A new personal best gets a burst on the headline. Games may record the result in their own
   // effect, which runs after this one, so look a moment later.
   const [newBest, setNewBest] = useState(false)
+  const [froze, setFroze] = useState(false)
   useEffect(() => {
     if (!(p.trackFinish ?? true)) return
     const t = setTimeout(() => {
+      if (takeFreeze(p.game.slug)) setFroze(true)
       if (takeNewBest(p.game.slug)) {
         setNewBest(true)
         feel.success()
@@ -99,12 +128,13 @@ export function ResultCard(p: Props) {
         stamp={p.game.daily ? puzzleLabel() : undefined}
         color={p.game.color}
         headline={<span className="qg-best-anchor"><CountUp text={p.headline} animate={p.trackFinish ?? true} onDone={() => feel.tick(6)} />{newBest && <Burst color={p.game.color} />}</span>}
-        detail={newBest ? (p.detail ? <>New personal best · {p.detail}</> : 'New personal best') : p.detail}
-        shareText={p.plainLink ? p.shareText : `${p.shareText}\n${hasOthers ? 'Same puzzle. Your turn:' : 'Same puzzle. Beat me:'}`}
+        detail={<>{newBest ? (p.detail ? <>New personal best · {p.detail}</> : 'New personal best') : p.detail}{p.hinted && ' · with a hint 💡'}{froze && <><br />❄️ Streak freeze: yesterday was covered (one a week)</>}</>}
+        shareText={p.plainLink ? p.shareText : `${p.shareText}${p.hinted ? ' (with a hint)' : ''}\n${hasOthers ? 'Same puzzle. Your turn:' : 'Same puzzle. Beat me:'}`}
         url={url}
         board={hasOthers ? <ChallengeBoard rows={rows.map((r) => ({ name: displayName(r, me), score: r.t, me: r.i === me }))} /> : undefined}
         onShare={(via) => track('share', p.game.slug, { via })}
       >
+        <PictureKey p={p} />
         {!p.plainLink && !account?.username && <TextField
           id="nickname"
           label="Your name on challenges and boards (optional)"
@@ -150,11 +180,12 @@ export function ResultCard(p: Props) {
           </p>
         )}
       </ResultTicket>
+      {(p.trackFinish ?? true) && <Suspense fallback={null}><AutoNext game={p.game.slug} daily={p.game.daily} onReplay={p.onReplay} /></Suspense>}
       <Suspense fallback={null}><Vote game={p.game.slug} /></Suspense>
       {/* Daily games: today's board (not for another day's puzzle from a challenge link, nor a spilled day). */}
       {p.game.daily && BOARD_GAMES.has(p.game.slug) && p.challenge.seed === dateKey() && p.challenge.text !== 'Spilled' && (
         <Suspense fallback={null}>
-          <DailyBoard game={p.game.slug} day={p.challenge.seed} score={p.challenge.score} text={p.challenge.text} submit={p.trackFinish ?? true} />
+          <DailyBoard game={p.game.slug} day={p.challenge.seed} score={p.challenge.score} text={p.challenge.text} submit={(p.trackFinish ?? true) && !p.hinted} />
         </Suspense>
       )}
     </ResultSlot>

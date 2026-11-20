@@ -13,7 +13,9 @@ import '../shell/heartbeat'
 import { SiteNotice } from '../shell/SiteNotice'
 import { getStats, todaysDaily, todaysDailyText } from '../shell/stats'
 import { load, save } from '../shell/storage'
-import { Countdown, TopBar } from '../ui/components'
+import { Button, Countdown, TopBar } from '../ui/components'
+import { runOn, startRun } from '../shell/autoplay'
+import { dateKey } from '../shell/daily'
 import { FilterChips, GameCard, ProgressRing } from '../ui/home'
 import '../shell/styles'
 import '../shell/errors'
@@ -192,6 +194,11 @@ function Home() {
                 <p className="body-strong">{today}</p>
                 <p className="body muted">{leftText}</p>
                 <Countdown label="New daily games in" />
+                {left > 0 && runOn() && (
+                  <Button onClick={() => { const first = startRun(daily.filter((g) => todaysDaily(g.slug) === undefined && !cfg.disabled.includes(g.slug)).map((g) => g.slug), dateKey()); if (first) location.href = `/${first}/` }}>
+                    ▶ Play all {left} of today’s puzzles
+                  </Button>
+                )}
                 {total >= SHOW_FROM && <p className="small muted live-count">{formatCount(total)} games finished here in the last 24 hours</p>}
                 {gs.online >= cfg.counters.online && <p className="small muted live-count"><span className="live-dot" aria-hidden="true" /> {formatCount(gs.online)} playing now</p>}
               </div>

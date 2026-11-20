@@ -6,6 +6,7 @@ import { dailyDayFor, dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { count } from '../shell/plural'
 import { ResultCard } from '../shell/ResultCard'
+import { HintButton, hintUsed } from '../shell/Hint'
 import { useRunState } from '../shell/session'
 import { load } from '../shell/storage'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
@@ -73,6 +74,20 @@ export default function WordLadder() {
     setMsg('')
     feel.tap()
   }
+  /** A hint: the next word on a shortest way to the end (taking words back first if the ladder is stuck). */
+  function hint() {
+    for (let k = steps.length; k >= 0; k--) {
+      const used = [start, ...steps.slice(0, k)]
+      const way = shortest(used[used.length - 1], end)
+      if (!way || way.slice(1).some((w) => used.includes(w))) continue
+      if (k < steps.length) setSteps(steps.slice(0, k))
+      setText(way[1])
+      setMsg(`Hint: try ${way[1].toUpperCase()}${k < steps.length ? ` (after taking back ${count(steps.length - k, 'word')})` : ''}.`)
+      input.current?.focus()
+      return
+    }
+    return false
+  }
   function seeResult() {
     setTries([...tries, steps])
     setDone(true)
@@ -101,6 +116,7 @@ export default function WordLadder() {
           finishData={{ steps: best.length, par, tries: tries.length }}
           trackFinish={fresh}
           challenge={{ seed, score: best.length, text: count(best.length, 'step'), lowerIsBetter: true }}
+          hinted={!oneOff && hintUsed(game.slug)}
           onReplay={again}
           replayLabel="Try again"
         />
@@ -139,7 +155,10 @@ export default function WordLadder() {
               </div>
               <p id="wl-msg" className="small wl-msg" role="status">{msg}</p>
             </form>
-            <Button variant="ghost" onClick={undo} disabled={!steps.length}>Take back the last word</Button>
+            <div className="row">
+              <Button variant="ghost" onClick={undo} disabled={!steps.length}>Take back the last word</Button>
+              <HintButton game={game.slug} oneOff={oneOff} onHint={hint} />
+            </div>
           </>
         )}
         <p className="small muted center" style={{ margin: 0 }}>Each word changes one letter of the one before it; every word must be a real everyday word. Reach {end.toUpperCase()} in as few steps as you can.</p>

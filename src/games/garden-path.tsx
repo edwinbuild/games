@@ -6,6 +6,7 @@ import { dailyDayFor, dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { count } from '../shell/plural'
 import { ResultCard } from '../shell/ResultCard'
+import { HintButton, hintUsed } from '../shell/Hint'
 import { useRunState } from '../shell/session'
 import { load } from '../shell/storage'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
@@ -112,6 +113,15 @@ export default function GardenPath() {
     return () => window.removeEventListener('keydown', onKey)
   })
 
+  /** A hint: cut the path back to where it last matched the solution, then take one right step. */
+  function hint() {
+    let k = 0
+    while (k < path.length && path[k] === p.solution[k]) k++
+    if (k >= p.solution.length) return false
+    setPath(p.solution.slice(0, k + 1))
+    feel.light()
+  }
+
   function seeResult() {
     setTries([...tries, solved!])
     setDone(true)
@@ -136,6 +146,7 @@ export default function GardenPath() {
         finishData={{ secs: best, tries: tries.length }}
         trackFinish={fresh}
         challenge={{ seed, score: best, text: clock(best), lowerIsBetter: true }}
+        hinted={!oneOff && hintUsed(game.slug)}
         onReplay={again}
         replayLabel="Try again"
       />
@@ -184,6 +195,7 @@ export default function GardenPath() {
             {full && !result?.ok && <p className="small center gp-msg" role="status">Every square is covered, but {count(broken.size, 'stone')} {broken.size === 1 ? 'isn’t' : 'aren’t'} happy. Tap a square on the path to go back to it.</p>}
             <div className="row">
               <Button variant="secondary" onClick={() => { setPath([start]); feel.tap() }} disabled={path.length <= 1}>Start over</Button>
+              <HintButton game={game.slug} oneOff={oneOff} onHint={hint} />
             </div>
             <p className="small muted center" style={{ margin: 0 }}>Drag from the seedling through every square to the flower. ● the path turns there; ○ it goes straight through. Drag back to undo; tap a square on the path to cut it back.</p>
           </>

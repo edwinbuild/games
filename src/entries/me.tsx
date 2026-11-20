@@ -8,6 +8,7 @@ import { cachedProfile, deleteAccount, refreshProfile, type Profile } from '../s
 import { getSession, onAuthChange, openSignIn, signedIn } from '../shell/auth'
 import { signOut } from '../shell/auth-actions'
 import { AccountKey } from '../shell/AccountKey'
+import { autoPrefs, setAutoPrefs, type AutoPrefs } from '../shell/autoplay'
 import { SiteNotice } from '../shell/SiteNotice'
 import { rpc } from '../shell/api'
 import { mount, ready } from '../shell/mount'
@@ -121,6 +122,8 @@ function Me() {
           </section>
         )}
 
+        <AutoSettings />
+
         <section className="stack">
           <h2 className="card-title">Your data</h2>
           {me ? (
@@ -146,6 +149,18 @@ function Me() {
         <DeleteAccount username={p?.username ?? null} onCancel={() => setSheet(null)} />
       </Sheet>
     </div>
+  )
+}
+
+function AutoSettings() {
+  const [p, setP] = useState(autoPrefs)
+  const set = (k: keyof AutoPrefs, v: boolean) => { const next = { ...p, [k]: v }; setP(next); setAutoPrefs(next) }
+  return (
+    <section className="stack" aria-label="Auto play">
+      <h2 className="card-title" style={{ margin: 0 }}>Auto play</h2>
+      <label className="admin-flag"><input type="checkbox" checked={p.run} onChange={(e) => set('run', e.target.checked)} /> Today’s run: after a daily puzzle, go on to the next one</label>
+      <label className="admin-flag"><input type="checkbox" checked={p.replay} onChange={(e) => set('replay', e.target.checked)} /> Arcade games: start again a moment after a result</label>
+    </section>
   )
 }
 

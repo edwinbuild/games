@@ -6,6 +6,7 @@ import { dailyDayFor, dateKey, puzzleLabel } from '../shell/daily'
 import { feel } from '../shell/feel'
 import { count } from '../shell/plural'
 import { ResultCard } from '../shell/ResultCard'
+import { HintButton, hintUsed } from '../shell/Hint'
 import { useRunState } from '../shell/session'
 import { load } from '../shell/storage'
 import { getStats, loadToday, recordDaily, saveToday } from '../shell/stats'
@@ -93,6 +94,23 @@ export default function UntangleLights() {
     finishIfClear(run.pos, moves)
   }
 
+  /** A hint: move one light to its untangled spot, the one that clears the most crossings (counts as a move). */
+  function hint() {
+    if (solvedNow) return false
+    let bestI = -1, bestN = Infinity
+    run.pos.forEach((q, i) => {
+      if (Math.hypot(q.x - g.solved[i].x, q.y - g.solved[i].y) < 1) return
+      const n = crossings(g.edges, run.pos.map((x, k) => (k === i ? g.solved[i] : x))).length
+      if (n < bestN) { bestN = n; bestI = i }
+    })
+    if (bestI < 0) return false
+    const pos = run.pos.map((x, k) => (k === bestI ? g.solved[bestI] : x))
+    const moves = run.moves + 1
+    setRun({ pos, moves })
+    feel.light()
+    finishIfClear(pos, moves)
+  }
+
   function seeResult() {
     setTries([...tries, run.moves])
     setDone(true)
@@ -116,6 +134,7 @@ export default function UntangleLights() {
         finishData={{ moves: best, tries: tries.length }}
         trackFinish={fresh}
         challenge={{ seed, score: best, text: count(best, 'move'), lowerIsBetter: true }}
+        hinted={!oneOff && hintUsed(game.slug)}
         onReplay={again}
         replayLabel="Try again"
       />
@@ -158,7 +177,10 @@ export default function UntangleLights() {
         {solvedNow ? (
           <Button size="lg" block color={game.color} onClick={seeResult} data-primary="click" hint="Space">See my result ({count(run.moves, 'move')})</Button>
         ) : (
-          <p className="small muted center" style={{ margin: 0 }}>Drag the lights until no wires cross. Red wires are crossing. Each time you drag a light counts as one move; par is one move per light.</p>
+          <>
+            <div className="row"><HintButton game={game.slug} oneOff={oneOff} onHint={hint} /></div>
+            <p className="small muted center" style={{ margin: 0 }}>Drag the lights until no wires cross. Crossing wires are red and dashed. Each time you drag a light counts as one move; par is one move per light. A hint moves one light for you (and counts as a move).</p>
+          </>
         )}
       </div>
     </>

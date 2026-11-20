@@ -4,6 +4,7 @@ import { ThemeSwitch } from './ThemeSwitch'
 
 export const FOOTER_LINKS = [
   { label: 'All games', href: '/' },
+  { label: 'Archive', href: '/archive/' },
   { label: 'About', href: '/about/' },
   { label: 'Privacy', href: '/privacy/' },
 ]
