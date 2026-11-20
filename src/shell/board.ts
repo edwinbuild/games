@@ -11,7 +11,7 @@ export const BOARD_GAMES = new Set([
 ])
 
 export type Rank = { rank: number | null; total: number; better_than: number | null }
-export type BoardRow = { rank: number; nick: string | null; text: string; mine: boolean }
+export type BoardRow = { rank: number; nick: string | null; text: string; mine: boolean; icon?: string | null; colour?: string | null }
 
 /** This browser's secret board key (32 hex characters), made on first use. */
 export function boardKey(): string {

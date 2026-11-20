@@ -6,6 +6,7 @@ import { SITE } from '../site'
 import { formatCount, SHOW_FROM, useRecentPlays } from '../shell/live'
 import { DEMOS } from '../shell/demos'
 import { SiteFooter } from '../shell/SiteFooter'
+import { AccountKey } from '../shell/AccountKey'
 import { getStats, todaysDaily, todaysDailyText } from '../shell/stats'
 import { load, save } from '../shell/storage'
 import { Countdown, FilterChips, GameCard, ProgressRing, TopBar } from '../ui'
@@ -136,7 +137,7 @@ function Home() {
 
   return (
     <div className="page page--home home">
-      <TopBar siteName={SITE.name} />
+      <TopBar siteName={SITE.name} right={<AccountKey />} />
       <div className="home-layout">
         {/* Wide screens: a sticky rail with today's progress, the filters as lists, and your streaks. */}
         <aside className="home-rail" aria-label="Browse games">

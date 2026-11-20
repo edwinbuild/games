@@ -10,6 +10,8 @@ import { CountUp } from './CountUp'
 import { feel } from './feel'
 import { bringGameIntoView, ResultSlot } from './layout'
 import { track } from './track'
+import { openSignIn, signedIn } from './auth'
+import { load } from './storage'
 
 type Props = {
   game: GameMeta
@@ -75,7 +77,10 @@ export function ResultCard(p: Props) {
   }, [p.trackFinish, p.game.slug])
 
   const origin = typeof location !== 'undefined' ? location.origin : SITE.url
-  const [name, setName] = useState(myName)
+  // Signed in with a username, that's the name on challenges and boards.
+  const account = signedIn() ? load<{ username: string | null } | null>('profile', null) : null
+  const [typed, setName] = useState(myName)
+  const name = account?.username ?? typed
   const me = myId()
   const incoming = readChallenge(p.game.slug)
   const others = incoming && incoming.s === p.challenge.seed ? incoming.r : []
@@ -99,10 +104,10 @@ export function ResultCard(p: Props) {
         board={hasOthers ? <ChallengeBoard rows={rows.map((r) => ({ name: displayName(r, me), score: r.t, me: r.i === me }))} /> : undefined}
         onShare={(via) => track('share', p.game.slug, { via })}
       >
-        {!p.plainLink && <TextField
+        {!p.plainLink && !account?.username && <TextField
           id="nickname"
           label="Your name on challenges and boards (optional)"
-          value={name}
+          value={typed}
           placeholder="e.g. Sam (blank shows “A friend”)"
           maxLength={16}
           onChange={(v) => { setName(v); setMyName(v) }}
@@ -132,6 +137,12 @@ export function ResultCard(p: Props) {
           sample={nextScore}
           onClick={() => track('play_next', p.game.slug, { to: next.slug })}
         />
+        {!account && (
+          <div className="acct-prompt">
+            <span className="small">Sign in to keep your streak on every device and play with friends.</span>
+            <Button variant="secondary" onClick={() => openSignIn()}>Sign in</Button>
+          </div>
+        )}
         {SITE.supportUrl && (
           <p className="support">
             Enjoying these? <a href={SITE.supportUrl} target="_blank" rel="noopener">Buy me a coffee</a>

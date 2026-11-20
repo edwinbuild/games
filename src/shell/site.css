@@ -873,3 +873,28 @@ button { font: inherit; }
 @keyframes db-claim { from { transform: scale(.4); opacity: .3; } }
 @media (min-width: 1000px) { .db-stage { max-width: min(520px, calc(100dvh - 320px)); } }
 @media (prefers-reduced-motion: reduce) { .db-line, .db-box rect { animation: none; } .db-strip .qg-player { transition: none; } }
+
+/* ---------- Account: the top bar key, sheets, pickers ---------- */
+.qg-signin-key { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font: 800 13px/1 var(--font-body); letter-spacing: .04em; text-transform: uppercase; padding: 10px 14px; min-height: 40px; border-radius: var(--radius-pill); border: var(--border-edge) solid var(--edge); background: var(--surface); color: var(--ink); cursor: pointer; }
+.qg-signin-icon { display: none; }
+/* Narrow phones: just the person icon, so the top bar keeps to one row. */
+@media (max-width: 479px) { .qg-signin-key { padding: 0; width: 40px; justify-content: center; } .qg-signin-text { display: none; } .qg-signin-icon { display: block; } }
+.qg-signin-key:hover { background: var(--surface-sunken); }
+.qg-account { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; }
+.qg-account:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.qg-account-dot { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--edge); }
+.qg-account-badge { position: absolute; top: -2px; right: -4px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: var(--danger); color: #fff; font: 800 11px/18px var(--font-body); text-align: center; border: 2px solid var(--canvas); box-sizing: content-box; }
+.acct-hello { display: flex; align-items: center; gap: var(--space-3); }
+.acct-error { color: var(--danger); }
+.acct-check.is-ok { color: var(--success); font-weight: 700; }
+.acct-check.is-bad { color: var(--danger); }
+.acct-icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); gap: 6px; }
+.acct-icon { display: grid; place-items: center; padding: 3px; border-radius: 50%; border: 0; background: none; cursor: pointer; }
+.acct-icon[aria-checked="true"] { outline: 3px solid var(--ink); outline-offset: 1px; }
+.acct-icon.is-locked .qg-avatar { filter: grayscale(1); opacity: .35; }
+.acct-colours { display: grid; grid-template-columns: repeat(auto-fill, minmax(30px, 1fr)); gap: 6px; }
+.acct-colour { aspect-ratio: 1; border-radius: 50%; border: 1.5px solid var(--edge); cursor: pointer; padding: 0; }
+.acct-colour[aria-checked="true"] { outline: 3px solid var(--ink); outline-offset: 2px; }
+.acct-prompt { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-3); border-radius: var(--radius-md); background: var(--surface-sunken); }
+/* The narrowest phones: the top bar keeps brand, account and sound; the Daily tag shows on the page itself. */
+@media (max-width: 389px) { .qg-topbar-right > .qg-pill { display: none; } }

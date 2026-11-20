@@ -8,6 +8,7 @@ import { GameInfo } from './GameInfo'
 import { formatCount, SHOW_FROM, useRecentPlays } from './live'
 import { AsideContext } from './layout'
 import { SiteFooter } from './SiteFooter'
+import { AccountKey } from './AccountKey'
 import { SoundToggle } from './SoundToggle'
 import { track } from './track'
 
@@ -58,7 +59,7 @@ export function GameShell({ game, children }: { game: GameMeta; children: ReactN
   return (
     <AsideContext.Provider value={aside}>
       <div className="page page--game">
-        <TopBar siteName={SITE.name} daily={game.daily} right={<SoundToggle />} />
+        <TopBar siteName={SITE.name} daily={game.daily} right={<><AccountKey /><SoundToggle /></>} />
         <div className="game-band" style={{ viewTransitionName: `band-${game.slug}` }} aria-hidden="true" />
         <div className="game-layout">
           <main className="game-main">

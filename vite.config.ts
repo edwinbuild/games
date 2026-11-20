@@ -21,10 +21,27 @@ for (const entry of existsSync(siteDir) ? readdirSync(siteDir) : []) {
   }
 }
 
+const CORE = [
+  /node_modules\/(react|react-dom|scheduler)\//,
+  /\/src\/ui\/(components|index)\.tsx?$/,
+  /\/src\/games\/registry\.ts$/,
+  /\/src\/site\.ts$/,
+  /\/src\/shell\/(api|auth|storage|stats|daily|SiteFooter|AccountKey|errors|sw-register|mount|live)\.tsx?$/,
+]
+
 export default defineConfig({
   root: siteDir,
   publicDir: resolve(here, 'public'),
   plugins: [react()],
-  build: { outDir: resolve(here, 'dist'), emptyOutDir: true, rollupOptions: { input } },
+  build: {
+    outDir: resolve(here, 'dist'),
+    emptyOutDir: true,
+    rollupOptions: {
+      input,
+      // React and the code every page runs stay in one file: split into several small files they
+      // compress worse, and every page loads them anyway.
+      output: { manualChunks: (id) => (CORE.some((r) => r.test(id)) ? 'core' : undefined) },
+    },
+  },
   test: { root: here, include: ['src/**/*.test.ts'] },
 })

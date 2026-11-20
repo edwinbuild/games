@@ -360,12 +360,15 @@ export type TextFieldProps = {
   onChange: (v: string) => void
   placeholder?: string
   maxLength?: number
+  /** Input type (text by default) and the browser's autofill hint (nickname by default). */
+  type?: string
+  autoComplete?: string
 }
-export function TextField({ id, label, value, onChange, placeholder, maxLength }: TextFieldProps) {
+export function TextField({ id, label, value, onChange, placeholder, maxLength, type = 'text', autoComplete = 'nickname' }: TextFieldProps) {
   return (
     <div className="qg-field">
       <label htmlFor={id}>{label}</label>
-      <input id={id} value={value} placeholder={placeholder} maxLength={maxLength} autoComplete="nickname" onChange={(e) => onChange(e.target.value)} />
+      <input id={id} type={type} value={value} placeholder={placeholder} maxLength={maxLength} autoComplete={autoComplete} onChange={(e) => onChange(e.target.value)} />
     </div>
   )
 }

@@ -3,6 +3,9 @@
 import { useEffect, useState } from 'react'
 import { boardsOn, dailyBoard, myRank, submitScore, type BoardRow, type Rank } from './board'
 import { myName } from './challenge'
+import { signedIn } from './auth'
+import { load } from './storage'
+import { Avatar } from '../ui/icons'
 
 const ordinal = (n: number) => `#${n.toLocaleString('en')}`
 
@@ -45,14 +48,16 @@ export default function DailyBoard({ game, day, score, text, submit }: { game: s
             {rows.map((r, i) => (
               <li key={i} className={r.mine ? 'is-me' : undefined}>
                 <span className="qg-board-rank">{r.rank}</span>
-                <span className="qg-board-name">{r.mine ? 'You' : r.nick || 'A player'}</span>
+                <span className="qg-board-name">{r.icon ? <Avatar icon={r.icon} colour={r.colour} size={22} /> : null}{r.mine ? 'You' : r.nick || 'A player'}</span>
                 <span className="qg-board-score">{r.text}</span>
               </li>
             ))}
           </ol>
         ) : <p className="small muted" style={{ margin: 0 }}>Loading the board…</p>
       )}
-      <p className="small muted" style={{ margin: 0 }}>Your name on the board is the one you set for challenges; without one you’re “A player”.</p>
+      <p className="small muted" style={{ margin: 0 }}>
+        {signedIn() ? <>You’re on the board as {load<{ username: string | null } | null>('profile', null)?.username ?? 'your username'}.</> : <>Your name on the board is the one you set for challenges; without one you’re “A player”. Sign in for a username and an icon.</>}
+      </p>
     </section>
   )
 }

@@ -1,5 +1,6 @@
 // Per-game stats kept in the browser: plays, best score, daily streaks.
 import { dateKey, previousDateKey } from './daily'
+import { signedIn } from './auth'
 import { load, save } from './storage'
 
 export type Stats = {
@@ -15,6 +16,8 @@ export type Stats = {
   bestText?: string
   /** Short display text of each daily result, by date. */
   dailyText?: Record<string, string>
+  /** Whether a lower score is better (kept so two devices' results can be merged). */
+  low?: boolean
 }
 
 // Games whose latest recorded result beat the player's earlier best (read once by the ticket).
@@ -39,12 +42,14 @@ export function recordPlay(
 ): Stats {
   const s = getStats(game)
   s.plays += 1
+  s.low = better(1, 2)
   if (s.best != null && better(score, s.best)) newBests.add(game)
   if (s.best == null || better(score, s.best)) {
     s.best = score
     if (text) s.bestText = text
   }
   save(`stats:${game}`, s)
+  changed(`stats:${game}`)
   return s
 }
 
@@ -53,6 +58,7 @@ export function countPlay(game: string): Stats {
   const s = getStats(game)
   s.plays += 1
   save(`stats:${game}`, s)
+  changed(`stats:${game}`)
   return s
 }
 
@@ -63,6 +69,7 @@ export function countPlay(game: string): Stats {
  */
 export function recordDaily(game: string, score: number | null, now = new Date(), text?: string, lowerIsBetter = false): Stats {
   const s = getStats(game)
+  s.low = lowerIsBetter
   const today = dateKey(now)
   const beats = (a: number, b: number) => (lowerIsBetter ? a < b : a > b)
   const earlier = Object.entries(s.daily).filter(([d, v]) => d !== today && v != null).map(([, v]) => v as number)
@@ -80,6 +87,7 @@ export function recordDaily(game: string, score: number | null, now = new Date()
     if (text) s.dailyText = { ...s.dailyText, [today]: text }
   }
   save(`stats:${game}`, s)
+  changed(`stats:${game}`)
   return s
 }
 
@@ -101,4 +109,10 @@ export function loadToday<T>(game: string, fallback: T, now = new Date()): T {
 
 export function saveToday(game: string, value: unknown, now = new Date()): void {
   save(`today:${game}`, { date: dateKey(now), value })
+  changed(`today:${game}`)
+}
+
+/** Signed in, saved progress also goes to the account (the sync code loads only then). */
+function changed(key: string) {
+  if (signedIn()) void import('./sync').then((m) => m.pushSoon(key)).catch(() => {})
 }

@@ -1,5 +1,6 @@
 // Per-page JavaScript budget (gzipped): what a page loads up front plus its game chunk.
-// Shared + largest game page < 90 KB; any game chunk < 25 KB (online games < 45 KB).
+// Shared + largest game page < 92 KB; any game chunk < 25 KB (online games < 45 KB).
+// (90 KB until accounts: the sign-in key and session code now run on every page, about 1.5 KB.)
 const fs = require('node:fs'), path = require('node:path'), zlib = require('node:zlib')
 const dist = path.resolve(__dirname, '../dist')
 const gz = (f) => zlib.gzipSync(fs.readFileSync(path.join(dist, f))).length
@@ -14,7 +15,7 @@ for (const p of pages) {
   const gameKb = game.reduce((s, f) => s + gz('assets/' + f), 0) / 1024
   const limit = ONLINE.test(p) ? 45 : 25
   const total = initialKb + gameKb
-  const bad = total > 90 + (ONLINE.test(p) ? 45 : 0) || gameKb > limit
+  const bad = total > 92 + (ONLINE.test(p) ? 45 : 0) || gameKb > limit
   if (bad) fail = true
   console.log(`${bad ? 'OVER' : 'ok  '} /${p}  initial ${initialKb.toFixed(1)} KB + game ${gameKb.toFixed(1)} KB = ${total.toFixed(1)} KB`)
 }
