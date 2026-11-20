@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { getGame } from '../registry'
 import { answersFor, keyMarks, LEN, mark, MODES, scoreOf, scoreText, solvedAt, type Mark, type Mode } from './rules'
 import { loadWords, type WordList } from './words'
-import { readChallenge } from '../../shell/challenge'
+import { newSeed, readChallenge } from '../../shell/challenge'
 import { dailyDayFor, dateKey, puzzleLabel } from '../../shell/daily'
 import { feel } from '../../shell/feel'
 import { count } from '../../shell/plural'
@@ -23,12 +23,16 @@ export default function HiddenWordGame({ mode }: { mode: Mode }) {
   const game = getGame(mode)
   const { boards: n, guesses: max } = MODES[mode]
   const { day, oneOff } = dailyDayFor(readChallenge(mode)?.s)
-  const seed = dateKey(day)
+  // After the daily, practice rounds with new words: just for fun (no board, no streak, no stats).
+  const [practice, setPractice] = useRunState<string | null>(`${mode}:practice`, null)
+  const daily = practice == null
+  const seed = practice ?? dateKey(day)
+  const counts = daily && !oneOff
   const [list, setList] = useState<WordList | null>(null)
   const [failed, setFailed] = useState(false)
   useEffect(() => { loadWords().then(setList, () => setFailed(true)) }, [])
   // One game a day: the guesses so far are kept for the day (a refresh or a later visit carries on).
-  const [guesses, setGuessesRun] = useRunState<string[]>(`${mode}:${seed}:${oneOff ? 'once' : 'day'}`, () => (oneOff ? [] : loadToday(mode, [] as string[])))
+  const [guesses, setGuessesRun] = useRunState<string[]>(`${mode}:${seed}:${!daily ? 'practice' : oneOff ? 'once' : 'day'}`, () => (counts ? loadToday(mode, [] as string[]) : []))
   const [typed, setTyped] = useState('')
   const [msg, setMsg] = useState('')
   const [shake, setShake] = useState(0)
@@ -47,7 +51,7 @@ export default function HiddenWordGame({ mode }: { mode: Mode }) {
 
   function setGuesses(g: string[]) {
     setGuessesRun(g)
-    if (!oneOff) saveToday(mode, g)
+    if (counts) saveToday(mode, g)
   }
 
   function submit() {
@@ -66,7 +70,7 @@ export default function HiddenWordGame({ mode }: { mode: Mode }) {
     if (newly) { feel.chime(Math.min(8, 2 + g.length)); feel.success() } else feel.light()
     if (done) {
       const score = scoreOf(mode, g, answers)
-      if (!oneOff) recordDaily(mode, score, new Date(), scoreText(mode, score), true)
+      if (counts) recordDaily(mode, score, new Date(), scoreText(mode, score), true)
       setFresh(true)
     }
   }
@@ -122,6 +126,12 @@ export default function HiddenWordGame({ mode }: { mode: Mode }) {
     </div>
   )
 
+  function startPractice(on: boolean) {
+    setPractice(on ? newSeed() : null)
+    setTyped(''); setMsg(''); setSeen(false); setFresh(false); setJustAdded(-1)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   if (over && (seen || !fresh)) {
     const score = scoreOf(mode, guesses, answers)
     const text = scoreText(mode, score)
@@ -136,13 +146,18 @@ export default function HiddenWordGame({ mode }: { mode: Mode }) {
       <>
         <Stage>{boardsView}</Stage>
         <ResultCard
+          key={seed /* a practice round and today's game each get their own card (its count-up keeps state) */}
           game={game}
-          headline={headline}
-          detail={<>{allSolved ? `${count(guesses.length, 'guess', 'guesses')} of ${max}` : `Words: ${answers.map((w) => w.toUpperCase()).join(', ')}`}{!oneOff && stats.streak > 1 ? ` · ${stats.streak} day streak` : ''}</>}
-          shareText={`${game.emoji} ${game.title} ${puzzleLabel(day)} · ${text}\n${grid}`}
-          finishData={{ score, solved: solvedCount, guesses: guesses.length }}
+          headline={daily ? headline : `Practice: ${headline.charAt(0).toLowerCase()}${headline.slice(1)}`}
+          detail={<>{allSolved ? `${count(guesses.length, 'guess', 'guesses')} of ${max}` : `Words: ${answers.map((w) => w.toUpperCase()).join(', ')}`}{counts && stats.streak > 1 ? ` · ${stats.streak} day streak` : ''}</>}
+          shareText={`${game.emoji} ${game.title} ${daily ? puzzleLabel(day) : 'practice'} · ${text}\n${grid}`}
+          finishData={{ score, solved: solvedCount, guesses: guesses.length, practice: daily ? 0 : 1 }}
           trackFinish={fresh}
           challenge={{ seed, score, text, lowerIsBetter: true }}
+          plainLink={!daily}
+          onReplay={() => startPractice(true)}
+          replayLabel={daily ? 'Practice round (new words)' : 'Another practice round'}
+          extra={!daily && <Button variant="secondary" block onClick={() => startPractice(false)}>Back to today’s result</Button>}
         />
       </>
     )
@@ -151,7 +166,7 @@ export default function HiddenWordGame({ mode }: { mode: Mode }) {
   return (
     <>
       <div className="between" style={{ marginBottom: 'var(--space-3)' }}>
-        <span className="small muted">{n === 1 ? 'One hidden word' : `${n} hidden words · ${solvedCount} found`}</span>
+        <span className="small muted">{!daily ? 'Practice round · not on the board' : n === 1 ? 'One hidden word' : `${n} hidden words · ${solvedCount} found`}</span>
         <span className="small muted">Guess {Math.min(guesses.length + 1, max)} of {max}</span>
       </div>
       <Stage flush className={`hw-stage hw-stage--${n}`} style={{ position: 'relative' }}>
