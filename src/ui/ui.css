@@ -435,3 +435,7 @@
 .qg-reaction[aria-pressed="true"] { border-color: var(--ink); background: var(--surface-sunken); }
 .qg-reaction.is-static { cursor: default; border-color: transparent; }
 .qg-friends-today .qg-board-list li { grid-template-columns: 28px 1fr auto; row-gap: 4px; }
+
+/* The site's version in the top bar's top-right corner, in the space above the buttons. */
+.site-version { position: absolute; top: 0; right: 0; font: 700 10px/12px var(--font-mono); letter-spacing: .02em; color: var(--ink-muted); text-decoration: none; padding: 0 2px; }
+.site-version:hover { color: var(--ink); text-decoration: underline; }

@@ -7,6 +7,7 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node
 import { resolve } from 'node:path'
 import { GAMES, LISTED, SKILLS, type GameMeta } from '../src/games/registry.ts'
 import { TAGLINES } from '../src/games/taglines.ts'
+import { VERSIONS } from '../src/versions.ts'
 import { HOW_TO } from '../src/games/howto.ts'
 import { SITE } from '../src/site.ts'
 
@@ -169,7 +170,11 @@ const aboutPage = () =>
       <p>When you finish a daily game, your best result for the day goes to that day's board, so you can see your rank. Signed in, it shows your username and icon. As a guest, it's stored with a random key made by your browser (only a scrambled form of it is kept, so it can't be traced back to you) and the name you chose for challenges, if any; names with rude words are left off. Nothing else about you is sent. Boards are per day; results come from players' browsers, so treat the very top with a pinch of salt.</p>
       <p>The site also counts how many games are started and finished, and keeps the answers to the crowd games (never who gave them). Everything kept, and how to download or delete it, is on the <a href="/privacy/">privacy page</a>.</p>
       <h2>Sound</h2>
-      <p>Sound is off until you turn it on with the switch at the top of each game, and the setting is remembered. Pitch Match always plays its tones, because listening is the game.</p>`,
+      <p>Sound is off until you turn it on with the switch at the top of each game, and the setting is remembered. Pitch Match always plays its tones, because listening is the game.</p>
+      <h2 id="versions">Versions</h2>
+      <ul>
+${VERSIONS.map((x) => `        <li><strong>${esc(x.v)}</strong> (${esc(x.date)}): ${esc(x.notes)}</li>`).join('\n')}
+      </ul>`,
   })
 
 const privacyPage = () =>

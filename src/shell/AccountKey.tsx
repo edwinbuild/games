@@ -5,6 +5,7 @@ import { captureRedirect, onAuthChange, signedIn, takeAuthNotice } from './auth'
 import type { SheetMode } from './AccountSheets'
 import { load } from './storage'
 import { SignInKey } from '../ui/SignInKey'
+import { VERSION } from '../versions'
 
 const AccountSheets = lazy(() => import('./AccountSheets'))
 const Avatar = lazy(() => import('../ui/icons').then((m) => ({ default: m.Avatar })))
@@ -43,6 +44,8 @@ export function AccountKey() {
 
   return (
     <>
+      {/* The site's version, in the top-right corner (above the buttons); it opens what's new. */}
+      <a className="site-version" href="/about/#versions" aria-label={`Version ${VERSION}: what’s new`}>v{VERSION}</a>
       {me ? (
         <a className="qg-account" href="/me/" aria-label={profile?.username ? `Your profile, ${profile.username}${badge ? `, ${badge} new` : ''}` : 'Your profile'}>
           <Suspense fallback={<span className="qg-account-dot" style={{ background: `var(--${profile?.colour ?? 'mint'})` }} />}>
