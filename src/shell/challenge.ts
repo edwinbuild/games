@@ -1,6 +1,7 @@
 // Challenge links: the puzzle seed and everyone's scores travel inside the link,
 // so friends can compete on the exact same puzzle without any server.
 import { load, save } from './storage'
+import { signedIn } from './auth'
 
 export type Row = {
   /** Nickname; empty means anonymous ("A friend"). */
@@ -87,7 +88,8 @@ export function myId(): string {
   }
   return id
 }
-export const myName = () => load<string>('nick', '')
+/** The name on challenges and in rooms: the username when signed in, else the name typed. */
+export const myName = () => (signedIn() && load<{ username: string | null } | null>('profile', null)?.username) || load<string>('nick', '')
 export const setMyName = (n: string) => save('nick', cleanName(n))
 
 export const displayName = (r: Row, me: string) => (r.i === me ? 'You' : r.n || 'A friend')

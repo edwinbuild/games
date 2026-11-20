@@ -5,8 +5,10 @@ import { RealtimeClient, type RealtimeChannel } from '@supabase/realtime-js'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { SITE } from '../site'
 import { myId, myName } from './challenge'
+import { signedIn } from './auth'
+import { load } from './storage'
 
-export type Member = { id: string; name: string; ready: boolean; joinedAt: number; started?: string[] }
+export type Member = { id: string; name: string; ready: boolean; joinedAt: number; started?: string[]; icon?: string; colour?: string }
 export type RoomStatus = 'connecting' | 'open' | 'full' | 'started' | 'error'
 
 const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'
@@ -28,6 +30,12 @@ export function order(members: Member[]): Member[] {
 const readSession = (k: string) => { try { return sessionStorage.getItem(k) } catch { return null } }
 const writeSession = (k: string, v: string | null) => { try { if (v == null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v) } catch { /* storage off */ } }
 
+/** Signed in, the player's icon shows to the others in the room. */
+function myIcon(): { icon?: string; colour?: string } {
+  const p = signedIn() ? load<{ icon: string; colour: string } | null>('profile', null) : null
+  return p ? { icon: p.icon, colour: p.colour } : {}
+}
+
 type Handler = (payload: Record<string, unknown>, from: string) => void
 
 /**
@@ -41,7 +49,7 @@ export function useRoom(game: string, code: string | null, max: number) {
   const channel = useRef<RealtimeChannel | null>(null)
   // Ready is remembered for this tab and room, so a refresh in the lobby keeps it.
   const readyKey = `qg:ready:${game}:${code}`
-  const self = useRef<Member>({ id: me, name: myName(), ready: readSession(readyKey) === '1', joinedAt: Date.now() })
+  const self = useRef<Member>({ id: me, name: myName(), ready: readSession(readyKey) === '1', joinedAt: Date.now(), ...myIcon() })
   const handlers = useRef(new Map<string, Set<Handler>>())
   const tracked = useRef(false) // whether this player is in the room's presence
   const steppedOut = useRef(false) // left a running match (e.g. after a refresh) and waits for the next

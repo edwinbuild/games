@@ -487,12 +487,13 @@ export function RoomCode({ code, url, onShare }: RoomCodeProps) {
 }
 
 /* ---------- Lobby ---------- */
-export type LobbyPlayer = { name: string; ready: boolean; me?: boolean; host?: boolean }
+export type LobbyPlayer = { name: string; ready: boolean; me?: boolean; host?: boolean; /** A signed-in player's icon, shown before their name. */ avatar?: ReactNode }
 export function Lobby({ players, max }: { players: LobbyPlayer[]; max: number }) {
   return (
     <ul className="qg-lobby" aria-label="Players in the room">
       {players.map((p, i) => (
         <li key={i} data-me={p.me || undefined}>
+          {p.avatar}
           <PlayerChip player={i} name={p.me ? `${p.name || PLAYERS[i % PLAYERS.length].name} (you)` : p.name} />
           <span className="qg-lobby-state">{p.host ? 'Host · ' : ''}{p.ready ? 'Ready ✓' : 'Not ready'}</span>
         </li>

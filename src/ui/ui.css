@@ -409,3 +409,4 @@
   .qg-sheet-panel { border-bottom: var(--border-edge) solid var(--edge); border-radius: var(--radius-lg); box-shadow: 0 8px 0 var(--edge); }
 }
 @media (prefers-reduced-motion: reduce) { .qg-sheet[open] .qg-sheet-panel { animation: none; } }
+.qg-lobby li > .qg-avatar + .qg-player { margin-right: auto; }

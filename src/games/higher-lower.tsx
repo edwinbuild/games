@@ -9,6 +9,7 @@ import { ResultCard } from '../shell/ResultCard'
 import { useRoom, useStepOutIfStale } from '../shell/room'
 import { count } from '../shell/plural'
 import { Burst, Button, Lobby, PlayerChip, PLAYERS, RoomCode, ScoreStrip, Stage, TextField } from '../ui'
+import { avatarOf } from '../shell/roomAvatar'
 
 const game = getGame('higher-lower')
 const MAX = 8
@@ -157,7 +158,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
       <Stage>
         <div className="stack">
           {room.status === 'connecting' ? <p className="body muted" style={{ margin: 0 }}>Joining room {code}…</p> : <RoomCode code={code} url={url} />}
-          <Lobby players={room.members.map((m, i) => ({ name: m.name || PLAYERS[i % PLAYERS.length].name, ready: m.ready, me: m.id === room.me, host: i === 0 }))} max={MAX} />
+          <Lobby players={room.members.map((m, i) => ({ name: m.name || PLAYERS[i % PLAYERS.length].name, ready: m.ready, avatar: avatarOf(m), me: m.id === room.me, host: i === 0 }))} max={MAX} />
           {!me?.ready && <TextField id="hl-name" label="Your name (optional)" value={name} onChange={setName} maxLength={16} placeholder="Shown to the other players" />}
           <Button size="lg" block color={game.color} onClick={ready} disabled={room.status !== 'open'} variant={me?.ready ? 'secondary' : 'primary'}>{me?.ready ? 'Not ready' : 'Ready'}</Button>
           {room.host && (

@@ -8,6 +8,7 @@ import { DuelModes } from '../shell/DuelModes'
 import { goToRoom, roomFromUrl, RoomLanding, RoomNotice } from '../shell/online'
 import { useRoom, useStepOutIfStale, type Member } from '../shell/room'
 import { Button, Lobby, PLAYERS, RoomCode, ScoreStrip, Stage, TextField } from '../ui'
+import { avatarOf } from '../shell/roomAvatar'
 
 const game = getGame('reaction-online')
 const MAX = 2
@@ -128,7 +129,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
       <Stage>
         <div className="stack">
           {room.status === 'connecting' ? <p className="body muted" style={{ margin: 0 }}>Joining room {code}…</p> : <RoomCode code={code} url={url} />}
-          <Lobby players={room.members.map((m) => ({ name: m.name || PLAYERS[seatOf(m)].name, ready: m.ready, me: m.id === room.me, host: seatOf(m) === 0 }))} max={MAX} />
+          <Lobby players={room.members.map((m) => ({ name: m.name || PLAYERS[seatOf(m)].name, ready: m.ready, avatar: avatarOf(m), me: m.id === room.me, host: seatOf(m) === 0 }))} max={MAX} />
           {!me?.ready && <TextField id="duel-name" label="Your name (optional)" value={name} onChange={setName} maxLength={16} placeholder="Shown to your opponent" />}
           <Button size="lg" block color={game.color} onClick={ready} disabled={room.status !== 'open'} variant={me?.ready ? 'secondary' : 'primary'}>
             {me?.ready ? 'Not ready' : 'Ready'}
