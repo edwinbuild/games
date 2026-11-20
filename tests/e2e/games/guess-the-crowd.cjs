@@ -17,13 +17,15 @@ module.exports = async ({ page, B }) => {
     const v = Math.round((min + f * (max - min)) / step) * step
     const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set
     set.call(el, String(v)); el.dispatchEvent(new Event('input', { bubbles: true }))
+    // Where the slider really landed (questions with big steps can't stop at every share).
+    return (v - min) / (max - min)
   }, f)
-  await setShare(0.7)
+  const answered = await setShare(0.7)
   await page.getByRole('button', { name: 'That’s my answer' }).click()
   await setShare(0.42)
   await page.getByRole('button', { name: 'Lock in my guess' }).click()
   await page.locator('.qg-ticket').waitFor()
-  if (sent.length !== 1 || Math.abs(sent[0].p_value - 0.7) > 0.05) throw new Error('answer not sent once as a share: ' + JSON.stringify(sent))
+  if (sent.length !== 1 || Math.abs(sent[0].p_value - answered) > 0.001) throw new Error('answer not sent once as a share: ' + JSON.stringify(sent))
   if (!/^[0-9a-f]{32}$/.test(sent[0].p_key)) throw new Error('answer sent without the device key')
   if ((await page.locator('.qg-hist-mark').count()) !== 3) throw new Error('chart marks missing')
   if (!/% off/.test(await page.locator('.qg-ticket').innerText())) throw new Error('no score')

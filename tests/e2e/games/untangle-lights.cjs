@@ -49,10 +49,11 @@ module.exports = async ({ page, B }) => {
   await page.getByRole('button', { name: /See my result/ }).waitFor({ timeout: 5000 })
   if (+(await svg.getAttribute('data-crossings')) !== 0) throw new Error('should be untangled')
   const total = await moves()
-  if (total !== n + 1) throw new Error(`expected ${n + 1} moves (the keyboard nudge plus one per light), got ${total}`)
+  // At most the keyboard nudge plus one per light; fewer when the lights come untangled before the last one moves.
+  if (total < 2 || total > n + 1) throw new Error(`expected 2 to ${n + 1} moves (the keyboard nudge plus up to one per light), got ${total}`)
   await page.getByRole('button', { name: /See my result/ }).click()
   await page.locator('.qg-ticket').waitFor()
   await page.waitForTimeout(1200)
   const t = await page.locator('.qg-ticket').innerText()
-  if (!new RegExp(`Untangled in ${n + 1} moves`).test(t) || !new RegExp(`par ${n}`).test(t)) throw new Error('ticket wrong: ' + t)
+  if (!new RegExp(`Untangled in ${total} moves`).test(t) || !new RegExp(`par ${n}`).test(t)) throw new Error('ticket wrong: ' + t)
 }
