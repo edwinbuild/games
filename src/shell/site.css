@@ -328,13 +328,20 @@ button { font: inherit; }
 /* Game pages swap the result ticket and the game in place; without this the browser's scroll
    anchoring can jump to the comments below when the ticket goes away (Try again on a phone). */
 .page--game { overflow-anchor: none; }
-.hw-cell { aspect-ratio: 1; display: grid; place-items: center; border: 2px solid var(--line); border-radius: 6px; background: var(--surface); font: 800 clamp(11px, 3.4vw, 26px)/1 var(--font-display); color: var(--ink); text-transform: uppercase; }
-.hw-boards--1 .hw-cell { font-size: clamp(22px, 7vw, 30px); border-width: 2.5px; }
-.hw-boards--8 .hw-cell { border-width: 1.5px; border-radius: 4px; font-size: clamp(9px, 2.6vw, 15px); }
-.hw-cell.is-typed { border-color: var(--ink); }
-.hw-cell.is-right { background: var(--game); border-color: var(--edge); color: var(--on-fill); }
-.hw-cell.is-elsewhere { background: color-mix(in srgb, var(--game) 22%, var(--surface)); border: 2.5px dashed var(--edge); }
-.hw-cell.is-out { background: var(--surface-sunken); border-color: var(--surface-sunken); color: var(--ink-muted); }
+/* Hidden Word squares: green is the right spot, yellow another spot, grey not in the word. Letters
+   are white on green and grey and dark on yellow, so the marks differ in more than colour. */
+:root { --hw-right: #267d45; --hw-else: #f0bf2e; --hw-out: #626b80; --hw-blank: #e3e6ed; --hw-slot: #d5dae4; --hw-on-else: #26241c; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --hw-right: #267d45; --hw-else: #e0b32c; --hw-out: #4a5061; --hw-blank: #22252c; --hw-slot: #2e323c; } }
+:root[data-theme="dark"] { --hw-right: #267d45; --hw-else: #e0b32c; --hw-out: #4a5061; --hw-blank: #22252c; --hw-slot: #2e323c; }
+.hw-cell { aspect-ratio: 1; display: grid; place-items: center; border: 2px solid transparent; border-radius: 5px; background: var(--hw-blank); font: 800 clamp(11px, 3.4vw, 26px)/1 var(--font-display); color: var(--ink); text-transform: uppercase; }
+.hw-boards--1 .hw-cell { font-size: clamp(22px, 7vw, 30px); }
+.hw-boards--8 .hw-cell { border-radius: 4px; font-size: clamp(9px, 2.6vw, 15px); }
+.hw-row.is-empty .hw-cell { opacity: .55; }
+.hw-row.is-current .hw-cell { background: var(--hw-slot); }
+.hw-cell.is-typed { background: var(--surface); border-color: var(--hw-out); }
+.hw-cell.is-right { background: var(--hw-right); color: #fff; }
+.hw-cell.is-elsewhere { background: var(--hw-else); color: var(--hw-on-else); }
+.hw-cell.is-out { background: var(--hw-out); color: #fff; }
 .hw-row.is-new .hw-cell { animation: hw-turn 420ms both; animation-delay: calc(var(--i) * 110ms); }
 @keyframes hw-turn { 0% { transform: rotateX(90deg); } 100% { transform: none; } }
 @media (prefers-reduced-motion: reduce) {

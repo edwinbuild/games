@@ -1,17 +1,17 @@
-/* Styles for hidden-word, loaded with its code (split out of site.css). */
-/* Hidden Word and its bigger versions */
+/* Styles for hidden-word, loaded with its code (split out of site.css; the squares' colours are there). */
 .hw-stage { padding: var(--space-3); }
 .hw-boards { display: grid; gap: var(--space-3); justify-content: center; }
 .hw-boards--1 { grid-template-columns: min(330px, 100%); }
 .hw-boards--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2); }
 .hw-boards--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2); }
 .hw-boards--8 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
-@media (min-width: 700px) { .hw-boards--8 { grid-template-columns: repeat(4, minmax(0, 1fr)); } .hw-boards--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-}
-.hw-board { display: grid; gap: 3px; padding: 4px; border-radius: 10px; transition: background-color 200ms; position: relative; }
-.hw-board.is-solved { background: color-mix(in srgb, var(--game) 30%, transparent); }
-.hw-board.is-missed { background: color-mix(in srgb, var(--danger) 12%, transparent); }
+@media (min-width: 700px) { .hw-boards--8, .hw-boards--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.hw-board { display: grid; gap: 3px; padding: 4px; border-radius: 8px; transition: background-color 200ms; position: relative; }
+.hw-board.is-solved { background: color-mix(in srgb, var(--hw-right) 16%, transparent); }
+.hw-board.is-missed { background: color-mix(in srgb, var(--danger) 10%, transparent); }
 .hw-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; }
+/* Phones, four or eight words: rows already guessed and still to come are short, the one you type in is square. */
+.hw-boards--4:not(.is-fit) .hw-row:not(.is-current) .hw-cell, .hw-boards--8:not(.is-fit) .hw-row:not(.is-current) .hw-cell { aspect-ratio: 3 / 2; }
 .hw-row.is-shake { animation: hw-shake 300ms; }
 .hw-reveal { margin: 2px 0 0; text-align: center; font: 800 13px/1 var(--font-mono); letter-spacing: .12em; color: var(--danger); }
 .hw-bottom { position: sticky; bottom: 0; z-index: 3; display: grid; gap: var(--space-2); padding: var(--space-2) 0 var(--space-3); background: linear-gradient(to bottom, transparent, var(--canvas) 18px); }
@@ -21,42 +21,48 @@
 .hw-key { position: relative; flex: 1 1 0; max-width: 44px; min-width: 0; height: 52px; padding: 0; border: 2px solid var(--edge); border-radius: 8px; background: var(--surface); color: var(--ink); font: 800 16px/1 var(--font-display); cursor: pointer; overflow: hidden; box-shadow: 0 3px 0 var(--drop); }
 .hw-key:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--drop); }
 .hw-key--wide { max-width: 68px; flex: 1.5 1 0; font-size: 13px; }
-.hw-key.is-right { background: var(--game); color: var(--on-fill); }
-.hw-key.is-elsewhere { background: color-mix(in srgb, var(--game) 25%, var(--surface)); border-style: dashed; }
-.hw-key.is-out { background: var(--surface-sunken); color: var(--ink-muted); border-color: var(--line); box-shadow: none; }
+.hw-key.is-right { background: var(--hw-right); color: #fff; }
+.hw-key.is-elsewhere { background: var(--hw-else); color: var(--hw-on-else); }
+.hw-key.is-out { background: var(--hw-out); color: #fff; opacity: .6; box-shadow: none; }
 .hw-keyletter { position: relative; z-index: 1; }
 /* Over a split key the letter sits on its own small label, readable on any mix of marks. */
-.hw-keymap + .hw-keyletter { padding: 2px 4px; border-radius: 5px; background: var(--surface); line-height: 1; }
+.hw-keymap + .hw-keyletter { padding: 2px 4px; border-radius: 5px; background: color-mix(in srgb, var(--surface) 88%, transparent); line-height: 1; }
 .hw-keymap { position: absolute; inset: 0; display: grid; }
 .hw-keymap--2 { grid-template-columns: 1fr 1fr; }
 .hw-keymap--4 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
 .hw-keymap--8 { grid-template-columns: repeat(4, 1fr); grid-template-rows: 1fr 1fr; }
-.hw-keymap i.is-right { background: var(--game); }
-.hw-keymap i.is-elsewhere { background: color-mix(in srgb, var(--game) 40%, var(--surface)); background-image: repeating-linear-gradient(45deg, transparent 0 3px, rgb(0 0 0 / .18) 3px 4px); }
-.hw-keymap i.is-out { background: var(--surface-sunken); }
+.hw-keymap i.is-right { background: var(--hw-right); }
+.hw-keymap i.is-elsewhere { background: var(--hw-else); }
+.hw-keymap i.is-out { background: var(--hw-out); }
 .hw-keymap i.is-done { background: color-mix(in srgb, var(--ink) 8%, transparent); }
 .hw-key:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) {
 .hw-row.is-shake { animation: none; }
 }
 @keyframes hw-shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-/* Computers: every board on screen, filling the width (see useFit); squares --cw wide, --ch tall. */
-.hw-boards.is-fit { grid-template-columns: repeat(var(--cols), auto); justify-content: center; column-gap: 20px; row-gap: 14px; }
+/* Computers: every board on screen (see useFit). Squares --cw wide; short rows --ch tall, the row you type in --ct. */
+.hw-boards.is-fit { grid-template-columns: repeat(var(--cols), auto); justify-content: center; column-gap: 24px; row-gap: 16px; }
 .hw-boards.is-fit .hw-board { gap: 4px; padding: 4px; }
 .hw-boards.is-fit .hw-row { grid-template-columns: repeat(5, var(--cw)); gap: 4px; }
-.hw-boards.is-fit .hw-cell { width: var(--cw); height: var(--ch); aspect-ratio: auto; border-radius: 6px; font-size: min(calc(var(--ch) * .68), 32px); border-width: max(1.5px, min(2.5px, calc(var(--ch) / 14))); }
-.hw-boards.is-fit .hw-cell.is-elsewhere { border-width: max(1.5px, min(2.5px, calc(var(--ch) / 12))); }
-/* While playing on a computer the boards get the whole width; how to play moves below them. */
+.hw-boards.is-fit .hw-cell { width: var(--cw); height: var(--ch); aspect-ratio: auto; border-radius: 4px; font-size: min(calc(var(--ch) * .74), 30px); }
+.hw-boards.is-fit .hw-row.is-current .hw-cell { height: var(--ct); font-size: min(calc(var(--ct) * .56), 30px); }
+/* While playing on a computer the boards get the whole width, without a frame; how to play moves below them. */
 @media (min-width: 1000px) {
   .game-layout:has(.hw-boards.is-fit) { grid-template-columns: minmax(0, 1fr); }
   .page--game:has(.hw-boards.is-fit) { max-width: min(1840px, calc(100vw - 64px)); }
-  .hw-stage:has(.is-fit) { padding: var(--space-3) var(--space-2); }
-  /* Room for the boards: no one-line description (how to play is just below), no key note, shorter keys. */
+  .hw-stage:has(.is-fit) { padding: 0; border: 0; background: none; }
+  /* Room for the boards: no one-line description (how to play is just below), no key note, the message floats. */
   .game-layout:has(.hw-boards.is-fit) .game-head p { display: none; }
   .hw-stage:has(.is-fit) ~ .hw-bottom > p:last-child { display: none; }
-  .hw-stage:has(.is-fit) ~ .hw-bottom .hw-key { height: 50px; max-width: 84px; }
-  .hw-stage:has(.is-fit) ~ .hw-bottom .hw-key--wide { max-width: 128px; }
-  .hw-stage:has(.is-fit) ~ .hw-bottom .hw-keys { max-width: 960px; width: 100%; margin-inline: auto; }
-  .hw-stage:has(.is-fit) ~ .hw-bottom { padding-top: var(--space-1); gap: 6px; }
+  .hw-stage:has(.is-fit) ~ .hw-bottom { padding-top: var(--space-2); gap: 6px; }
+  .hw-stage:has(.is-fit) ~ .hw-bottom .hw-msg { position: absolute; left: 0; right: 0; bottom: 100%; min-height: 0; pointer-events: none; }
+  .hw-stage:has(.is-fit) ~ .hw-bottom .hw-msg.is-on { justify-self: center; right: auto; left: 50%; transform: translateX(-50%); padding: 6px 14px; border-radius: var(--radius-pill); background: var(--ink); color: var(--canvas); white-space: nowrap; }
+  .hw-stage:has(.is-fit) ~ .hw-bottom .hw-keys { max-width: 660px; width: 100%; margin-inline: auto; }
+  .hw-stage:has(.is-fit) ~ .hw-bottom .hw-key { height: 50px; max-width: 60px; }
+  .hw-stage:has(.is-fit) ~ .hw-bottom .hw-key--wide { max-width: 96px; }
+}
+@media (min-width: 1000px) and (max-height: 820px) {
+  .hw-stage:has(.is-fit) ~ .hw-bottom .hw-key { height: 42px; }
+  .hw-stage:has(.is-fit) ~ .hw-bottom .hw-keys { gap: 5px; }
 }
 @media (min-width: 1000px) { .hw-key { max-width: 56px; height: 58px; font-size: 18px; } .hw-key--wide { max-width: 84px; } }

@@ -16,33 +16,49 @@ import { Burst, Button, Stage } from '../../ui/components'
 import '../hidden-word.css'
 
 const ROWS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm']
-const EMOJI: Record<Mark, string> = { right: '🔵', elsewhere: '🟡', out: '⚪' }
+const EMOJI: Record<Mark, string> = { right: '🟩', elsewhere: '🟨', out: '⬜' }
 const SAY = { short: 'Five letters, please.', unknown: 'That’s not in the word list.' }
 
 /**
- * On a computer every board is on screen at once and the boards fill the width: one, two or four
- * across (eight words: two rows of four). Squares may be wider than tall, so all the rows of
- * guesses fit the screen's height without scrolling. Phones keep their own layout.
+ * On a computer every board is on screen at once, with the keyboard below: one, two or four boards
+ * across (eight words: two rows of four). Rows already guessed and rows still to come are short; the
+ * row you're typing in is tall. If the boards don't fit under the page's heading, the page scrolls
+ * down to the game once. Phones keep their own layout.
  */
-type Fit = { cols: number; w: number; h: number }
+type Fit = { cols: number; w: number; h: number; tall: number; scroll: boolean }
 function useFit(n: number, rows: number, ready: unknown) {
   const ref = useRef<HTMLDivElement>(null)
   const [fit, setFit] = useState<Fit | null>(null)
+  const scrolled = useRef(false)
   useEffect(() => {
     const measure = () => {
       const el = ref.current
       if (!el || window.innerWidth < 1000) { setFit(null); return }
-      const gapX = 20, gapY = 14, inner = 4 // between boards across, between rows of boards, between squares
+      const gapX = 24, gapY = 16, g = 4, pad = 8 // between boards across, between rows of boards, between squares, around a board
       const cols = Math.min(n, 4)
       const across = Math.ceil(n / cols)
-      const width = el.clientWidth
-      const bottom = document.querySelector('.hw-bottom')?.getBoundingClientRect().height ?? 240
-      const height = window.innerHeight - (el.getBoundingClientRect().top + window.scrollY) - bottom - 12
-      const w = Math.min((width - (cols - 1) * gapX - cols * 8) / cols / 5 - inner, 96)
-      let h = Math.min((height - (across - 1) * gapY - across * 8) / across / rows - inner, w, 72)
-      // Too short to read: keep a readable height and let the page scroll behind the keyboard.
-      if (h < 18) h = 22
-      setFit(w >= 18 ? { cols, w: Math.floor(w), h: Math.floor(h) } : null)
+      const w = Math.floor(Math.min((el.clientWidth - (cols - 1) * gapX - cols * pad) / cols / 5 - g, n === 1 ? 62 : n === 2 ? 60 : 56))
+      const bottom = document.querySelector('.hw-bottom')?.getBoundingClientRect().height ?? 200
+      const bar = document.querySelector('.qg-topbar')?.getBoundingClientRect().height ?? 0
+      const top = el.getBoundingClientRect().top + window.scrollY
+      const head = document.querySelector('.hw-head')
+      const headTop = head ? head.getBoundingClientRect().top + window.scrollY : top
+      // The short rows' height for a given room: rows-1 short rows and one tall one (at most square).
+      const sizeFor = (room: number) => {
+        const per = (room - (across - 1) * gapY) / across - pad - (rows - 1) * g
+        let h = per / (rows - 1 + 2.2)
+        if (2.2 * h > w) h = (per - w) / (rows - 1)
+        return Math.min(h, w)
+      }
+      let h = sizeFor(window.innerHeight - top - bottom - 12)
+      let scroll = false
+      if (h < Math.min(w, 22)) {
+        h = sizeFor(window.innerHeight - bar - (top - headTop) - 8 - bottom - 12)
+        scroll = true
+      }
+      h = Math.max(14, Math.floor(h))
+      if (w < 18) { setFit(null); return }
+      setFit({ cols, w, h, tall: Math.floor(Math.min(w, 2.2 * h)), scroll })
     }
     measure()
     // The layout widens once the boards are fitted (how to play moves below), so measure again then.
@@ -51,6 +67,18 @@ function useFit(n: number, rows: number, ready: unknown) {
     window.addEventListener('resize', measure)
     return () => { ro?.disconnect(); window.removeEventListener('resize', measure) }
   }, [n, rows, ready])
+  // Once the fitted layout is drawn (the heading above has got shorter), bring the game up under the top bar.
+  useEffect(() => {
+    if (!fit?.scroll || scrolled.current) return
+    const id = requestAnimationFrame(() => {
+      scrolled.current = true
+      const head = document.querySelector('.hw-head')
+      const bar = document.querySelector('.qg-topbar')?.getBoundingClientRect().height ?? 0
+      const y = head ? head.getBoundingClientRect().top + window.scrollY - bar - 8 : 0
+      if (window.scrollY < y - 2) window.scrollTo({ top: y })
+    })
+    return () => cancelAnimationFrame(id)
+  }, [fit])
   return [ref, fit] as const
 }
 
@@ -83,7 +111,7 @@ export default function HiddenWordGame({ mode }: { mode: Mode }) {
   const over = allSolved || guesses.length >= max
   const keys = useMemo(() => (answers.length ? keyMarks(guesses, answers) : {}), [guesses, answers])
   const showSolution = useMemo(() => load<boolean>('test-solutions', false), [])
-  const [fitRef, fit] = useFit(n, max, `${!!list}:${practice}:${seen}`)
+  const [fitRef, fit] = useFit(n, max, `${!!list}:${practice}:${seen}:${over}`)
 
   function setGuesses(g: string[]) {
     setGuessesRun(g)
@@ -135,7 +163,7 @@ export default function HiddenWordGame({ mode }: { mode: Mode }) {
 
   const solvedCount = at.filter((x) => x != null).length
   const boardsView = (
-    <div ref={fitRef} className={`hw-boards hw-boards--${n}${fit ? ' is-fit' : ''}`} style={fit ? ({ '--cols': fit.cols, '--cw': `${fit.w}px`, '--ch': `${fit.h}px` } as React.CSSProperties) : undefined} data-answers={showSolution ? answers.join(' ') : undefined} data-guesses={guesses.join(' ')}>
+    <div ref={fitRef} className={`hw-boards hw-boards--${n}${fit ? ' is-fit' : ''}`} style={fit ? ({ '--cols': fit.cols, '--cw': `${fit.w}px`, '--ch': `${fit.h}px`, '--ct': `${fit.tall}px` } as React.CSSProperties) : undefined} data-answers={showSolution ? answers.join(' ') : undefined} data-guesses={guesses.join(' ')}>
       {answers.map((a, b) => {
         const doneAt = at[b]
         const rows = doneAt == null ? guesses : guesses.slice(0, doneAt + 1)
@@ -143,11 +171,12 @@ export default function HiddenWordGame({ mode }: { mode: Mode }) {
           <div key={b} className={`hw-board${doneAt != null ? ' is-solved' : ''}${over && doneAt == null ? ' is-missed' : ''}`} aria-label={`Word ${b + 1}${doneAt != null ? `: found, ${a.toUpperCase()}` : over ? `: not found, it was ${a.toUpperCase()}` : ''}`}>
             {Array.from({ length: max }, (_, r) => {
               const g = rows[r]
-              const isTyping = !over && doneAt == null && r === guesses.length
+              const isCurrent = !over && r === guesses.length
+              const isTyping = isCurrent && doneAt == null
               const marks = g ? mark(g, a) : null
               const last = !!g && r === justAdded
               return (
-                <div key={r} className={`hw-row${isTyping && shake ? ' is-shake' : ''}${last ? ' is-new' : ''}`} data-shake={isTyping ? shake : undefined} aria-label={g ? `${g.toUpperCase()}: ${marks!.join(', ')}` : undefined}>
+                <div key={r} className={`hw-row${g ? ' is-past' : isCurrent ? ' is-current' : ' is-empty'}${isTyping && shake ? ' is-shake' : ''}${last ? ' is-new' : ''}`} data-shake={isTyping ? shake : undefined} aria-label={g ? `${g.toUpperCase()}: ${marks!.join(', ')}` : undefined}>
                   {Array.from({ length: LEN }, (_, i) => {
                     const c = g ? g[i] : isTyping ? typed[i] : ''
                     return <span key={i} className={`hw-cell${marks ? ` is-${marks[i]}` : c ? ' is-typed' : ''}`} style={{ '--i': i } as React.CSSProperties}>{c?.toUpperCase()}</span>
@@ -201,7 +230,7 @@ export default function HiddenWordGame({ mode }: { mode: Mode }) {
 
   return (
     <>
-      <div className="between" style={{ marginBottom: 'var(--space-3)' }}>
+      <div className="between hw-head" style={{ marginBottom: 'var(--space-3)' }}>
         <span className="small muted">{!daily ? 'Practice round · not on the board' : n === 1 ? 'One hidden word' : `${n} hidden words · ${solvedCount} found`}</span>
         <span className="small muted">Guess {Math.min(guesses.length + 1, max)} of {max}</span>
       </div>
@@ -210,7 +239,7 @@ export default function HiddenWordGame({ mode }: { mode: Mode }) {
         {over && allSolved && <Burst y="40%" color={game.color} />}
       </Stage>
       <div className="hw-bottom">
-        <p className="small center hw-msg" role="status">{msg || ' '}</p>
+        <p className={`small center hw-msg${msg ? ' is-on' : ''}`} role="status">{msg || ' '}</p>
         {over ? (
           <Button size="lg" block color={game.color} onClick={() => setSeen(true)} data-primary="click" hint="Space">See my result</Button>
         ) : (
@@ -233,7 +262,7 @@ export default function HiddenWordGame({ mode }: { mode: Mode }) {
           </div>
         )}
         <p className="small muted center" style={{ margin: 0 }}>
-          {n === 1 ? 'Guess the five-letter word.' : `Each guess goes on all ${n} boards.`} Filled: right letter, right spot. Dashed: in the word, another spot. Grey: not in it.
+          {n === 1 ? 'Guess the five-letter word.' : `Each guess goes on all ${n} boards.`} Green: right letter, right spot. Yellow: in the word, another spot. Grey: not in it.
         </p>
       </div>
     </>

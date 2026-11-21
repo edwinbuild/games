@@ -135,19 +135,19 @@ export const HOW_TO: Record<string, string[]> = {
     'Stones tell you what the path does on their square: on a filled stone (●) it turns, on a hollow stone (○) it goes straight through. Every garden has exactly one answer; your time counts, and the clock keeps going if you leave and come back. 5×5 early in the week, 6×6 at the weekend. On a keyboard, the arrows step the path.',
   ],
   'hidden-word': [
-    'There’s a hidden five-letter word. Type a guess (any real five-letter word) and press Enter. Each letter is then marked: filled means the right letter in the right spot, dashed means the word has that letter in another spot, grey means it isn’t in the word (or not that many times). The keyboard keeps track of what you’ve learned.',
+    'There’s a hidden five-letter word. Type a guess (any real five-letter word) and press Enter. Each letter is then marked: green means the right letter in the right spot, yellow means the word has that letter in another spot, grey means it isn’t in the word (or not that many times). The keyboard keeps track of what you’ve learned.',
     'You have six guesses. If a guess has a letter twice but the word has it once, only one of them is marked. One word a day, the same for everyone, and only that game counts, so think before you press Enter. Afterwards you can play practice rounds with new words, just for fun (they don’t go on the board).',
   ],
   'two-words': [
-    'Two hidden five-letter words, side by side. Every guess goes on both boards at once and each board marks it for its own word: filled is the right letter in the right spot, dashed is in that word somewhere else, grey is not in it. Once you find a word, its board stops.',
+    'Two hidden five-letter words, side by side. Every guess goes on both boards at once and each board marks it for its own word: green is the right letter in the right spot, yellow is in that word somewhere else, grey is not in it. Once you find a word, its board stops.',
     'You have seven guesses to find both. The keyboard shows each letter’s mark for each board (left half, right half). Two new words a day, the same for everyone; after them, practice rounds with new words, just for fun.',
   ],
   'four-words': [
-    'Four hidden five-letter words at once. Every guess goes on all four boards, and each board marks it for its own word: filled is the right letter in the right spot, dashed is in that word somewhere else, grey is not in it. A found word’s board stops taking guesses.',
+    'Four hidden five-letter words at once. Every guess goes on all four boards, and each board marks it for its own word: green is the right letter in the right spot, yellow is in that word somewhere else, grey is not in it. A found word’s board stops taking guesses.',
     'You have nine guesses for all four. Each key on the keyboard is split into four corners, one per board, so you can see where a letter has been ruled in or out. Four new words a day, the same for everyone; after them, practice rounds with new words, just for fun.',
   ],
   'eight-words': [
-    'Eight hidden five-letter words. Every guess goes on all eight boards; each marks it for its own word (filled: right spot, dashed: another spot, grey: not in it). A found word’s board stops taking guesses.',
+    'Eight hidden five-letter words. Every guess goes on all eight boards; each marks it for its own word (green: right spot, yellow: another spot, grey: not in it). A found word’s board stops taking guesses.',
     'You have thirteen guesses for all eight, so plan guesses that test lots of common letters early. Each key shows eight small marks, one per board. Eight new words a day, the same for everyone; after them, practice rounds with new words, just for fun.',
   ],
   'stick-up': [
